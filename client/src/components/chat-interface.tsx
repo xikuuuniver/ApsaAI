@@ -656,7 +656,7 @@ export function ChatInterface() {
       />
       
       {/* Header */}
-      <header className="sticky top-0 z-20 flex items-center justify-between border-b bg-white/90 dark:bg-slate-900/90 px-4 md:px-6 py-3 backdrop-blur-xl">
+      <header className="sticky top-0 z-40 flex items-center justify-between border-b border-slate-200/50 dark:border-slate-800/50 bg-white/70 dark:bg-slate-950/70 px-4 md:px-6 py-3 backdrop-blur-xl transition-colors duration-300">
         <div className="flex items-center gap-2">
           <Button
             variant="ghost"
@@ -1018,7 +1018,7 @@ export function ChatInterface() {
                   </PopoverContent>
                 </Popover>
 
-              <div id="chat-input" className="flex-1 flex items-center min-w-0">
+              <div id="chat-input" className="flex-1 flex items-center min-w-0 pb-2">
                 <textarea
                   ref={textareaRef}
                   value={inputValue}
