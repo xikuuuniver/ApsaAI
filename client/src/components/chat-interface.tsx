@@ -578,7 +578,7 @@ export function ChatInterface() {
 
       <div 
         id="swipe-trigger"
-        className="fixed bottom-0 left-0 right-0 h-16 z-50 flex justify-center items-end pb-2 cursor-pointer touch-none" 
+        className="fixed bottom-0 left-0 right-0 h-10 z-50 flex justify-center items-end pb-1 cursor-pointer touch-none md:hidden" 
         onPointerDown={(e) => {
           const startY = e.clientY;
           const handlePointerUp = (upEvent: PointerEvent) => {
