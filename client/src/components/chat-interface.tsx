@@ -578,12 +578,12 @@ export function ChatInterface() {
 
       <div 
         id="swipe-trigger"
-        className="fixed bottom-0 left-0 right-0 h-10 z-50 flex justify-center items-end pb-1 cursor-pointer touch-none md:hidden" 
+        className="fixed bottom-0 left-0 right-0 h-1.5 z-[60] flex justify-center items-end pb-0 cursor-pointer touch-none md:hidden" 
         onPointerDown={(e) => {
           const startY = e.clientY;
           const handlePointerUp = (upEvent: PointerEvent) => {
             const endY = upEvent.clientY;
-            if (startY - endY > 30) { // Upward swipe threshold
+            if (startY - endY > 20) { // More sensitive threshold
               setSidebarOpen(true);
             }
             window.removeEventListener('pointerup', handlePointerUp);
@@ -593,9 +593,9 @@ export function ChatInterface() {
         onClick={() => setSidebarOpen(true)}
       >
         <motion.div 
-          animate={{ y: [0, -4, 0] }}
-          transition={{ repeat: Infinity, duration: 2 }}
-          className="w-12 h-1.5 rounded-full bg-slate-300 dark:bg-slate-700 opacity-60 mb-1 shadow-sm" 
+          animate={{ opacity: [0.1, 0.3, 0.1] }}
+          transition={{ repeat: Infinity, duration: 4 }}
+          className="w-12 h-0.5 rounded-full bg-slate-300 dark:bg-slate-700" 
         />
       </div>
       
@@ -614,11 +614,11 @@ export function ChatInterface() {
       {/* Confetti Celebration */}
       <AnimatePresence>
         {showConfetti && (
-          <>
+          <div className="fixed inset-0 pointer-events-none z-[100]">
             {[...Array(30)].map((_, i) => (
               <motion.div
                 key={i}
-                className="confetti-piece"
+                className="absolute"
                 initial={{ 
                   left: `${Math.random() * 100}%`,
                   top: -20,
@@ -641,7 +641,7 @@ export function ChatInterface() {
                 }}
               />
             ))}
-          </>
+          </div>
         )}
       </AnimatePresence>
       
@@ -913,7 +913,7 @@ export function ChatInterface() {
         </div>
 
         {/* Input & Controls Area - Modern Slim Design */}
-        <div className="w-full px-4 pb-8 z-20">
+        <div className="w-full px-4 pb-12 z-20">
           <div className="mx-auto max-w-4xl space-y-4">
             {/* Follow-up Suggestions - Slidable Horizontal List */}
             <AnimatePresence>
