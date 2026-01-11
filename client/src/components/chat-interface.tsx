@@ -656,7 +656,7 @@ export function ChatInterface() {
       />
       
       {/* Header */}
-      <header className="sticky top-0 z-[100] flex items-center justify-between border-b border-white/10 bg-white/40 dark:bg-slate-950/40 px-4 md:px-6 py-3 backdrop-blur-2xl transition-all duration-300 shadow-sm">
+      <header className="sticky top-0 z-[100] flex items-center justify-between border-b border-white/20 bg-white/30 dark:bg-slate-950/30 px-4 md:px-6 py-3 backdrop-blur-3xl transition-all duration-300 shadow-sm">
         <div className="flex items-center gap-2">
           <Button
             variant="ghost"
