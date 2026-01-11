@@ -656,8 +656,9 @@ export function ChatInterface() {
       />
       
       {/* Header */}
-      <header className="sticky top-0 z-[100] flex items-center justify-between border-b border-white/20 bg-white/30 dark:bg-slate-950/30 px-4 md:px-6 py-3 backdrop-blur-3xl transition-all duration-300 shadow-sm">
-        <div className="flex items-center gap-2">
+      <div className="sticky top-0 z-[100] w-full px-4 pt-4 pb-2 flex justify-center pointer-events-none">
+        <header className="w-full max-w-5xl h-14 md:h-16 flex items-center justify-between px-4 md:px-6 rounded-2xl bg-white/30 dark:bg-slate-950/30 backdrop-blur-3xl border border-white/20 dark:border-slate-800/30 shadow-[0_8px_32px_0_rgba(0,0,0,0.1)] transition-all duration-300 pointer-events-auto">
+          <div className="flex items-center gap-2">
           <Button
             variant="ghost"
             size="icon"
