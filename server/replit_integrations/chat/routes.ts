@@ -3,10 +3,10 @@ import OpenAI from "openai";
 import { chatStorage } from "./storage";
 import { ObjectStorageService } from "../object_storage/objectStorage";
 
-const openai = new OpenAI({
+const openai = process.env.AI_INTEGRATIONS_OPENAI_API_KEY ? new OpenAI({
   apiKey: process.env.AI_INTEGRATIONS_OPENAI_API_KEY,
   baseURL: process.env.AI_INTEGRATIONS_OPENAI_BASE_URL,
-});
+}) : null;
 
 const TRAINING_PASSWORD = process.env.TRAINING_PASSWORD;
 
@@ -166,6 +166,10 @@ export function registerChatRoutes(app: Express): void {
       
       if (!userMessage) {
         return res.status(400).json({ error: "userMessage is required" });
+      }
+
+      if (!openai) {
+        return res.status(503).json({ error: "AI Chat feature is not configured. Please add OpenAI integration." });
       }
 
       const response = await openai.chat.completions.create({
@@ -416,6 +420,10 @@ When the user asks if you can search or have internet access, CONFIRM that yes, 
         }, 500);
       }
 
+      if (!openai) {
+        throw new Error("AI Chat feature is not configured");
+      }
+
       // Try multimodal first, fall back to text if it fails
       try {
         const stream = await openai.chat.completions.create({
@@ -481,6 +489,13 @@ When the user asks if you can search or have internet access, CONFIRM that yes, 
 
       // Save assistant message
       await chatStorage.createMessage(conversationId, "assistant", fullResponse);
+
+      if (!openai) {
+        console.warn("AI suggestions skipped: OpenAI not configured");
+        res.write(`data: ${JSON.stringify({ done: true, suggestions: [] })}\n\n`);
+        res.end();
+        return;
+      }
 
       // Generate contextual suggestions using AI
       let suggestions: string[] = [];
