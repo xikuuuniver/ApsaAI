@@ -572,7 +572,7 @@ export function ChatInterface() {
   ];
 
   return (
-    <div className="flex h-screen w-full flex-col bg-slate-50/30 dark:bg-slate-950 relative">
+    <div className="flex h-screen w-full flex-col bg-transparent relative">
       <ParticlesBackground />
       <OnboardingTutorial />
 
@@ -658,15 +658,15 @@ export function ChatInterface() {
       {/* Header */}
       <div className="sticky top-0 z-[100] w-full flex justify-center pointer-events-none">
         <header 
-          className="w-full h-14 md:h-16 flex items-center justify-between px-4 md:px-6 bg-white/30 dark:bg-slate-950/30 backdrop-blur-2xl transition-all duration-300 pointer-events-auto relative overflow-hidden"
+          className="w-full h-14 md:h-16 flex items-center justify-between px-4 md:px-6 bg-white/20 dark:bg-slate-950/20 backdrop-blur-3xl transition-all duration-300 pointer-events-auto relative overflow-hidden"
           style={{ 
-            maskImage: 'linear-gradient(to bottom, black 0%, black 60%, transparent 100%)', 
-            WebkitMaskImage: 'linear-gradient(to bottom, black 0%, black 60%, transparent 100%)' 
+            maskImage: 'linear-gradient(to bottom, black 0%, black 50%, transparent 100%)', 
+            WebkitMaskImage: 'linear-gradient(to bottom, black 0%, black 50%, transparent 100%)' 
           }}
         >
           {/* Glassy reflection and subtle noise/texture */}
           <div className="absolute inset-0 bg-white/5 dark:bg-white/5 pointer-events-none" />
-          <div className="absolute inset-x-0 top-0 h-px bg-white/40 dark:bg-white/10 pointer-events-none" />
+          <div className="absolute inset-x-0 top-0 h-px bg-white/30 dark:bg-white/10 pointer-events-none" />
           
           <div className="flex items-center gap-4 relative z-10">
             <Button
@@ -678,7 +678,7 @@ export function ChatInterface() {
               <Menu className="h-6 w-6" />
             </Button>
             <div className="flex items-center gap-3">
-              <button className="text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 transition-colors">
+              <button className="text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition-colors">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
               </button>
               <h1 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight drop-shadow-sm">Settings</h1>
@@ -855,13 +855,13 @@ export function ChatInterface() {
       </div>
 
       {/* Main Chat Area */}
-      <main className="flex-1 overflow-hidden flex flex-col relative z-10">
+      <div className="flex-1 overflow-hidden flex flex-col relative z-0">
         {/* Messages */}
-        <div className="flex-1 overflow-y-auto scroll-smooth">
-          <div className="mx-auto max-w-5xl w-full px-4 py-8 md:py-12">
+        <div className="flex-1 overflow-y-auto scroll-smooth pt-14 md:pt-16">
+          <div className="mx-auto max-w-5xl w-full px-4 pt-4 pb-8 md:pb-12">
             {messages.length === 0 ? (
               <motion.div 
-                className="flex flex-col items-center justify-center pt-20 pb-10 text-center"
+                className="flex flex-col items-center justify-center pt-10 pb-10 text-center"
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.6, ease: "easeOut" }}
@@ -1106,7 +1106,7 @@ export function ChatInterface() {
             </div>
           </div>
         </div>
-      </main>
+      </div>
     </div>
   );
 }
