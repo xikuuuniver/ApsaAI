@@ -657,11 +657,9 @@ export function ChatInterface() {
       
       {/* Header */}
       <div className="sticky top-0 z-[100] w-full flex justify-center pointer-events-none">
-        <header className="w-full max-w-5xl mx-4 mt-4 h-14 md:h-16 flex items-center justify-between px-4 md:px-6 rounded-2xl bg-white/70 dark:bg-slate-950/40 backdrop-blur-3xl border border-white/40 dark:border-slate-800/50 shadow-[0_8px_32px_0_rgba(31,38,135,0.15)] transition-all duration-300 pointer-events-auto relative overflow-hidden">
-          {/* Glossy Reflection Effect */}
-          <div className="absolute inset-0 bg-gradient-to-tr from-white/20 to-transparent dark:from-white/5 pointer-events-none" />
-          {/* Gradient Bottom Mask */}
-          <div className="absolute inset-x-0 bottom-0 h-[45%] bg-gradient-to-t from-white/40 to-transparent dark:from-slate-950/40 pointer-events-none" />
+        <header className="w-full max-w-5xl mx-4 mt-4 h-14 md:h-16 flex items-center justify-between px-4 md:px-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-[0_4px_12px_rgba(0,0,0,0.05)] transition-all duration-300 pointer-events-auto relative overflow-hidden">
+          {/* Transparent Gradient Bottom Effect */}
+          <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-slate-50/80 to-transparent dark:from-slate-950/80 pointer-events-none" />
           
           <div className="flex items-center gap-2 relative z-10">
             <Button
