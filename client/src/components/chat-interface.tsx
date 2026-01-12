@@ -657,9 +657,8 @@ export function ChatInterface() {
       
       {/* Header */}
       <div className="sticky top-0 z-[100] w-full flex justify-center pointer-events-none">
-        <header className="w-full h-14 md:h-16 flex items-center justify-between px-4 md:px-6 bg-white/60 dark:bg-slate-900/60 backdrop-blur-xl transition-all duration-300 pointer-events-auto relative overflow-hidden">
-          {/* Glassy reflection and gradient bottom from screenshot */}
-          <div className="absolute inset-x-0 bottom-0 h-[60%] bg-gradient-to-t from-white/40 to-transparent dark:from-slate-900/40 pointer-events-none" />
+        <header className="w-full h-14 md:h-16 flex items-center justify-between px-4 md:px-6 bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl transition-all duration-300 pointer-events-auto relative overflow-hidden" style={{ maskImage: 'linear-gradient(to bottom, black 80%, transparent 100%)', WebkitMaskImage: 'linear-gradient(to bottom, black 80%, transparent 100%)' }}>
+          {/* Glassy reflection */}
           <div className="absolute inset-0 bg-white/5 dark:bg-white/5 pointer-events-none" />
           
           <div className="flex items-center gap-4 relative z-10">
