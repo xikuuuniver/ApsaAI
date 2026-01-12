@@ -657,15 +657,22 @@ export function ChatInterface() {
       
       {/* Header */}
       <div className="sticky top-0 z-[100] w-full flex justify-center pointer-events-none">
-        <header className="w-full h-14 md:h-16 flex items-center justify-between px-4 md:px-6 bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl transition-all duration-300 pointer-events-auto relative overflow-hidden" style={{ maskImage: 'linear-gradient(to bottom, black 80%, transparent 100%)', WebkitMaskImage: 'linear-gradient(to bottom, black 80%, transparent 100%)' }}>
-          {/* Glassy reflection */}
+        <header 
+          className="w-full h-14 md:h-16 flex items-center justify-between px-4 md:px-6 bg-white/30 dark:bg-slate-950/30 backdrop-blur-2xl transition-all duration-300 pointer-events-auto relative overflow-hidden"
+          style={{ 
+            maskImage: 'linear-gradient(to bottom, black 0%, black 60%, transparent 100%)', 
+            WebkitMaskImage: 'linear-gradient(to bottom, black 0%, black 60%, transparent 100%)' 
+          }}
+        >
+          {/* Glassy reflection and subtle noise/texture */}
           <div className="absolute inset-0 bg-white/5 dark:bg-white/5 pointer-events-none" />
+          <div className="absolute inset-x-0 top-0 h-px bg-white/40 dark:bg-white/10 pointer-events-none" />
           
           <div className="flex items-center gap-4 relative z-10">
             <Button
               variant="ghost"
               size="icon"
-              className="h-10 w-10 text-slate-800 dark:text-slate-100 hover:bg-slate-200/30 dark:hover:bg-slate-800/30 rounded-full"
+              className="h-10 w-10 text-slate-800 dark:text-slate-100 hover:bg-white/20 dark:hover:bg-slate-800/20 rounded-full transition-all"
               onClick={() => setSidebarOpen(true)}
             >
               <Menu className="h-6 w-6" />
@@ -674,7 +681,7 @@ export function ChatInterface() {
               <button className="text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 transition-colors">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
               </button>
-              <h1 className="text-xl font-semibold text-slate-800 dark:text-white tracking-tight">Settings</h1>
+              <h1 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight drop-shadow-sm">Settings</h1>
             </div>
           </div>
           
