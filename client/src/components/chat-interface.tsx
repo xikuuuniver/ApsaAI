@@ -656,175 +656,179 @@ export function ChatInterface() {
       />
       
       {/* Header */}
-      <div className="sticky top-0 z-[100] w-full px-4 pt-4 pb-2 flex justify-center pointer-events-none">
-        <header className="w-full max-w-5xl h-14 md:h-16 flex items-center justify-between px-4 md:px-6 rounded-2xl bg-white/30 dark:bg-slate-950/30 backdrop-blur-3xl border border-white/20 dark:border-slate-800/30 shadow-[0_8px_32px_0_rgba(0,0,0,0.1)] transition-all duration-300 pointer-events-auto">
-          <div className="flex items-center gap-2">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={toggleTheme}
-            className="h-10 w-10 text-slate-500 hover:text-slate-900 dark:hover:text-white transition-all duration-500 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full relative overflow-hidden group shrink-0"
-          >
-            <motion.div
-              initial={false}
-              animate={{ 
-                rotate: theme === "dark" ? 0 : theme === "neon" ? 180 : 90,
-                scale: theme === "dark" ? 1 : 0,
-                opacity: theme === "dark" ? 1 : 0
-              }}
-              className="absolute"
+      <div className="sticky top-0 z-[100] w-full flex justify-center pointer-events-none">
+        <header className="w-full max-w-5xl mx-4 mt-4 h-14 md:h-16 flex items-center justify-between px-4 md:px-6 rounded-2xl bg-white/10 dark:bg-slate-950/10 backdrop-blur-2xl border border-white/20 dark:border-slate-800/30 shadow-[0_8px_32px_0_rgba(31,38,135,0.07)] transition-all duration-300 pointer-events-auto relative overflow-hidden">
+          {/* Gradient Bottom Mask */}
+          <div className="absolute inset-x-0 bottom-0 h-[40%] bg-gradient-to-t from-white/20 to-transparent dark:from-slate-950/20 pointer-events-none" />
+          
+          <div className="flex items-center gap-2 relative z-10">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={toggleTheme}
+              className="h-10 w-10 text-slate-500 hover:text-slate-900 dark:hover:text-white transition-all duration-500 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full relative overflow-hidden group shrink-0"
             >
-              <Moon className="h-5 w-5" />
-            </motion.div>
-            <motion.div
-              initial={false}
-              animate={{ 
-                rotate: theme === "light" ? 0 : theme === "dark" ? -90 : -180,
-                scale: theme === "light" ? 1 : 0,
-                opacity: theme === "light" ? 1 : 0
-              }}
-              className="absolute"
-            >
-              <Sun className="h-5 w-5" />
-            </motion.div>
-            <motion.div
-              initial={false}
-              animate={{ 
-                rotate: theme === "neon" ? 0 : theme === "light" ? 180 : 90,
-                scale: theme === "neon" ? 1 : 0,
-                opacity: theme === "neon" ? 1 : 0
-              }}
-              className="absolute"
-            >
-              <SparklesIcon className="h-5 w-5 text-cyan-400" />
-            </motion.div>
-          </Button>
-          <div className="hidden sm:block">
-            <h1 className="text-sm font-semibold text-slate-900 dark:text-white">{t("app.title")}</h1>
-            <p className="text-[10px] text-slate-500 dark:text-slate-400 font-medium">{t("app.subtitle")}</p>
+              <motion.div
+                initial={false}
+                animate={{ 
+                  rotate: theme === "dark" ? 0 : theme === "neon" ? 180 : 90,
+                  scale: theme === "dark" ? 1 : 0,
+                  opacity: theme === "dark" ? 1 : 0
+                }}
+                className="absolute"
+              >
+                <Moon className="h-5 w-5" />
+              </motion.div>
+              <motion.div
+                initial={false}
+                animate={{ 
+                  rotate: theme === "light" ? 0 : theme === "dark" ? -90 : -180,
+                  scale: theme === "light" ? 1 : 0,
+                  opacity: theme === "light" ? 1 : 0
+                }}
+                className="absolute"
+              >
+                <Sun className="h-5 w-5" />
+              </motion.div>
+              <motion.div
+                initial={false}
+                animate={{ 
+                  rotate: theme === "neon" ? 0 : theme === "light" ? 180 : 90,
+                  scale: theme === "neon" ? 1 : 0,
+                  opacity: theme === "neon" ? 1 : 0
+                }}
+                className="absolute"
+              >
+                <SparklesIcon className="h-5 w-5 text-cyan-400" />
+              </motion.div>
+            </Button>
+            <div className="hidden sm:block">
+              <h1 className="text-sm font-semibold text-slate-900 dark:text-white">{t("app.title")}</h1>
+              <p className="text-[10px] text-slate-500 dark:text-slate-400 font-medium">{t("app.subtitle")}</p>
+            </div>
           </div>
-        </div>
-        <div className="flex items-center gap-2">
-           {/* New Chat Button */}
-           <Button
-             id="new-chat-btn"
-             variant="ghost"
-             size="icon"
-             onClick={handleNewSession}
-             className="h-9 w-9 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all button-animate"
-             title="Start new chat"
-           >
-             <Plus className="h-5 w-5" />
-           </Button>
+          <div className="flex items-center gap-2 relative z-10">
+             {/* New Chat Button */}
+             <Button
+               id="new-chat-btn"
+               variant="ghost"
+               size="icon"
+               onClick={handleNewSession}
+               className="h-9 w-9 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all button-animate"
+               title="Start new chat"
+             >
+               <Plus className="h-5 w-5" />
+             </Button>
 
-           {/* Language Selector in Header */}
-           <Popover open={languageMenuOpen} onOpenChange={setLanguageMenuOpen}>
-             <PopoverTrigger asChild>
-               <button
-                 id="language-selector"
-                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all button-animate bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700"
-                 data-testid="button-language-selector"
-               >
-                 <Languages className="h-3.5 w-3.5" />
-                 <span className="hidden sm:inline">{languageNames[language]}</span>
-                 <ChevronDown className="h-3 w-3 opacity-50" />
-               </button>
-             </PopoverTrigger>
-             <PopoverContent className="w-44 p-1" align="end">
-               <div className="text-xs font-medium text-slate-500 dark:text-slate-400 px-2 py-1.5">
-                 {t("language.select")}
-               </div>
-               {(Object.keys(languageNames) as Language[]).map((lang) => (
-                 <button
-                   key={lang}
-                   onClick={() => { setLanguage(lang); setLanguageMenuOpen(false); }}
-                   className={cn(
-                     "w-full flex items-center gap-2 px-2 py-2 rounded-md text-sm transition-colors button-animate",
-                     language === lang 
-                       ? "bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 font-medium"
-                       : "text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
-                   )}
-                   data-testid={`button-language-${lang}`}
-                 >
-                   {languageNames[lang]}
-                   {language === lang && <span className="ml-auto text-blue-500">✓</span>}
-                 </button>
-               ))}
-             </PopoverContent>
-           </Popover>
-
-           {/* Auth Section */}
-           {authLoading ? (
-             <div className="h-8 w-8 rounded-full bg-slate-200 dark:bg-slate-700 animate-pulse" />
-           ) : isAuthenticated && user ? (
-             <Popover open={userMenuOpen} onOpenChange={setUserMenuOpen}>
+             {/* Language Selector in Header */}
+             <Popover open={languageMenuOpen} onOpenChange={setLanguageMenuOpen}>
                <PopoverTrigger asChild>
-                 <button 
-                   className="h-8 w-8 rounded-full overflow-hidden ring-2 ring-transparent hover:ring-blue-500/50 transition-all cursor-pointer"
-                   data-testid="button-user-menu"
+                 <button
+                   id="language-selector"
+                   className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all button-animate bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700"
+                   data-testid="button-language-selector"
                  >
-                   {user.profileImageUrl ? (
-                     <img 
-                       src={user.profileImageUrl} 
-                       alt={user.firstName || "User"} 
-                       className="h-full w-full object-cover"
-                       data-testid="img-user-avatar"
-                     />
-                   ) : (
-                     <div className="h-full w-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white text-xs font-bold">
-                       {user.firstName?.[0] || user.email?.[0] || "U"}
-                     </div>
-                   )}
+                   <Languages className="h-3.5 w-3.5" />
+                   <span className="hidden sm:inline">{languageNames[language]}</span>
+                   <ChevronDown className="h-3 w-3 opacity-50" />
                  </button>
                </PopoverTrigger>
-               <PopoverContent className="w-56 p-2" align="end">
-                 <div className="px-2 py-2 border-b border-slate-100 dark:border-slate-800 mb-2">
-                   <p className="text-sm font-medium text-slate-900 dark:text-white">
-                     {user.username || (user.firstName ? `${user.firstName} ${user.lastName || ""}`.trim() : "User")}
-                   </p>
-                   <p className="text-xs text-slate-500 dark:text-slate-400 truncate">{user.email}</p>
+               <PopoverContent className="w-44 p-1" align="end">
+                 <div className="text-xs font-medium text-slate-500 dark:text-slate-400 px-2 py-1.5">
+                   {t("language.select")}
                  </div>
-                 <button
-                   onClick={() => { setUserMenuOpen(false); setLocation("/account"); }}
-                   className="w-full flex items-center gap-2 px-2 py-2 rounded-md text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors button-animate"
-                   data-testid="menu-account"
-                 >
-                   <UserIcon className="h-4 w-4" />
-                   {t("menu.account")}
-                 </button>
-                 <button
-                   onClick={() => { setUserMenuOpen(false); setLocation("/settings"); }}
-                   className="w-full flex items-center gap-2 px-2 py-2 rounded-md text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors button-animate"
-                   data-testid="menu-settings"
-                 >
-                   <Settings className="h-4 w-4" />
-                   {t("menu.settings")}
-                 </button>
-                 <div className="border-t border-slate-100 dark:border-slate-800 mt-2 pt-2">
+                 {(Object.keys(languageNames) as Language[]).map((lang) => (
                    <button
-                     onClick={() => window.location.href = "/api/logout"}
-                     className="w-full flex items-center gap-2 px-2 py-2 rounded-md text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors button-animate"
-                     data-testid="button-logout"
+                     key={lang}
+                     onClick={() => { setLanguage(lang); setLanguageMenuOpen(false); }}
+                     className={cn(
+                       "w-full flex items-center gap-2 px-2 py-2 rounded-md text-sm transition-colors button-animate",
+                       language === lang 
+                         ? "bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 font-medium"
+                         : "text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
+                     )}
+                     data-testid={`button-language-${lang}`}
                    >
-                     <LogOut className="h-4 w-4" />
-                     {t("button.logout")}
+                     {languageNames[lang]}
+                     {language === lang && <span className="ml-auto text-blue-500">✓</span>}
                    </button>
-                 </div>
+                 ))}
                </PopoverContent>
              </Popover>
-           ) : (
-             <button
-               id="login-btn"
-               onClick={() => window.location.href = "/auth"}
-               className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-gradient-to-r from-green-500 to-emerald-500 text-white shadow-md hover:shadow-lg transition-all button-animate"
-               data-testid="button-login"
-             >
-               <LogIn className="h-3.5 w-3.5" />
-               <span>{t("button.login")}</span>
-             </button>
-           )}
-        </div>
-      </header>
+
+             {/* Auth Section */}
+             {authLoading ? (
+               <div className="h-8 w-8 rounded-full bg-slate-200 dark:bg-slate-700 animate-pulse" />
+             ) : isAuthenticated && user ? (
+               <Popover open={userMenuOpen} onOpenChange={setUserMenuOpen}>
+                 <PopoverTrigger asChild>
+                   <button 
+                     className="h-8 w-8 rounded-full overflow-hidden ring-2 ring-transparent hover:ring-blue-500/50 transition-all cursor-pointer"
+                     data-testid="button-user-menu"
+                   >
+                     {user.profileImageUrl ? (
+                       <img 
+                         src={user.profileImageUrl} 
+                         alt={user.firstName || "User"} 
+                         className="h-full w-full object-cover"
+                         data-testid="img-user-avatar"
+                       />
+                     ) : (
+                       <div className="h-full w-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white text-xs font-bold">
+                         {user.firstName?.[0] || user.email?.[0] || "U"}
+                       </div>
+                     )}
+                   </button>
+                 </PopoverTrigger>
+                 <PopoverContent className="w-56 p-2" align="end">
+                   <div className="px-2 py-2 border-b border-slate-100 dark:border-slate-800 mb-2">
+                     <p className="text-sm font-medium text-slate-900 dark:text-white">
+                       {user.username || (user.firstName ? `${user.firstName} ${user.lastName || ""}`.trim() : "User")}
+                     </p>
+                     <p className="text-xs text-slate-500 dark:text-slate-400 truncate">{user.email}</p>
+                   </div>
+                   <button
+                     onClick={() => { setUserMenuOpen(false); setLocation("/account"); }}
+                     className="w-full flex items-center gap-2 px-2 py-2 rounded-md text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors button-animate"
+                     data-testid="menu-account"
+                   >
+                     <UserIcon className="h-4 w-4" />
+                     {t("menu.account")}
+                   </button>
+                   <button
+                     onClick={() => { setUserMenuOpen(false); setLocation("/settings"); }}
+                     className="w-full flex items-center gap-2 px-2 py-2 rounded-md text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors button-animate"
+                     data-testid="menu-settings"
+                   >
+                     <Settings className="h-4 w-4" />
+                     {t("menu.settings")}
+                   </button>
+                   <div className="border-t border-slate-100 dark:border-slate-800 mt-2 pt-2">
+                     <button
+                       onClick={() => window.location.href = "/api/logout"}
+                       className="w-full flex items-center gap-2 px-2 py-2 rounded-md text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors button-animate"
+                       data-testid="button-logout"
+                     >
+                       <LogOut className="h-4 w-4" />
+                       {t("button.logout")}
+                     </button>
+                   </div>
+                 </PopoverContent>
+               </Popover>
+             ) : (
+               <button
+                 id="login-btn"
+                 onClick={() => window.location.href = "/auth"}
+                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-gradient-to-r from-green-500 to-emerald-500 text-white shadow-md hover:shadow-lg transition-all button-animate"
+                 data-testid="button-login"
+               >
+                 <LogIn className="h-3.5 w-3.5" />
+                 <span>{t("button.login")}</span>
+               </button>
+             )}
+          </div>
+        </header>
+      </div>
 
       {/* Main Chat Area */}
       <main className="flex-1 overflow-hidden flex flex-col relative z-10">
