@@ -656,12 +656,12 @@ export function ChatInterface() {
       />
       
       {/* Header */}
-      <div className="sticky top-0 z-[100] w-full flex justify-center pointer-events-none px-4 pt-4 pb-2">
+      <div className="sticky top-0 z-[100] w-full flex justify-center pointer-events-none px-4 pt-2 pb-1">
         <header 
-          className="w-full max-w-5xl h-14 md:h-16 flex items-center justify-between px-4 md:px-6 rounded-2xl bg-white/30 dark:bg-slate-900/30 backdrop-blur-2xl transition-all duration-300 pointer-events-auto relative overflow-hidden border border-white/20 dark:border-slate-800/30 shadow-[0_8px_32px_0_rgba(0,0,0,0.1)]"
+          className="w-full max-w-5xl h-11 md:h-12 flex items-center justify-between px-4 md:px-5 rounded-xl bg-white/30 dark:bg-slate-900/30 backdrop-blur-2xl transition-all duration-300 pointer-events-auto relative overflow-hidden border border-white/20 dark:border-slate-800/30 shadow-[0_4px_16px_0_rgba(0,0,0,0.08)]"
           style={{ 
-            maskImage: 'linear-gradient(to bottom, black 0%, black 70%, transparent 100%)', 
-            WebkitMaskImage: 'linear-gradient(to bottom, black 0%, black 70%, transparent 100%)' 
+            maskImage: 'linear-gradient(to bottom, black 0%, black 75%, transparent 100%)', 
+            WebkitMaskImage: 'linear-gradient(to bottom, black 0%, black 75%, transparent 100%)' 
           }}
         >
           {/* Glassy reflection */}
@@ -673,7 +673,7 @@ export function ChatInterface() {
               variant="ghost"
               size="icon"
               onClick={toggleTheme}
-              className="h-10 w-10 text-slate-500 hover:text-slate-900 dark:hover:text-white transition-all duration-500 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full relative overflow-hidden group shrink-0"
+              className="h-8 w-8 text-slate-500 hover:text-slate-900 dark:hover:text-white transition-all duration-500 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full relative overflow-hidden group shrink-0"
             >
               <motion.div
                 initial={false}
@@ -684,7 +684,7 @@ export function ChatInterface() {
                 }}
                 className="absolute"
               >
-                <Moon className="h-5 w-5" />
+                <Moon className="h-4 w-4" />
               </motion.div>
               <motion.div
                 initial={false}
@@ -695,7 +695,7 @@ export function ChatInterface() {
                 }}
                 className="absolute"
               >
-                <Sun className="h-5 w-5" />
+                <Sun className="h-4 w-4" />
               </motion.div>
               <motion.div
                 initial={false}
@@ -706,12 +706,11 @@ export function ChatInterface() {
                 }}
                 className="absolute"
               >
-                <SparklesIcon className="h-5 w-5 text-cyan-400" />
+                <SparklesIcon className="h-4 w-4 text-cyan-400" />
               </motion.div>
             </Button>
             <div className="hidden sm:block">
-              <h1 className="text-sm font-semibold text-slate-900 dark:text-white">{t("app.title")}</h1>
-              <p className="text-[10px] text-slate-500 dark:text-slate-400 font-medium">{t("app.subtitle")}</p>
+              <h1 className="text-[11px] font-bold text-slate-900 dark:text-white uppercase tracking-wider">{t("app.title")}</h1>
             </div>
           </div>
           
@@ -722,10 +721,10 @@ export function ChatInterface() {
                variant="ghost"
                size="icon"
                onClick={handleNewSession}
-               className="h-9 w-9 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all button-animate"
+               className="h-7 w-7 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all button-animate"
                title="Start new chat"
              >
-               <Plus className="h-5 w-5" />
+               <Plus className="h-4 w-4" />
              </Button>
 
              {/* Language Selector in Header */}
@@ -733,12 +732,12 @@ export function ChatInterface() {
                <PopoverTrigger asChild>
                  <button
                    id="language-selector"
-                   className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all button-animate bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700"
+                   className="flex items-center gap-1 px-2 py-1 rounded-lg text-[10px] font-bold uppercase tracking-tighter transition-all button-animate bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700"
                    data-testid="button-language-selector"
                  >
-                   <Languages className="h-3.5 w-3.5" />
+                   <Languages className="h-3 w-3" />
                    <span className="hidden sm:inline">{languageNames[language]}</span>
-                   <ChevronDown className="h-3 w-3 opacity-50" />
+                   <ChevronDown className="h-2.5 w-2.5 opacity-50" />
                  </button>
                </PopoverTrigger>
                <PopoverContent className="w-44 p-1" align="end">
@@ -766,12 +765,12 @@ export function ChatInterface() {
 
              {/* Auth Section */}
              {authLoading ? (
-               <div className="h-8 w-8 rounded-full bg-slate-200 dark:bg-slate-700 animate-pulse" />
+               <div className="h-7 w-7 rounded-full bg-slate-200 dark:bg-slate-700 animate-pulse" />
              ) : isAuthenticated && user ? (
                <Popover open={userMenuOpen} onOpenChange={setUserMenuOpen}>
                  <PopoverTrigger asChild>
                    <button 
-                     className="h-8 w-8 rounded-full overflow-hidden ring-2 ring-transparent hover:ring-blue-500/50 transition-all cursor-pointer"
+                     className="h-7 w-7 rounded-full overflow-hidden ring-1 ring-transparent hover:ring-blue-500/50 transition-all cursor-pointer"
                      data-testid="button-user-menu"
                    >
                      {user.profileImageUrl ? (
@@ -782,7 +781,7 @@ export function ChatInterface() {
                          data-testid="img-user-avatar"
                        />
                      ) : (
-                       <div className="h-full w-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white text-xs font-bold">
+                       <div className="h-full w-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white text-[10px] font-bold">
                          {user.firstName?.[0] || user.email?.[0] || "U"}
                        </div>
                      )}
@@ -827,10 +826,10 @@ export function ChatInterface() {
                <button
                  id="login-btn"
                  onClick={() => window.location.href = "/auth"}
-                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-gradient-to-r from-green-500 to-emerald-500 text-white shadow-md hover:shadow-lg transition-all button-animate"
+                 className="flex items-center gap-1 px-2 py-1 rounded-lg text-[10px] font-bold bg-gradient-to-r from-green-500 to-emerald-500 text-white shadow-sm hover:shadow-md transition-all button-animate"
                  data-testid="button-login"
                >
-                 <LogIn className="h-3.5 w-3.5" />
+                 <LogIn className="h-3 w-3" />
                  <span>{t("button.login")}</span>
                </button>
              )}
