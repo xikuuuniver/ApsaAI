@@ -658,15 +658,15 @@ export function ChatInterface() {
       {/* Header */}
       <div className="sticky top-0 z-[100] w-full flex justify-center pointer-events-none">
         <header 
-          className="w-full h-14 md:h-16 flex items-center justify-between px-4 md:px-6 bg-white/20 dark:bg-slate-950/20 backdrop-blur-3xl transition-all duration-300 pointer-events-auto relative overflow-hidden"
+          className="w-full h-14 md:h-16 flex items-center justify-between px-4 md:px-6 bg-white/30 dark:bg-slate-900/30 backdrop-blur-2xl transition-all duration-300 pointer-events-auto relative overflow-hidden"
           style={{ 
-            maskImage: 'linear-gradient(to bottom, black 0%, black 50%, transparent 100%)', 
-            WebkitMaskImage: 'linear-gradient(to bottom, black 0%, black 50%, transparent 100%)' 
+            maskImage: 'linear-gradient(to bottom, black 0%, black 70%, transparent 100%)', 
+            WebkitMaskImage: 'linear-gradient(to bottom, black 0%, black 70%, transparent 100%)' 
           }}
         >
           {/* Glassy reflection and subtle noise/texture */}
-          <div className="absolute inset-0 bg-white/5 dark:bg-white/5 pointer-events-none" />
-          <div className="absolute inset-x-0 top-0 h-px bg-white/30 dark:bg-white/10 pointer-events-none" />
+          <div className="absolute inset-0 bg-white/10 dark:bg-white/5 pointer-events-none" />
+          <div className="absolute inset-x-0 top-0 h-px bg-white/40 dark:bg-white/10 pointer-events-none" />
           
           <div className="flex items-center gap-4 relative z-10">
             <Button
