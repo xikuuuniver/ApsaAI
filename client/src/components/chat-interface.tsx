@@ -762,8 +762,6 @@ export function ChatInterface() {
                  ))}
                </PopoverContent>
              </Popover>
-
-             {/* Auth Section */}
              {authLoading ? (
                <div className="h-7 w-7 rounded-full bg-slate-200 dark:bg-slate-700 animate-pulse" />
              ) : isAuthenticated && user ? (
