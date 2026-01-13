@@ -55,7 +55,7 @@ export function AppSidebar({ isOpen, onClose }: AppSidebarProps) {
     selectConversation, 
     startNewConversation,
     deleteConversation,
-    // togglePin // Removing problematic property
+    isLoading
   } = useConversation();
   const { currentMode, setMode } = useMode();
   const { t } = useLanguage();
@@ -264,7 +264,13 @@ export function AppSidebar({ isOpen, onClose }: AppSidebarProps) {
                 </div>
 
                 {/* All Chats */}
-                {filteredConversations.length === 0 ? (
+                {isLoading ? (
+                  <div className="space-y-2 px-2 animate-pulse">
+                    {[...Array(5)].map((_, i) => (
+                      <div key={i} className="h-10 w-full bg-slate-100 dark:bg-slate-800 rounded-xl" />
+                    ))}
+                  </div>
+                ) : filteredConversations.length === 0 ? (
                   <p className="px-3 py-2 text-xs text-slate-400 dark:text-slate-500 italic">
                     No conversations yet
                   </p>

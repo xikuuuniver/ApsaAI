@@ -61,7 +61,8 @@ export function ChatInterface() {
     currentConversationId, 
     startNewConversation,
     loadConversations,
-    updateConversationTitle
+    updateConversationTitle,
+    isLoading
   } = useConversation();
   const [inputValue, setInputValue] = useState("");
   const { currentMode, setMode } = useMode();
@@ -830,7 +831,18 @@ export function ChatInterface() {
         {/* Messages */}
         <div className="flex-1 overflow-y-auto scroll-smooth">
           <div className="mx-auto max-w-5xl w-full px-4 py-8 md:py-12">
-            {messages.length === 0 ? (
+            {isLoading ? (
+              <div className="space-y-6 animate-pulse">
+                {[...Array(3)].map((_, i) => (
+                  <div key={i} className={`flex ${i % 2 === 0 ? 'justify-start' : 'justify-end'}`}>
+                    <div className={`max-w-[80%] rounded-2xl p-4 ${i % 2 === 0 ? 'bg-slate-100 dark:bg-slate-800' : 'bg-blue-100 dark:bg-blue-900/30'}`}>
+                      <div className="h-4 w-32 bg-slate-200 dark:bg-slate-700 rounded mb-2" />
+                      <div className="h-3 w-48 bg-slate-200 dark:bg-slate-700 rounded" />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : messages.length === 0 ? (
               <motion.div 
                 className="flex flex-col items-center justify-center pt-20 pb-10 text-center"
                 initial={{ opacity: 0, scale: 0.9 }}
