@@ -121,13 +121,13 @@ export default function AccountPage({ isPopup, onClose }: { isPopup?: boolean; o
   };
 
   return (
-    <div className={cn("min-h-full relative", isPopup ? "bg-transparent" : "bg-slate-50 dark:bg-slate-950 min-h-screen")}>
+    <div className={cn("min-h-full relative", isPopup ? "bg-transparent h-full flex flex-col" : "bg-slate-50 dark:bg-slate-950 min-h-screen")}>
       {!isPopup && <ParticlesBackground />}
       {!isPopup && <AppSidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />}
       
       {/* Header */}
       <header className={cn(
-        "sticky top-0 z-20 border-b backdrop-blur-xl",
+        "sticky top-0 z-20 border-b backdrop-blur-xl shrink-0",
         isPopup 
           ? "border-slate-200/50 dark:border-slate-800/50 bg-white/40 dark:bg-slate-900/40" 
           : "border-slate-100 dark:border-slate-800 bg-white/30 dark:bg-slate-950/30"
@@ -148,7 +148,7 @@ export default function AccountPage({ isPopup, onClose }: { isPopup?: boolean; o
       </header>
 
       {/* Content */}
-      <main className={cn("mx-auto max-w-3xl px-4 py-8 space-y-6 relative z-10", isPopup && "py-4")}>
+      <main className={cn("mx-auto w-full max-w-3xl px-4 py-8 space-y-6 relative z-10 flex-1", isPopup ? "py-4 overflow-y-auto" : "")}>
         {/* Profile Card */}
         <Card className="border-slate-200 dark:border-slate-800 shadow-sm">
           {isLoading ? (
