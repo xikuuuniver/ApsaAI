@@ -366,7 +366,10 @@ export function AppSidebar({ isOpen, onClose }: AppSidebarProps) {
         <div className="px-3 mt-auto pt-6 border-t border-slate-100 dark:border-slate-800/50">
           <div className="space-y-1">
             <button
-              onClick={() => handleNavigation("/settings")}
+              onClick={() => {
+                if (onClose) onClose();
+                window.dispatchEvent(new CustomEvent('nexus-open-settings'));
+              }}
               className={cn(
                 "w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all",
                 location === "/settings"
@@ -378,7 +381,10 @@ export function AppSidebar({ isOpen, onClose }: AppSidebarProps) {
               <span className="text-sm font-bold">Settings</span>
             </button>
             <button
-              onClick={() => handleNavigation("/account")}
+              onClick={() => {
+                if (onClose) onClose();
+                window.dispatchEvent(new CustomEvent('nexus-open-account'));
+              }}
               className={cn(
                 "w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all",
                 location === "/account"

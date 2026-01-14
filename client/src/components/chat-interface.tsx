@@ -29,6 +29,7 @@ import {
   Moon
 } from "lucide-react";
 import { Drawer } from "vaul";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { useTheme as useThemeContext } from "@/contexts/theme-context";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -53,6 +54,9 @@ interface Attachment {
 }
 
 import { OnboardingTutorial } from './tutorial/onboarding-tutorial';
+
+import { AccountPage } from "@/pages/account";
+import { SettingsPage } from "@/pages/settings";
 
 export function ChatInterface() {
   const { 
@@ -87,6 +91,8 @@ export function ChatInterface() {
   const { user, isLoading: authLoading, isAuthenticated, logout } = useAuth();
   const [, setLocation] = useLocation();
   const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  const [accountOpen, setAccountOpen] = useState(false);
   const [languageMenuOpen, setLanguageMenuOpen] = useState(false);
   const { language, setLanguage, t } = useLanguage();
   const { theme, toggleTheme } = useThemeContext();
@@ -257,6 +263,19 @@ export function ChatInterface() {
     }
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [showAttachMenu]);
+
+  useEffect(() => {
+    const handleOpenSettings = () => setSettingsOpen(true);
+    const handleOpenAccount = () => setAccountOpen(true);
+    
+    window.addEventListener('nexus-open-settings', handleOpenSettings);
+    window.addEventListener('nexus-open-account', handleOpenAccount);
+    
+    return () => {
+      window.removeEventListener('nexus-open-settings', handleOpenSettings);
+      window.removeEventListener('nexus-open-account', handleOpenAccount);
+    };
+  }, []);
 
   const handleSlidableMenuToggle = () => {
     setSidebarOpen(!sidebarOpen);
@@ -577,6 +596,24 @@ export function ChatInterface() {
       <ParticlesBackground />
       <OnboardingTutorial />
 
+      <Dialog open={settingsOpen} onOpenChange={setSettingsOpen}>
+        <DialogContent className="max-w-4xl h-[80vh] overflow-y-auto p-0 border-none bg-transparent shadow-none">
+          <DialogTitle className="sr-only">Settings</DialogTitle>
+          <div className="bg-white dark:bg-slate-900 rounded-3xl h-full border border-slate-200 dark:border-slate-800 overflow-hidden">
+            <SettingsPage isPopup onClose={() => setSettingsOpen(false)} />
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={accountOpen} onOpenChange={setAccountOpen}>
+        <DialogContent className="max-w-4xl h-[80vh] overflow-y-auto p-0 border-none bg-transparent shadow-none">
+          <DialogTitle className="sr-only">Account</DialogTitle>
+          <div className="bg-white dark:bg-slate-900 rounded-3xl h-full border border-slate-200 dark:border-slate-800 overflow-hidden">
+            <AccountPage isPopup onClose={() => setAccountOpen(false)} />
+          </div>
+        </DialogContent>
+      </Dialog>
+
       <div 
         id="swipe-trigger"
         className="fixed bottom-0 left-0 right-0 h-1.5 z-[60] flex justify-center items-end pb-0 cursor-pointer touch-none md:hidden" 
@@ -785,7 +822,7 @@ export function ChatInterface() {
                    <p className="text-xs text-slate-500 dark:text-slate-400 truncate">{user.email}</p>
                  </div>
                  <button
-                   onClick={() => { setUserMenuOpen(false); setLocation("/account"); }}
+                   onClick={() => { setUserMenuOpen(false); setAccountOpen(true); }}
                    className="w-full flex items-center gap-2 px-2 py-2 rounded-md text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors button-animate"
                    data-testid="menu-account"
                  >
@@ -793,7 +830,7 @@ export function ChatInterface() {
                    {t("menu.account")}
                  </button>
                  <button
-                   onClick={() => { setUserMenuOpen(false); setLocation("/settings"); }}
+                   onClick={() => { setUserMenuOpen(false); setSettingsOpen(true); }}
                    className="w-full flex items-center gap-2 px-2 py-2 rounded-md text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors button-animate"
                    data-testid="menu-settings"
                  >
