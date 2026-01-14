@@ -290,18 +290,20 @@ export function MessageBubble({ message }: MessageBubbleProps) {
           <div className="whitespace-pre-wrap font-sans relative">
             {!isUser && message.content ? (
               <motion.div
-                initial={{ clipPath: "inset(0 0 100% 0)", opacity: 0 }}
-                animate={{ clipPath: "inset(0 0 0% 0)", opacity: 1 }}
-                transition={{ duration: 0.8, ease: "easeOut" }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.5 }}
                 className="relative"
               >
-                {renderContent(displayedContent)}
-                <motion.div 
-                  initial={{ opacity: 1 }}
-                  animate={{ opacity: 0 }}
-                  transition={{ duration: 0.8, ease: "easeOut" }}
-                  className="absolute inset-0 bg-gradient-to-t from-white/50 via-white/20 to-transparent dark:from-slate-900/50 dark:via-slate-900/20 dark:to-transparent pointer-events-none"
-                />
+                <div className="relative overflow-hidden">
+                  <motion.div
+                    initial={{ y: "100%" }}
+                    animate={{ y: "0%" }}
+                    transition={{ duration: 1.2, ease: "easeOut" }}
+                    className="absolute inset-0 bg-gradient-to-t from-white via-white/80 to-transparent dark:from-slate-900 dark:via-slate-900/80 dark:to-transparent z-10 pointer-events-none"
+                  />
+                  {renderContent(displayedContent)}
+                </div>
               </motion.div>
             ) : (
               renderContent(displayedContent)
