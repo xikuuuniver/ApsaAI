@@ -64,7 +64,9 @@ export function MessageBubble({ message }: MessageBubbleProps) {
     let keyIndex = 0;
 
     const renderTextWithAnimation = (text: string, baseKey: number) => {
-      return text.split(' ').map((word, i) => (
+      const words = text.split(' ');
+      const totalWords = words.length;
+      return words.map((word, i) => (
         <motion.span
           key={`${baseKey}-${i}`}
           initial={{ opacity: 0, y: 10 }}
@@ -269,8 +271,14 @@ export function MessageBubble({ message }: MessageBubbleProps) {
         <motion.div 
           layout
           initial={false}
+          animate={{ 
+            transition: { 
+              duration: 3, 
+              ease: "easeInOut" 
+            } 
+          }}
           className={cn(
-            "relative overflow-hidden rounded-2xl px-4 py-3 text-[17px] leading-relaxed transition-all duration-3000 ease-in-out",
+            "relative overflow-hidden rounded-2xl px-4 py-3 text-[17px] leading-relaxed",
             isUser 
               ? "bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-slate-100 shadow-sm ml-auto max-w-[85%] rounded-tr-sm w-fit" 
               : "bg-white/50 dark:bg-slate-900/50 backdrop-blur-md border border-slate-200 dark:border-slate-800 shadow-sm max-w-[85%] rounded-tl-sm w-fit",
