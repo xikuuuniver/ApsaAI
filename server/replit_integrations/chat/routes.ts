@@ -176,7 +176,7 @@ export function registerChatRoutes(app: Express): void {
       }
 
       const response = await openai.chat.completions.create({
-        model: process.env.OPENROUTER_API_KEY ? "arcee-ai/airinity-mini:free" : "gpt-4o-mini",
+        model: process.env.OPENROUTER_API_KEY ? "arcee-ai/arcee-trinity" : "gpt-4o-mini",
         messages: [
           {
             role: "system",
@@ -396,7 +396,7 @@ When the user asks if you can search or have internet access, CONFIRM that yes, 
       // - Media: Use Gemini for multimodal analysis (takes priority)
       // - Web search (no media): Use Perplexity for real-time internet access
       // - Default: Use specified OpenRouter model or GPT-4o-mini
-      let model = process.env.OPENROUTER_API_KEY ? "arcee-ai/airinity-mini:free" : "gpt-4o-mini";
+      let model = process.env.OPENROUTER_API_KEY ? "arcee-ai/arcee-trinity" : "gpt-4o-mini";
       let actualWebSearchEnabled = webSearchEnabled;
       
       console.log("Web search enabled:", webSearchEnabled, "Has media:", hasMedia);
@@ -505,7 +505,7 @@ When the user asks if you can search or have internet access, CONFIRM that yes, 
       let suggestions: string[] = [];
       try {
         const suggestionResponse = await openai.chat.completions.create({
-          model: process.env.OPENROUTER_API_KEY ? "arcee-ai/airinity-mini:free" : "gpt-4o-mini",
+          model: process.env.OPENROUTER_API_KEY ? "arcee-ai/arcee-trinity" : "gpt-4o-mini",
           messages: [
             {
               role: "system",
