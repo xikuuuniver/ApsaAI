@@ -209,6 +209,28 @@ export function MessageBubble({ message }: MessageBubbleProps) {
     setIsSpeaking(false);
   };
 
+  const [displayedContent, setDisplayedContent] = useState(isUser ? message.content : "");
+  const [isTyping, setIsTyping] = useState(false);
+
+  useEffect(() => {
+    if (!isUser && message.content && message.content !== displayedContent) {
+      setIsTyping(true);
+      let i = displayedContent.length;
+      const interval = setInterval(() => {
+        if (i < message.content.length) {
+          setDisplayedContent(message.content.slice(0, i + 1));
+          i++;
+        } else {
+          setIsTyping(false);
+          clearInterval(interval);
+        }
+      }, 15);
+      return () => clearInterval(interval);
+    } else if (isUser) {
+      setDisplayedContent(message.content);
+    }
+  }, [message.content, isUser]);
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20, scale: 0.95 }}
@@ -277,11 +299,11 @@ export function MessageBubble({ message }: MessageBubbleProps) {
           )}
 
           <div className="whitespace-pre-wrap font-sans">
-            {renderContent(message.content)}
+            {renderContent(displayedContent)}
             {message.isThinking && !message.content && (
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-3 relative z-10">
                 <div className="flex flex-col gap-1">
-                  <span className="text-blue-500 dark:text-blue-400 text-sm font-medium animate-pulse">Generating brilliance</span>
+                  <span className="text-blue-500 dark:text-blue-400 text-sm font-medium animate-pulse">Thinking...</span>
                   <div className="flex gap-1.5 items-center">
                     <motion.span 
                       animate={{ scale: [1, 1.2, 1], opacity: [0.5, 1, 0.5] }}
@@ -362,7 +384,7 @@ export function MessageBubble({ message }: MessageBubbleProps) {
                     initial={{ opacity: 0, scale: 0.8, y: 5 }}
                     animate={{ opacity: 1, scale: 1, y: 0 }}
                     exit={{ opacity: 0, scale: 0.8, y: 5 }}
-                    className="absolute bottom-full left-0 mb-1 flex gap-1 p-1.5 bg-white dark:bg-slate-800 rounded-xl shadow-lg border border-slate-200 dark:border-slate-700 z-50"
+                    className="absolute bottom-full right-0 mb-1 flex gap-1 p-1.5 bg-white dark:bg-slate-800 rounded-xl shadow-lg border border-slate-200 dark:border-slate-700 z-50"
                   >
                     {reactions.map(({ emoji }) => (
                       <motion.button
