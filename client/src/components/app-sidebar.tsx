@@ -88,9 +88,9 @@ export function AppSidebar({ isOpen, onClose }: AppSidebarProps) {
   const currentConversation = conversations.find(c => c.id === currentConversationId);
 
   return (
-    <div className="flex flex-col h-full bg-transparent">
+    <div className="flex flex-col h-full bg-transparent overflow-hidden">
       {/* Navigation */}
-      <div className="flex-1 overflow-y-auto py-2 scrollbar-hide">
+      <div className="flex-1 overflow-y-auto py-4 scrollbar-hide pb-20">
         {/* About Section - Collapsible */}
         <div className="px-3 mb-6">
           <button
