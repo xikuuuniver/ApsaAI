@@ -249,8 +249,12 @@ export function MessageBubble({ message }: MessageBubbleProps) {
             isUser 
               ? "bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-slate-100 shadow-sm ml-auto max-w-[85%] rounded-tr-sm w-fit" 
               : "bg-white/50 dark:bg-slate-900/50 backdrop-blur-md border border-slate-200 dark:border-slate-800 shadow-sm max-w-[85%] rounded-tl-sm w-fit",
-            !isUser && message.isThinking && "animate-pulse shadow-[0_0_15px_rgba(59,130,246,0.2)] dark:shadow-[0_0_20px_rgba(59,130,246,0.1)]"
+            !isUser && message.isThinking && "shadow-[0_0_15px_rgba(59,130,246,0.2)] dark:shadow-[0_0_20px_rgba(59,130,246,0.1)]"
           )}
+          style={{ 
+            height: !isUser && message.isThinking && !message.content ? '44px' : 'auto',
+            minHeight: !isUser && message.isThinking && !message.content ? '44px' : '0px'
+          }}
         >
           {/* Thinking Process (AI Only) */}
           {!isUser && message.thinkingProcess && message.thinkingProcess.length > 0 && (
@@ -295,13 +299,23 @@ export function MessageBubble({ message }: MessageBubbleProps) {
                 transition={{ duration: 1 }}
                 className="relative"
               >
-                <div className="relative">
+                <div className="relative overflow-hidden">
+                  <motion.div 
+                    initial={{ y: "-100%" }}
+                    animate={{ y: "100%" }}
+                    transition={{ 
+                      duration: 2.5, 
+                      ease: "easeInOut",
+                      repeat: Infinity 
+                    }}
+                    className="absolute inset-0 bg-gradient-to-b from-transparent via-blue-500/10 to-transparent z-10 pointer-events-none"
+                  />
                   {renderContent(displayedContent)}
                   <motion.div 
                     initial={{ opacity: 1 }}
                     animate={!message.isThinking ? { opacity: 0 } : { opacity: 1 }}
                     transition={{ duration: 1.5, ease: "easeInOut" }}
-                    className="absolute bottom-0 left-0 right-0 h-4 bg-gradient-to-t from-white via-white/80 to-transparent dark:from-slate-900 dark:via-slate-900/80 dark:to-transparent pointer-events-none"
+                    className="absolute bottom-0 left-0 right-0 h-4 bg-gradient-to-t from-white via-white/80 to-transparent dark:from-slate-900 dark:via-slate-900/80 dark:to-transparent pointer-events-none z-20"
                   />
                 </div>
               </motion.div>
