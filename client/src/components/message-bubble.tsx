@@ -70,8 +70,8 @@ export function MessageBubble({ message }: MessageBubbleProps) {
           initial={{ opacity: 0, y: 5 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ 
-            duration: 0.8, 
-            delay: i * 0.05,
+            duration: 0.4, 
+            delay: i * 0.02,
             ease: "easeOut" 
           }}
           className="inline-block mr-1"
@@ -270,7 +270,7 @@ export function MessageBubble({ message }: MessageBubbleProps) {
           layout
           initial={false}
           className={cn(
-            "relative overflow-hidden rounded-2xl px-4 py-3 text-[17px] leading-relaxed transition-all duration-500 ease-in-out",
+            "relative overflow-hidden rounded-2xl px-4 py-3 text-[17px] leading-relaxed transition-all duration-200 ease-out",
             isUser 
               ? "bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-slate-100 shadow-sm ml-auto max-w-[85%] rounded-tr-sm w-fit" 
               : "bg-white/50 dark:bg-slate-900/50 backdrop-blur-md border border-slate-200 dark:border-slate-800 shadow-sm max-w-[85%] rounded-tl-sm w-fit",
