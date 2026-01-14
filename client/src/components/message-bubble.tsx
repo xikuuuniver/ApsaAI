@@ -292,15 +292,18 @@ export function MessageBubble({ message }: MessageBubbleProps) {
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ duration: 0.5 }}
+                transition={{ duration: 1.5 }}
                 className="relative"
               >
                 <div className="relative overflow-hidden">
                   <motion.div
                     initial={{ y: "100%" }}
-                    animate={{ y: "0%" }}
-                    transition={{ duration: 1.2, ease: "easeOut" }}
-                    className="absolute inset-0 bg-gradient-to-t from-white via-white/80 to-transparent dark:from-slate-900 dark:via-slate-900/80 dark:to-transparent z-10 pointer-events-none"
+                    animate={message.isThinking ? { y: "20%" } : { y: "0%", opacity: 0 }}
+                    transition={{ 
+                      y: { duration: 3.5, ease: [0.22, 1, 0.36, 1] },
+                      opacity: { delay: 3.0, duration: 1.2 }
+                    }}
+                    className="absolute inset-0 bg-gradient-to-t from-white via-white/95 to-transparent dark:from-slate-900 dark:via-slate-900/95 dark:to-transparent z-10 pointer-events-none"
                   />
                   {renderContent(displayedContent)}
                 </div>
