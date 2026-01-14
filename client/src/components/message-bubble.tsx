@@ -63,11 +63,31 @@ export function MessageBubble({ message }: MessageBubbleProps) {
     let match;
     let keyIndex = 0;
 
+    const renderTextWithAnimation = (text: string, baseKey: number) => {
+      return text.split(' ').map((word, i) => (
+        <motion.span
+          key={`${baseKey}-${i}`}
+          initial={{ opacity: 0, y: 5 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ 
+            duration: 0.8, 
+            delay: i * 0.05,
+            ease: "easeOut" 
+          }}
+          className="inline-block mr-1"
+        >
+          {word}
+        </motion.span>
+      ));
+    };
+
     while ((match = codeBlockRegex.exec(content)) !== null) {
       // Add text before code block
       if (match.index > lastIndex) {
         parts.push(
-          <span key={keyIndex++}>{content.slice(lastIndex, match.index)}</span>
+          <span key={keyIndex++}>
+            {renderTextWithAnimation(content.slice(lastIndex, match.index), keyIndex)}
+          </span>
         );
       }
       
@@ -103,7 +123,11 @@ export function MessageBubble({ message }: MessageBubbleProps) {
     
     // Add remaining text
     if (lastIndex < content.length) {
-      parts.push(<span key={keyIndex++}>{content.slice(lastIndex)}</span>);
+      parts.push(
+        <span key={keyIndex++}>
+          {renderTextWithAnimation(content.slice(lastIndex), keyIndex)}
+        </span>
+      );
     }
     
     return parts.length > 0 ? parts : content;
@@ -292,39 +316,12 @@ export function MessageBubble({ message }: MessageBubbleProps) {
 
           <div className="whitespace-pre-wrap font-sans relative">
             {!isUser && message.content ? (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={!message.isThinking ? { opacity: 1 } : { opacity: 1 }}
-                transition={{ duration: 1 }}
-                className="relative"
-              >
-                <div className="relative overflow-hidden">
-                  <AnimatePresence>
-                    {message.isThinking && (
-                      <motion.div 
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        className="absolute inset-0 bg-gradient-to-b from-transparent via-white/40 to-white dark:via-slate-900/40 dark:to-slate-900 z-20 pointer-events-none h-full"
-                        style={{ maskImage: 'linear-gradient(to bottom, black 40%, transparent 100%)', WebkitMaskImage: 'linear-gradient(to bottom, black 40%, transparent 100%)' }}
-                      />
-                    )}
-                  </AnimatePresence>
-                  
-                  <motion.div 
-                    initial={{ y: "-100%" }}
-                    animate={{ y: "100%" }}
-                    transition={{ 
-                      duration: 2.5, 
-                      ease: "easeInOut",
-                      repeat: Infinity 
-                    }}
-                    className="absolute inset-0 bg-gradient-to-b from-transparent via-blue-500/10 to-transparent z-10 pointer-events-none"
-                  />
-                  {renderContent(displayedContent)}
-                </div>
-              </motion.div>
+              <div className="relative">
+                {renderContent(displayedContent)}
+              </div>
             ) : (
+              renderContent(displayedContent)
+            )}
               renderContent(displayedContent)
             )}
             {message.isThinking && !message.content && (
@@ -356,10 +353,9 @@ export function MessageBubble({ message }: MessageBubbleProps) {
           {/* Subtle gradient sweep effect for generating state */}
           {!isUser && message.isThinking && (
             <motion.div
-              initial={{ x: "-100%" }}
-              animate={{ x: "200%" }}
-              transition={{ repeat: Infinity, duration: 1.5, ease: "linear" }}
-              className="absolute inset-0 bg-gradient-to-r from-transparent via-blue-500/5 to-transparent skew-x-12"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="absolute inset-0 bg-slate-200/5 dark:bg-slate-700/5"
             />
           )}
         </motion.div>
