@@ -391,36 +391,24 @@ When the user asks if you can search or have internet access, CONFIRM that yes, 
       res.setHeader("Cache-Control", "no-cache");
       res.setHeader("Connection", "keep-alive");
 
-      // Select model based on context:
-      // Priority: Media attachments > Web search > Default
-      // - Media: Use Gemini for multimodal analysis (takes priority)
-      // - Web search (no media): Use Perplexity for real-time internet access
-      // - Default: Use specified OpenRouter model or GPT-4o-mini
+      // Select model based on context
       let model = process.env.OPENROUTER_API_KEY ? "arcee-ai/trinity-mini:free" : "gpt-4o-mini";
       let actualWebSearchEnabled = webSearchEnabled;
       
-      console.log("Web search enabled:", webSearchEnabled, "Has media:", hasMedia);
-      
       if (hasMedia) {
-        // Media takes priority - use multimodal model
-        model = "gpt-4o"; // Use gpt-4o for multimodal
-        actualWebSearchEnabled = false; // Disable web search when media is attached
+        model = "gpt-4o"; 
+        actualWebSearchEnabled = false;
       } else if (webSearchEnabled) {
-        model = "gpt-4o"; // Fallback if no specific search model is available via AI Integrations
+        model = "gpt-4o";
       }
       
-      console.log("Selected model:", model);
       let fullResponse = "";
-      let useMultimodal = hasMedia;
 
-      // Send search status for web search
       if (webSearchEnabled && !hasMedia) {
         const searchQuery = typeof content === 'string' ? content.slice(0, 100) : "multimodal content";
-        res.write(`data: ${JSON.stringify({ searchStatus: `🔍 Searching: "${searchQuery}${typeof content === 'string' && content.length > 100 ? '...' : ''}"` })}\n\n`);
-        
-        // Simulate search phases for better UX
+        res.write(`data: ${JSON.stringify({ searchStatus: "🔍 Searching: " + searchQuery })}\n\n`);
         setTimeout(() => {
-          res.write(`data: ${JSON.stringify({ searchStatus: "📡 Fetching latest information from the web..." })}\n\n`);
+          res.write(`data: ${JSON.stringify({ searchStatus: "📡 Fetching latest information..." })}\n\n`);
         }, 500);
       }
 
@@ -428,7 +416,6 @@ When the user asks if you can search or have internet access, CONFIRM that yes, 
         throw new Error("AI Chat feature is not configured");
       }
 
-      // Try multimodal first, fall back to text if it fails
       try {
         const stream = await openai.chat.completions.create({
           model,
@@ -437,43 +424,34 @@ When the user asks if you can search or have internet access, CONFIRM that yes, 
           max_completion_tokens: 2048,
         });
 
-        // Clear search status when response starts
         let firstChunk = true;
         for await (const chunk of stream) {
           const chunkContent = chunk.choices[0]?.delta?.content || "";
           if (chunkContent) {
             if (firstChunk && webSearchEnabled && !hasMedia) {
-              res.write(`data: ${JSON.stringify({ searchStatus: "✅ Found results! Generating response..." })}\n\n`);
+              res.write(`data: ${JSON.stringify({ searchStatus: "✅ Found results!" })}\n\n`);
               firstChunk = false;
             }
             fullResponse += chunkContent;
             res.write(`data: ${JSON.stringify({ content: chunkContent })}\n\n`);
           }
         }
-      } catch (multimodalError: any) {
-        // If multimodal fails (e.g., insufficient balance), fall back to text-only
-        if (hasMedia && multimodalError?.status === 402) {
-          console.log("Multimodal failed due to balance, falling back to text-only");
-          
-          // Add a note about the media
-          const mediaNote = attachments.map((a: any) => 
-            `[User attached: ${a.name} (${a.type})]`
-          ).join('\n');
-          
-          const fallbackMessages = [
-            { role: "system", content: systemPrompt },
-            ...messages.slice(0, -1).map((m) => ({
-              role: m.role,
-              content: m.content,
-            })),
-            { 
+      } catch (primaryError: any) {
+        console.error("Primary AI model failed, attempting fallback:", primaryError.message);
+        
+        const fallbackModel = "gpt-4o-mini";
+        try {
+          const fallbackMessages = [...chatMessages];
+          if (hasMedia) {
+            const mediaNote = attachments.map((a: any) => `[User attached: ${a.name} (${a.type})]`).join('\n');
+            fallbackMessages.push({ 
               role: "user", 
-              content: `${mediaNote}\n\nNote: I attached media files but video/image analysis requires additional credits. Please respond to my message: ${typeof content === 'string' ? content : 'multimodal request'}` 
-            },
-          ];
+              content: `${mediaNote}\n\nNote: Multimodal requires credits. Using text-based fallback.` 
+            });
+          }
 
           const fallbackStream = await openai.chat.completions.create({
-            model: "gpt-4o-mini",
+            model: fallbackModel,
             messages: fallbackMessages as any,
             stream: true,
             max_completion_tokens: 2048,
@@ -486,52 +464,41 @@ When the user asks if you can search or have internet access, CONFIRM that yes, 
               res.write(`data: ${JSON.stringify({ content: chunkContent })}\n\n`);
             }
           }
-        } else {
-          throw multimodalError;
+        } catch (fallbackError: any) {
+          throw fallbackError;
         }
       }
 
-      // Save assistant message
       await chatStorage.createMessage(conversationId, "assistant", fullResponse);
 
-      if (!openai) {
-        console.warn("AI suggestions skipped: OpenAI not configured");
-        res.write(`data: ${JSON.stringify({ done: true, suggestions: [] })}\n\n`);
-        res.end();
-        return;
-      }
-
-      // Generate contextual suggestions using AI
       let suggestions: string[] = [];
       try {
         const suggestionResponse = await openai.chat.completions.create({
-          model: process.env.OPENROUTER_API_KEY ? "arcee-ai/trinity-mini:free" : "gpt-4o-mini",
+          model: "gpt-4o-mini",
           messages: [
             {
               role: "system",
-              content: "You are a helpful assistant. Based on the user's previous message and your response, generate 5 relevant, contextual, and interesting follow-up questions or suggestions the user might want to ask next. Keep them short (max 8 words each). Return a JSON object with a 'suggestions' key containing an array of strings. Example: {\"suggestions\": [\"What else can you do?\", \"Tell me more\"]}"
+              content: "Generate 5 short follow-up suggestions (max 8 words each) as a JSON object: {\"suggestions\": []}"
             },
             {
               role: "user",
-              content: `User said: ${content}\n\nAI responded: ${fullResponse}`
+              content: `User: ${content}\nAI: ${fullResponse}`
             }
           ],
           response_format: { type: "json_object" }
         });
         
         const contentStr = suggestionResponse.choices[0]?.message?.content || '{"suggestions": []}';
-        console.log("AI Suggestion Raw Content:", contentStr);
         const result = JSON.parse(contentStr);
-        suggestions = Array.isArray(result.suggestions) ? result.suggestions : [];
+        suggestions = result.suggestions || [];
       } catch (err) {
-        console.error("Error generating AI suggestions:", err);
+        console.error("Error generating suggestions:", err);
       }
 
       res.write(`data: ${JSON.stringify({ done: true, suggestions })}\n\n`);
       res.end();
     } catch (error) {
       console.error("Error sending message:", error);
-      // Check if headers already sent (SSE streaming started)
       if (res.headersSent) {
         res.write(`data: ${JSON.stringify({ error: "Failed to send message" })}\n\n`);
         res.end();
