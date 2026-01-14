@@ -293,6 +293,7 @@ Be intellectually honest. Label speculation. Use clear, modern language without 
       };
 
       let systemPrompt = mode && systemPrompts[mode] ? systemPrompts[mode] : systemPrompts.DEFAULT;
+      systemPrompt += "\n\nCRITICAL: Always ensure proper spacing between words. Never merge words like 'wish I' into 'wishI'. Use natural spacing and grammar in all responses.";
       
       // Fetch and inject training instructions
       try {
