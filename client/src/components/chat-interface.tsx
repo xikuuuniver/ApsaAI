@@ -55,8 +55,8 @@ interface Attachment {
 
 import { OnboardingTutorial } from './tutorial/onboarding-tutorial';
 
-import { AccountPage } from "@/pages/account";
-import { SettingsPage } from "@/pages/settings";
+import AccountPage from "@/pages/account";
+import SettingsPage from "@/pages/settings";
 
 export function ChatInterface() {
   const { 

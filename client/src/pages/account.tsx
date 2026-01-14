@@ -14,7 +14,9 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useLanguage } from "@/contexts/language-context";
 import { useUpload } from "@/hooks/use-upload";
 
-export default function AccountPage() {
+import { cn } from "@/lib/utils";
+
+export default function AccountPage({ isPopup, onClose }: { isPopup?: boolean; onClose?: () => void }) {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -26,6 +28,14 @@ export default function AccountPage() {
   const [isSaving, setIsSaving] = useState(false);
   const [isUploadingImage, setIsUploadingImage] = useState(false);
   const { t } = useLanguage();
+
+  const handleBack = () => {
+    if (isPopup && onClose) {
+      onClose();
+    } else {
+      setLocation("/");
+    }
+  };
   
   const { uploadFile } = useUpload({
     onSuccess: async (response) => {
@@ -111,18 +121,23 @@ export default function AccountPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 relative">
-      <ParticlesBackground />
-      <AppSidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+    <div className={cn("min-h-screen relative", isPopup ? "bg-white dark:bg-slate-900" : "bg-slate-50 dark:bg-slate-950")}>
+      {!isPopup && <ParticlesBackground />}
+      {!isPopup && <AppSidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />}
       
       {/* Header */}
-      <header className="sticky top-0 z-20 border-b border-slate-100 dark:border-slate-800 bg-white/30 dark:bg-slate-950/30 backdrop-blur-md">
+      <header className={cn(
+        "sticky top-0 z-20 border-b backdrop-blur-md",
+        isPopup 
+          ? "border-slate-100 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80" 
+          : "border-slate-100 dark:border-slate-800 bg-white/30 dark:bg-slate-950/30"
+      )}>
         <div className="flex items-center gap-2 px-6 py-2">
-          <HamburgerButton onClick={() => setSidebarOpen(true)} />
+          {!isPopup && <HamburgerButton onClick={() => setSidebarOpen(true)} />}
           <Button
             variant="ghost"
             size="icon"
-            onClick={() => setLocation("/")}
+            onClick={handleBack}
             className="h-6 w-6 text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-transparent"
             data-testid="button-back"
           >
@@ -133,7 +148,7 @@ export default function AccountPage() {
       </header>
 
       {/* Content */}
-      <main className="mx-auto max-w-3xl px-4 py-8 space-y-6 relative z-10">
+      <main className={cn("mx-auto max-w-3xl px-4 py-8 space-y-6 relative z-10", isPopup && "py-4")}>
         {/* Profile Card */}
         <Card className="border-slate-200 dark:border-slate-800 shadow-sm">
           {isLoading ? (
