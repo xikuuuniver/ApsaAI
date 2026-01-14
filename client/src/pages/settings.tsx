@@ -32,15 +32,15 @@ export default function SettingsPage({ isPopup, onClose }: { isPopup?: boolean; 
   };
 
   return (
-    <div className={cn("min-h-screen relative", isPopup ? "bg-white dark:bg-slate-900" : "bg-slate-50 dark:bg-slate-950")}>
+    <div className={cn("min-h-full relative", isPopup ? "bg-transparent" : "bg-slate-50 dark:bg-slate-950 min-h-screen")}>
       {!isPopup && <ParticlesBackground />}
       {!isPopup && <AppSidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />}
       
       {/* Header */}
       <header className={cn(
-        "sticky top-0 z-20 border-b backdrop-blur-md",
+        "sticky top-0 z-20 border-b backdrop-blur-xl",
         isPopup 
-          ? "border-slate-100 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80" 
+          ? "border-slate-200/50 dark:border-slate-800/50 bg-white/40 dark:bg-slate-900/40" 
           : "border-slate-100 dark:border-slate-800 bg-white/30 dark:bg-slate-950/30"
       )}>
         <div className="flex items-center gap-2 px-6 py-2">

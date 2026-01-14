@@ -597,18 +597,18 @@ export function ChatInterface() {
       <OnboardingTutorial />
 
       <Dialog open={settingsOpen} onOpenChange={setSettingsOpen}>
-        <DialogContent className="max-w-4xl h-[80vh] overflow-y-auto p-0 border-none bg-transparent shadow-none">
+        <DialogContent className="max-w-[95vw] md:max-w-4xl max-h-[90vh] overflow-hidden p-0 border-none bg-slate-50/50 dark:bg-slate-950/50 backdrop-blur-2xl shadow-2xl rounded-[2rem]">
           <DialogTitle className="sr-only">Settings</DialogTitle>
-          <div className="bg-white dark:bg-slate-900 rounded-3xl h-full border border-slate-200 dark:border-slate-800 overflow-hidden">
+          <div className="h-full w-full overflow-y-auto custom-scrollbar">
             <SettingsPage isPopup onClose={() => setSettingsOpen(false)} />
           </div>
         </DialogContent>
       </Dialog>
 
       <Dialog open={accountOpen} onOpenChange={setAccountOpen}>
-        <DialogContent className="max-w-4xl h-[80vh] overflow-y-auto p-0 border-none bg-transparent shadow-none">
+        <DialogContent className="max-w-[95vw] md:max-w-4xl max-h-[90vh] overflow-hidden p-0 border-none bg-slate-50/50 dark:bg-slate-950/50 backdrop-blur-2xl shadow-2xl rounded-[2rem]">
           <DialogTitle className="sr-only">Account</DialogTitle>
-          <div className="bg-white dark:bg-slate-900 rounded-3xl h-full border border-slate-200 dark:border-slate-800 overflow-hidden">
+          <div className="h-full w-full overflow-y-auto custom-scrollbar">
             <AccountPage isPopup onClose={() => setAccountOpen(false)} />
           </div>
         </DialogContent>
