@@ -6,7 +6,10 @@ import { ObjectStorageService } from "../object_storage/objectStorage";
 const openai = process.env.AI_INTEGRATIONS_OPENAI_API_KEY ? new OpenAI({
   apiKey: process.env.AI_INTEGRATIONS_OPENAI_API_KEY,
   baseURL: process.env.AI_INTEGRATIONS_OPENAI_BASE_URL,
-}) : null;
+}) : (process.env.OPENROUTER_API_KEY ? new OpenAI({
+  apiKey: process.env.OPENROUTER_API_KEY,
+  baseURL: "https://openrouter.ai/api/v1",
+}) : null);
 
 const TRAINING_PASSWORD = process.env.TRAINING_PASSWORD;
 
@@ -173,7 +176,7 @@ export function registerChatRoutes(app: Express): void {
       }
 
       const response = await openai.chat.completions.create({
-        model: "gpt-4o-mini",
+        model: process.env.OPENROUTER_API_KEY ? "arcee-ai/trinity-mini:free" : "gpt-4o-mini",
         messages: [
           {
             role: "system",
@@ -391,8 +394,8 @@ When the user asks if you can search or have internet access, CONFIRM that yes, 
       // Priority: Media attachments > Web search > Default
       // - Media: Use Gemini for multimodal analysis (takes priority)
       // - Web search (no media): Use Perplexity for real-time internet access
-      // - Default: Use GPT-4o-mini for fast responses
-      let model = "gpt-4o-mini";
+      // - Default: Use specified OpenRouter model or GPT-4o-mini
+      let model = process.env.OPENROUTER_API_KEY ? "arcee-ai/trinity-mini:free" : "gpt-4o-mini";
       let actualWebSearchEnabled = webSearchEnabled;
       
       console.log("Web search enabled:", webSearchEnabled, "Has media:", hasMedia);
@@ -501,7 +504,7 @@ When the user asks if you can search or have internet access, CONFIRM that yes, 
       let suggestions: string[] = [];
       try {
         const suggestionResponse = await openai.chat.completions.create({
-          model: "gpt-4o-mini",
+          model: process.env.OPENROUTER_API_KEY ? "arcee-ai/trinity-mini:free" : "gpt-4o-mini",
           messages: [
             {
               role: "system",
