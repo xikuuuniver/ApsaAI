@@ -844,8 +844,8 @@ export function ChatInterface() {
       {/* Main Chat Area */}
       <main className="flex-1 overflow-hidden flex flex-col relative z-10">
         {/* Messages */}
-        <div className="flex-1 overflow-y-auto scroll-smooth">
-          <div className="mx-auto max-w-5xl w-full px-4 py-8 md:py-12">
+        <div className="flex-1 overflow-y-auto scroll-smooth custom-scrollbar">
+          <div className="mx-auto max-w-5xl w-full px-4 pt-4 pb-20 md:pt-8">
             {isLoading ? (
               <div className="space-y-6 animate-pulse">
                 {[...Array(3)].map((_, i) => (
@@ -940,7 +940,7 @@ export function ChatInterface() {
         </div>
 
         {/* Input & Controls Area - Modern Slim Design */}
-        <div className="w-full px-4 pb-12 z-20">
+        <div className="w-full px-4 pb-4 z-20">
           <div className="mx-auto max-w-4xl space-y-4">
             {/* Follow-up Suggestions - Slidable Horizontal List */}
             <AnimatePresence>
