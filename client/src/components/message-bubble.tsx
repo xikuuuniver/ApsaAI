@@ -214,18 +214,7 @@ export function MessageBubble({ message }: MessageBubbleProps) {
 
   useEffect(() => {
     if (!isUser && message.content && message.content !== displayedContent) {
-      setIsTyping(true);
-      let i = displayedContent.length;
-      const interval = setInterval(() => {
-        if (i < message.content.length) {
-          setDisplayedContent(message.content.slice(0, i + 1));
-          i++;
-        } else {
-          setIsTyping(false);
-          clearInterval(interval);
-        }
-      }, 15);
-      return () => clearInterval(interval);
+      setDisplayedContent(message.content);
     } else if (isUser) {
       setDisplayedContent(message.content);
     }
@@ -298,8 +287,25 @@ export function MessageBubble({ message }: MessageBubbleProps) {
             </motion.div>
           )}
 
-          <div className="whitespace-pre-wrap font-sans">
-            {renderContent(displayedContent)}
+          <div className="whitespace-pre-wrap font-sans relative">
+            {!isUser && message.content ? (
+              <motion.div
+                initial={{ clipPath: "inset(0 0 100% 0)", opacity: 0 }}
+                animate={{ clipPath: "inset(0 0 0% 0)", opacity: 1 }}
+                transition={{ duration: 0.8, ease: "easeOut" }}
+                className="relative"
+              >
+                {renderContent(displayedContent)}
+                <motion.div 
+                  initial={{ opacity: 1 }}
+                  animate={{ opacity: 0 }}
+                  transition={{ duration: 0.8, ease: "easeOut" }}
+                  className="absolute inset-0 bg-gradient-to-t from-white/50 via-white/20 to-transparent dark:from-slate-900/50 dark:via-slate-900/20 dark:to-transparent pointer-events-none"
+                />
+              </motion.div>
+            ) : (
+              renderContent(displayedContent)
+            )}
             {message.isThinking && !message.content && (
               <div className="flex items-center gap-3 relative z-10">
                 <div className="flex flex-col gap-1">
