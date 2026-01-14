@@ -96,8 +96,11 @@ export function ConversationProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (!isLoading && currentConversationId === null && conversations.length > 0) {
       selectConversation(conversations[0].id);
+    } else if (!isLoading && currentConversationId === null && conversations.length === 0) {
+      // Ensure we have a conversation to send messages to
+      startNewConversation();
     }
-  }, [conversations, isLoading, currentConversationId, selectConversation]);
+  }, [conversations, isLoading, currentConversationId, selectConversation, startNewConversation]);
 
   return (
     <ConversationContext.Provider value={{
