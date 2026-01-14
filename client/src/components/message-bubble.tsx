@@ -322,8 +322,6 @@ export function MessageBubble({ message }: MessageBubbleProps) {
             ) : (
               renderContent(displayedContent)
             )}
-              renderContent(displayedContent)
-            )}
             {message.isThinking && !message.content && (
               <div className="flex items-center gap-3 relative z-10">
                 <div className="flex flex-col gap-1">
