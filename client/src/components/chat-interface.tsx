@@ -592,7 +592,7 @@ export function ChatInterface() {
   ];
 
   return (
-    <div className="flex h-screen w-full flex-col bg-slate-50/30 dark:bg-slate-950 relative">
+    <div className="flex h-screen w-full flex-col bg-transparent relative">
       <ParticlesBackground />
       <OnboardingTutorial />
 
