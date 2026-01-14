@@ -148,7 +148,7 @@ export default function AccountPage({ isPopup, onClose }: { isPopup?: boolean; o
       </header>
 
       {/* Content */}
-      <main className={cn("mx-auto w-full max-w-3xl px-4 py-8 space-y-6 relative z-10 flex-1", isPopup ? "py-4 overflow-y-auto" : "")}>
+      <main className={cn("mx-auto w-full max-w-3xl px-4 py-8 space-y-6 relative z-10", !isPopup && "flex-1")}>
         {/* Profile Card */}
         <Card className="border-slate-200 dark:border-slate-800 shadow-sm">
           {isLoading ? (
