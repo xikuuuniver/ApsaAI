@@ -614,40 +614,17 @@ export function ChatInterface() {
         </DialogContent>
       </Dialog>
 
-      <div 
-        id="swipe-trigger"
-        className="fixed bottom-0 left-0 right-0 h-1.5 z-[60] flex justify-center items-end pb-0 cursor-pointer touch-none md:hidden" 
-        onPointerDown={(e) => {
-          const startY = e.clientY;
-          const handlePointerUp = (upEvent: PointerEvent) => {
-            const endY = upEvent.clientY;
-            if (startY - endY > 20) { // More sensitive threshold
-              setSidebarOpen(true);
-            }
-            window.removeEventListener('pointerup', handlePointerUp);
-          };
-          window.addEventListener('pointerup', handlePointerUp);
-        }}
-        onClick={() => setSidebarOpen(true)}
-      >
-        <motion.div 
-          animate={{ opacity: [0.1, 0.3, 0.1] }}
-          transition={{ repeat: Infinity, duration: 4 }}
-          className="w-12 h-0.5 rounded-full bg-slate-300 dark:bg-slate-700" 
-        />
-      </div>
-      
-    <Drawer.Root open={sidebarOpen} onOpenChange={setSidebarOpen} direction="bottom">
-      <Drawer.Portal>
-        <Drawer.Overlay className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm" />
-        <Drawer.Content className="fixed bottom-0 left-0 right-0 z-50 mt-24 flex h-[85vh] flex-col rounded-t-[2rem] bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border-t border-slate-200/50 dark:border-slate-800/50 shadow-2xl outline-none">
-          <div className="mx-auto mt-4 h-1.5 w-12 shrink-0 rounded-full bg-slate-300 dark:bg-slate-700" />
-          <div className="flex-1 overflow-y-auto min-h-0">
-            <AppSidebar isOpen={true} onClose={() => setSidebarOpen(false)} />
-          </div>
-        </Drawer.Content>
-      </Drawer.Portal>
-    </Drawer.Root>
+      <Drawer.Root open={sidebarOpen} onOpenChange={setSidebarOpen} direction="bottom">
+        <Drawer.Portal>
+          <Drawer.Overlay className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm" />
+          <Drawer.Content className="fixed bottom-0 left-0 right-0 z-50 mt-24 flex h-[85vh] flex-col rounded-t-[2rem] bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border-t border-slate-200/50 dark:border-slate-800/50 shadow-2xl outline-none">
+            <div className="mx-auto mt-4 h-1.5 w-12 shrink-0 rounded-full bg-slate-300 dark:bg-slate-700" />
+            <div className="flex-1 overflow-y-auto min-h-0">
+              <AppSidebar isOpen={true} onClose={() => setSidebarOpen(false)} />
+            </div>
+          </Drawer.Content>
+        </Drawer.Portal>
+      </Drawer.Root>
 
       {/* Confetti Celebration */}
       <AnimatePresence>
@@ -696,6 +673,7 @@ export function ChatInterface() {
       {/* Header */}
       <header className="sticky top-0 z-[100] flex items-center justify-between border-b border-white/10 bg-white/10 dark:bg-slate-950/10 px-4 md:px-6 py-3 backdrop-blur-3xl transition-all duration-300">
         <div className="flex items-center gap-2">
+          <HamburgerButton onClick={() => setSidebarOpen(true)} />
           <Button
             variant="ghost"
             size="icon"

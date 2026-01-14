@@ -41,9 +41,13 @@ export function HamburgerButton({ onClick }: { onClick: () => void }) {
       variant="ghost"
       size="icon"
       onClick={onClick}
-      className="h-9 w-9 text-slate-500 hover:text-slate-900 dark:hover:text-white transition-all duration-300 hover:scale-110 active:scale-95"
+      className="h-10 w-10 text-slate-500 hover:text-slate-900 dark:hover:text-white transition-all duration-300 hover:scale-110 active:scale-95 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full"
     >
-      <Menu className="h-5 w-5" />
+      <div className="flex flex-col gap-1 items-center justify-center">
+        <span className="w-5 h-0.5 bg-current rounded-full transition-all group-hover:w-6" />
+        <span className="w-5 h-0.5 bg-current rounded-full transition-all" />
+        <span className="w-5 h-0.5 bg-current rounded-full transition-all group-hover:w-4" />
+      </div>
     </Button>
   );
 }
