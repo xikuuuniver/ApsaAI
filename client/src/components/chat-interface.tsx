@@ -671,8 +671,8 @@ export function ChatInterface() {
       />
       
       {/* Header */}
-      <header className="sticky top-0 z-[100] flex items-center justify-between border-none bg-gradient-to-b from-white via-white/90 to-transparent dark:from-slate-950 dark:via-slate-950/90 dark:to-transparent px-4 md:px-6 py-3 transition-all duration-300">
-        <div className="flex items-center gap-2">
+      <header className="sticky top-0 z-[100] flex items-center justify-between border-none bg-gradient-to-b from-white via-white/90 to-transparent dark:from-slate-950 dark:via-slate-950/90 dark:to-transparent px-4 md:px-6 py-3 transition-all duration-300 pointer-events-none">
+        <div className="flex items-center gap-2 pointer-events-auto">
           <HamburgerButton onClick={() => setSidebarOpen(true)} />
           <Button
             variant="ghost"
@@ -719,7 +719,7 @@ export function ChatInterface() {
             <p className="text-[10px] text-slate-500 dark:text-slate-400 font-medium">{t("app.subtitle")}</p>
           </div>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 pointer-events-auto">
            {/* New Chat Button */}
            <Button
              id="new-chat-btn"
