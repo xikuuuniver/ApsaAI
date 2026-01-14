@@ -268,6 +268,7 @@ export function MessageBubble({ message }: MessageBubbleProps) {
         {/* Message Bubble - Enhanced with glassmorphism and animations */}
         <motion.div 
           layout
+          initial={false}
           className={cn(
             "relative overflow-hidden rounded-2xl px-4 py-3 text-[17px] leading-relaxed transition-all duration-500 ease-in-out",
             isUser 
@@ -276,7 +277,7 @@ export function MessageBubble({ message }: MessageBubbleProps) {
             !isUser && message.isThinking && "shadow-[0_0_15px_rgba(59,130,246,0.2)] dark:shadow-[0_0_20px_rgba(59,130,246,0.1)]"
           )}
           style={{ 
-            minHeight: !isUser && message.isThinking && !message.content ? '44px' : '0px'
+            minHeight: '0px'
           }}
         >
           {/* Thinking Process (AI Only) */}
