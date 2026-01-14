@@ -597,7 +597,7 @@ export function ChatInterface() {
       <OnboardingTutorial />
 
       <Dialog open={settingsOpen} onOpenChange={setSettingsOpen}>
-        <DialogContent className="max-w-[95vw] md:max-w-4xl h-[90vh] md:h-[80vh] overflow-hidden p-0 border-none bg-slate-50/50 dark:bg-slate-950/50 backdrop-blur-2xl shadow-2xl rounded-[2rem] flex flex-col">
+        <DialogContent className="max-w-[95vw] md:max-w-4xl h-[90vh] md:h-[80vh] overflow-hidden p-0 border-none bg-slate-50 dark:bg-slate-950 shadow-2xl rounded-[2rem] flex flex-col z-[100]">
           <DialogTitle className="sr-only">Settings</DialogTitle>
           <div className="flex-1 overflow-y-auto custom-scrollbar min-h-0">
             <SettingsPage isPopup onClose={() => setSettingsOpen(false)} />
@@ -606,7 +606,7 @@ export function ChatInterface() {
       </Dialog>
 
       <Dialog open={accountOpen} onOpenChange={setAccountOpen}>
-        <DialogContent className="max-w-[95vw] md:max-w-4xl h-[90vh] md:h-[80vh] overflow-hidden p-0 border-none bg-slate-50/50 dark:bg-slate-950/50 backdrop-blur-2xl shadow-2xl rounded-[2rem] flex flex-col">
+        <DialogContent className="max-w-[95vw] md:max-w-4xl h-[90vh] md:h-[80vh] overflow-hidden p-0 border-none bg-slate-50 dark:bg-slate-950 shadow-2xl rounded-[2rem] flex flex-col z-[100]">
           <DialogTitle className="sr-only">Account</DialogTitle>
           <div className="flex-1 overflow-y-auto custom-scrollbar min-h-0">
             <AccountPage isPopup onClose={() => setAccountOpen(false)} />

@@ -127,9 +127,9 @@ export default function AccountPage({ isPopup, onClose }: { isPopup?: boolean; o
       
       {/* Header */}
       <header className={cn(
-        "sticky top-0 z-20 border-b backdrop-blur-xl shrink-0",
+        "sticky top-0 z-30 border-b backdrop-blur-xl shrink-0",
         isPopup 
-          ? "border-slate-200/50 dark:border-slate-800/50 bg-white/40 dark:bg-slate-900/40" 
+          ? "border-slate-200/50 dark:border-slate-800/50 bg-white dark:bg-slate-900" 
           : "border-slate-100 dark:border-slate-800 bg-white/30 dark:bg-slate-950/30"
       )}>
         <div className="flex items-center gap-2 px-6 py-2">
