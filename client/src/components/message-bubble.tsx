@@ -256,10 +256,10 @@ export function MessageBubble({ message }: MessageBubbleProps) {
         <motion.div 
           layout
           className={cn(
-            "relative overflow-hidden rounded-2xl px-4 py-2 text-[17px] leading-relaxed transition-all duration-300",
+            "relative overflow-hidden rounded-2xl px-4 py-3 text-[17px] leading-relaxed transition-all duration-300",
             isUser 
               ? "bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-slate-100 shadow-sm ml-auto max-w-[85%] rounded-tr-sm w-fit" 
-              : "text-slate-800 dark:text-slate-200 w-full px-0",
+              : "bg-white/50 dark:bg-slate-900/50 backdrop-blur-md border border-slate-200 dark:border-slate-800 shadow-sm max-w-[85%] rounded-tl-sm w-fit",
             !isUser && message.isThinking && "animate-pulse shadow-[0_0_15px_rgba(59,130,246,0.2)] dark:shadow-[0_0_20px_rgba(59,130,246,0.1)]"
           )}
         >
