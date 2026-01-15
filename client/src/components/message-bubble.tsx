@@ -82,56 +82,31 @@ export function MessageBubble({ message }: MessageBubbleProps) {
       ));
     };
 
-    while ((match = codeBlockRegex.exec(content)) !== null) {
-      // Add text before code block
-      if (match.index > lastIndex) {
-        parts.push(
-          <span key={keyIndex++}>
-            {renderTextWithAnimation(content.slice(lastIndex, match.index), keyIndex)}
-          </span>
-        );
-      }
-      
-      const language = match[1] || 'code';
-      const code = match[2].trim();
-      
-      // Add styled code block
-      parts.push(
-        <div key={keyIndex++} className="my-3 rounded-lg overflow-hidden border border-slate-200 dark:border-slate-700">
-          <div className="flex items-center justify-between px-3 py-1.5 bg-slate-100 dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700">
-            <div className="flex items-center gap-1.5">
-              <Code className="h-3 w-3 text-slate-400" />
-              <span className="text-[10px] font-medium text-slate-500 dark:text-slate-400 uppercase">{language}</span>
-            </div>
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                navigator.clipboard.writeText(code);
-              }}
-              className="text-[10px] px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-700 text-slate-500 dark:text-slate-400 hover:bg-slate-300 dark:hover:bg-slate-600 transition-colors"
-            >
-              Copy
-            </button>
-          </div>
-          <pre className="p-3 overflow-x-auto bg-slate-50 dark:bg-slate-900/50 text-xs leading-relaxed">
-            <code className="font-mono text-slate-800 dark:text-slate-200">{code}</code>
-          </pre>
-        </div>
-      );
-      
-      lastIndex = match.index + match[0].length;
-    }
-    
-    // Add remaining text
-    if (lastIndex < content.length) {
-      parts.push(
-        <span key={keyIndex++}>
-          {renderTextWithAnimation(content.slice(lastIndex), keyIndex)}
-        </span>
-      );
-    }
-    
-    return parts.length > 0 ? parts : content;
+    const renderedContent = content ? (
+      <div className="flex flex-wrap items-baseline">
+        {content.split('```').map((part, index) => {
+          if (index % 2 === 0) {
+            // Text part
+            return (
+              <span key={index}>
+                {renderTextWithAnimation(part, keyIndex++)}
+              </span>
+            );
+          } else {
+            // Code part (simpler version for immediate rendering)
+            return (
+              <div key={index} className="w-full my-3 rounded-lg overflow-hidden border border-slate-200 dark:border-slate-700">
+                <pre className="p-3 overflow-x-auto bg-slate-50 dark:bg-slate-900/50 text-xs font-mono">
+                  <code>{part.split('\n').slice(1).join('\n')}</code>
+                </pre>
+              </div>
+            );
+          }
+        })}
+      </div>
+    ) : null;
+
+    return renderedContent;
   };
 
   // Load available voices
@@ -266,19 +241,15 @@ export function MessageBubble({ message }: MessageBubbleProps) {
         isUser ? "items-end" : "items-start"
       )}>
         
-        {/* Message Bubble - Enhanced with glassmorphism and animations */}
         <motion.div 
           layout
-          initial={{ opacity: 0, scale: 0.9, height: 40, width: 60 }}
+          initial={{ width: "fit-content", height: "auto" }}
           animate={{ 
-            opacity: 1, 
-            scale: 1,
+            width: "fit-content",
             height: "auto",
-            width: "auto",
             transition: { 
-              duration: 3, 
-              ease: "easeInOut",
-              layout: { duration: 3, ease: "easeInOut" }
+              duration: 0.2, // Quick adjustment to content
+              layout: { duration: 0.5, ease: "easeOut" } 
             } 
           }}
           className={cn(
@@ -289,7 +260,8 @@ export function MessageBubble({ message }: MessageBubbleProps) {
             !isUser && message.isThinking && "shadow-[0_0_15px_rgba(59,130,246,0.2)] dark:shadow-[0_0_20px_rgba(59,130,246,0.1)]"
           )}
           style={{ 
-            minHeight: '0px'
+            minHeight: '0px',
+            display: 'inline-block' // Ensure it only grows with visible content
           }}
         >
           {/* Thinking Process (AI Only) */}
