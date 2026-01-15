@@ -275,9 +275,9 @@ export function MessageBubble({ message }: MessageBubbleProps) {
         
         <motion.div 
           layout="position"
-          initial={{ width: "fit-content", height: "auto" }}
+          initial={{ width: "95%", height: "auto" }}
           animate={{ 
-            width: "fit-content",
+            width: "95%",
             height: "auto"
           }}
           transition={{ 
@@ -286,13 +286,12 @@ export function MessageBubble({ message }: MessageBubbleProps) {
           className={cn(
             "relative overflow-hidden rounded-2xl px-4 py-3 text-[17px] leading-relaxed",
             isUser 
-              ? "bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-slate-100 shadow-sm ml-auto max-w-[85%] rounded-tr-sm w-fit" 
-              : "bg-white/50 dark:bg-slate-900/50 backdrop-blur-md border border-slate-200 dark:border-slate-800 shadow-sm max-w-[85%] rounded-tl-sm w-fit",
+              ? "bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-slate-100 shadow-sm ml-auto rounded-tr-sm" 
+              : "bg-white/50 dark:bg-slate-900/50 backdrop-blur-md border border-slate-200 dark:border-slate-800 shadow-sm rounded-tl-sm",
             !isUser && message.isThinking && "shadow-[0_0_15px_rgba(59,130,246,0.2)] dark:shadow-[0_0_20px_rgba(59,130,246,0.1)]"
           )}
           style={{ 
-            minHeight: '0px',
-            display: 'inline-block' 
+            minHeight: '0px'
           }}
         >
           {/* Thinking Process (AI Only) */}
