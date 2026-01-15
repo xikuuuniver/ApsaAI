@@ -449,7 +449,10 @@ export function MessageBubble({ message }: MessageBubbleProps) {
                     initial={{ opacity: 0, scale: 0.8, y: 5 }}
                     animate={{ opacity: 1, scale: 1, y: 0 }}
                     exit={{ opacity: 0, scale: 0.8, y: 5 }}
-                    className="absolute bottom-full right-0 mb-1 flex gap-1 p-1.5 bg-white dark:bg-slate-800 rounded-xl shadow-lg border border-slate-200 dark:border-slate-700 z-50"
+                    className={cn(
+                      "absolute bottom-full mb-1 flex gap-1 p-1.5 bg-white dark:bg-slate-800 rounded-xl shadow-lg border border-slate-200 dark:border-slate-700 z-50",
+                      isUser ? "right-0" : "left-0"
+                    )}
                   >
                     {reactions.map(({ emoji }) => (
                       <motion.button
