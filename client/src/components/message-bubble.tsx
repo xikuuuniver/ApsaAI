@@ -65,7 +65,6 @@ export function MessageBubble({ message }: MessageBubbleProps) {
 
     const renderTextWithAnimation = (text: string, baseKey: number) => {
       const words = text.split(' ');
-      const totalWords = words.length;
       return words.map((word, i) => (
         <motion.span
           key={`${baseKey}-${i}`}
@@ -270,11 +269,16 @@ export function MessageBubble({ message }: MessageBubbleProps) {
         {/* Message Bubble - Enhanced with glassmorphism and animations */}
         <motion.div 
           layout
-          initial={false}
+          initial={{ opacity: 0, scale: 0.9, height: 40, width: 60 }}
           animate={{ 
+            opacity: 1, 
+            scale: 1,
+            height: "auto",
+            width: "auto",
             transition: { 
               duration: 3, 
-              ease: "easeInOut" 
+              ease: "easeInOut",
+              layout: { duration: 3, ease: "easeInOut" }
             } 
           }}
           className={cn(
