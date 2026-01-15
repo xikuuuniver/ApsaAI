@@ -100,7 +100,11 @@ export function registerChatRoutes(app: Express): void {
   // Get all conversations
   app.get("/api/conversations", async (req: Request, res: Response) => {
     try {
-      const conversations = await chatStorage.getAllConversations();
+      if (!req.isAuthenticated()) {
+        return res.json([]);
+      }
+      const userId = (req.user as any).id;
+      const conversations = await chatStorage.getAllConversations(userId);
       res.json(conversations);
     } catch (error) {
       console.error("Error fetching conversations:", error);
@@ -116,6 +120,10 @@ export function registerChatRoutes(app: Express): void {
       if (!conversation) {
         return res.status(404).json({ error: "Conversation not found" });
       }
+      // Security check: only owner can see messages
+      if (req.isAuthenticated() && (conversation as any).userId && (conversation as any).userId !== (req.user as any).id) {
+        return res.status(403).json({ error: "Unauthorized" });
+      }
       const messages = await chatStorage.getMessagesByConversation(id);
       res.json({ ...conversation, messages });
     } catch (error) {
@@ -128,7 +136,8 @@ export function registerChatRoutes(app: Express): void {
   app.post("/api/conversations", async (req: Request, res: Response) => {
     try {
       const { title } = req.body;
-      const conversation = await chatStorage.createConversation(title || "New Chat");
+      const userId = req.isAuthenticated() ? (req.user as any).id : null;
+      const conversation = await chatStorage.createConversation(title || "New Chat", userId);
       res.status(201).json(conversation);
     } catch (error) {
       console.error("Error creating conversation:", error);
@@ -205,11 +214,21 @@ export function registerChatRoutes(app: Express): void {
       const conversationId = parseInt(req.params.id);
       const { content, mode, attachments, webSearchEnabled } = req.body;
 
-      // Save user message
-      await chatStorage.createMessage(conversationId, "user", content);
+      // Only save if conversation exists and belongs to user
+      const conversation = await chatStorage.getConversation(conversationId);
+      const shouldSave = req.isAuthenticated() && conversation && (conversation as any).userId === (req.user as any).id;
+
+      if (shouldSave) {
+        // Save user message
+        await chatStorage.createMessage(conversationId, "user", content);
+      }
 
       // Get conversation history for context
-      const messages = await chatStorage.getMessagesByConversation(conversationId);
+      const chatMessagesFromHistory = shouldSave 
+        ? await chatStorage.getMessagesByConversation(conversationId)
+        : [];
+      
+      // ... (use chatMessagesFromHistory for context)
       
       // Create system prompt based on mode
       const systemPrompts: Record<string, string> = {
@@ -373,11 +392,15 @@ When the user asks if you can search or have internet access, CONFIRM that yes, 
       ];
       
       // Add history (text only for simplicity)
-      for (let i = 0; i < messages.length - 1; i++) {
-        chatMessages.push({
-          role: messages[i].role,
-          content: messages[i].content,
-        });
+      if (chatMessagesFromHistory && chatMessagesFromHistory.length > 0) {
+        // Only include messages BEFORE the current user message
+        const historyToInclude = chatMessagesFromHistory.filter(m => m.role !== 'user' || m.content !== content);
+        for (const msg of historyToInclude) {
+          chatMessages.push({
+            role: msg.role,
+            content: msg.content,
+          });
+        }
       }
       
       // Add current message with potential media
@@ -469,7 +492,9 @@ When the user asks if you can search or have internet access, CONFIRM that yes, 
         }
       }
 
-      await chatStorage.createMessage(conversationId, "assistant", fullResponse);
+      if (shouldSave) {
+        await chatStorage.createMessage(conversationId, "assistant", fullResponse);
+      }
 
       let suggestions: string[] = [];
       try {
