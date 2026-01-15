@@ -65,12 +65,18 @@ export function MessageBubble({ message }: MessageBubbleProps) {
           p: ({ children }) => <div className="mb-3 last:mb-0 flex flex-wrap items-baseline">{children}</div>,
           strong: ({ children }) => <strong className="font-bold text-slate-900 dark:text-white mx-0.5">{children}</strong>,
           em: ({ children }) => <em className="italic mx-0.5">{children}</em>,
-          h1: ({ children }) => <h1 className="text-2xl font-bold mb-4 mt-2 w-full">{children}</h1>,
-          h2: ({ children }) => <h2 className="text-xl font-bold mb-3 mt-2 w-full">{children}</h2>,
-          h3: ({ children }) => <h3 className="text-lg font-bold mb-2 mt-2 w-full">{children}</h3>,
-          ul: ({ children }) => <ul className="list-disc ml-4 mb-3 space-y-1 w-full">{children}</ul>,
-          ol: ({ children }) => <ol className="list-decimal ml-4 mb-3 space-y-1 w-full">{children}</ol>,
-          li: ({ children }) => <li className="mb-1 leading-relaxed">{children}</li>,
+          h1: ({ children }) => <h1 className="text-2xl font-bold mb-4 mt-6 w-full text-slate-900 dark:text-white border-b border-slate-200 dark:border-slate-800 pb-2">{children}</h1>,
+          h2: ({ children }) => <h2 className="text-xl font-bold mb-3 mt-5 w-full text-slate-800 dark:text-slate-100">{children}</h2>,
+          h3: ({ children }) => <h3 className="text-lg font-bold mb-2 mt-4 w-full text-slate-800 dark:text-slate-100">{children}</h3>,
+          hr: () => <hr className="my-6 border-t border-slate-200 dark:border-slate-800 w-full" />,
+          ul: ({ children }) => <ul className="list-none ml-2 mb-4 space-y-2 w-full">{children}</ul>,
+          ol: ({ children }) => <ol className="list-decimal ml-6 mb-4 space-y-2 w-full text-slate-700 dark:text-slate-300">{children}</ol>,
+          li: ({ children }) => (
+            <li className="relative pl-6 leading-relaxed text-slate-700 dark:text-slate-300 group">
+              <span className="absolute left-0 top-[0.6em] h-1.5 w-1.5 rounded-full bg-slate-400 dark:bg-slate-600 group-last:bg-blue-500 font-bold" />
+              <div className="flex flex-wrap items-baseline">{children}</div>
+            </li>
+          ),
           code: ({ className, children }) => {
             const match = /language-(\w+)/.exec(className || '');
             const lang = match ? match[1] : '';
