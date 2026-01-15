@@ -1,5 +1,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect, useRef } from "react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import { cn } from "@/lib/utils";
 import { Message } from "@/lib/types";
 import { Bot, User, BrainCircuit, Volume2, VolumeX, Settings2, Square, Copy, Check, ThumbsUp, Heart, Laugh, Frown, Code, Smile, Angry, HelpCircle, Cpu } from "lucide-react";
@@ -52,61 +54,67 @@ export function MessageBubble({ message }: MessageBubbleProps) {
     setShowReactions(false);
   };
 
-  // Render content with code block highlighting
+  // Render content with markdown support and word animations
   const renderContent = (content: string) => {
     if (!content) return null;
-    
-    // Regex to match code blocks with optional language
-    const codeBlockRegex = /```(\w+)?\n?([\s\S]*?)```/g;
-    const parts: React.ReactNode[] = [];
-    let lastIndex = 0;
-    let match;
-    let keyIndex = 0;
 
-    const renderTextWithAnimation = (text: string, baseKey: number) => {
-      const words = text.split(' ');
-      return words.map((word, i) => (
-        <motion.span
-          key={`${baseKey}-${i}`}
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ 
-            duration: 0.4, 
-            delay: i * 0.05,
-            ease: "easeOut" 
-          }}
-          className="inline-block mr-1"
-        >
-          {word}
-        </motion.span>
-      ));
-    };
-
-    const renderedContent = content ? (
-      <div className="flex flex-wrap items-baseline relative">
-        {content.split('```').map((part, index) => {
-          if (index % 2 === 0) {
-            // Text part
+    return (
+      <ReactMarkdown 
+        remarkPlugins={[remarkGfm]}
+        components={{
+          p: ({ children }) => <div className="mb-3 last:mb-0 flex flex-wrap items-baseline">{children}</div>,
+          strong: ({ children }) => <strong className="font-bold text-slate-900 dark:text-white mx-0.5">{children}</strong>,
+          em: ({ children }) => <em className="italic mx-0.5">{children}</em>,
+          h1: ({ children }) => <h1 className="text-2xl font-bold mb-4 mt-2 w-full">{children}</h1>,
+          h2: ({ children }) => <h2 className="text-xl font-bold mb-3 mt-2 w-full">{children}</h2>,
+          h3: ({ children }) => <h3 className="text-lg font-bold mb-2 mt-2 w-full">{children}</h3>,
+          ul: ({ children }) => <ul className="list-disc ml-4 mb-3 space-y-1 w-full">{children}</ul>,
+          ol: ({ children }) => <ol className="list-decimal ml-4 mb-3 space-y-1 w-full">{children}</ol>,
+          li: ({ children }) => <li className="mb-1 leading-relaxed">{children}</li>,
+          code: ({ className, children }) => {
+            const match = /language-(\w+)/.exec(className || '');
+            const lang = match ? match[1] : '';
+            const isInline = !className?.includes('language-');
+            
+            if (isInline) {
+              return <code className="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 font-mono text-sm">{children}</code>;
+            }
             return (
-              <div key={index} className="inline flex flex-wrap items-baseline">
-                {renderTextWithAnimation(part, keyIndex++)}
-              </div>
-            );
-          } else {
-            // Code part (simpler version for immediate rendering)
-            return (
-              <div key={index} className="w-full my-3 rounded-lg overflow-hidden border border-slate-200 dark:border-slate-700 block">
+              <div className="w-full my-3 rounded-lg overflow-hidden border border-slate-200 dark:border-slate-700 block text-left">
+                {lang && (
+                  <div className="px-3 py-1 bg-slate-100 dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 text-[10px] font-medium uppercase text-slate-500">
+                    {lang}
+                  </div>
+                )}
                 <pre className="p-3 overflow-x-auto bg-slate-50 dark:bg-slate-900/50 text-xs font-mono">
-                  <code>{part.split('\n').slice(1).join('\n')}</code>
+                  <code>{children}</code>
                 </pre>
               </div>
             );
+          },
+          // @ts-expect-error - overriding text rendering
+          text: ({ value }: { value: string }) => {
+            return value.split(' ').map((word, i) => (
+              <motion.span
+                key={i}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ 
+                  duration: 0.4, 
+                  delay: i * 0.05,
+                  ease: "easeOut" 
+                }}
+                className="inline-block mr-1"
+              >
+                {word}
+              </motion.span>
+            ));
           }
-        })}
-      </div>
-    ) : null;
-
-    return renderedContent;
+        }}
+      >
+        {content}
+      </ReactMarkdown>
+    );
   };
 
   // Load available voices
