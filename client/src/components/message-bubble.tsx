@@ -71,8 +71,8 @@ export function MessageBubble({ message }: MessageBubbleProps) {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ 
-            duration: 0.6, 
-            delay: i * 0.08,
+            duration: 0.4, 
+            delay: i * 0.05,
             ease: "easeOut" 
           }}
           className="inline-block mr-1"
@@ -230,7 +230,7 @@ export function MessageBubble({ message }: MessageBubbleProps) {
         } else {
           clearInterval(timer);
         }
-      }, 80); // Match the adjusted 0.08s delay feel
+      }, 120); // Slower internal loading (was 80ms)
 
       return () => clearInterval(timer);
     } else if (isUser) {
