@@ -214,7 +214,25 @@ export function MessageBubble({ message }: MessageBubbleProps) {
 
   useEffect(() => {
     if (!isUser && message.content && message.content !== displayedContent) {
-      setDisplayedContent(message.content);
+      // Significantly slow down the "typing" of the invisible content
+      // This ensures the displayedContent (which powers the bubble size)
+      // matches the slow pace of the word-by-word fade animation.
+      const words = message.content.split(' ');
+      let currentWordIndex = 0;
+      
+      const timer = setInterval(() => {
+        if (currentWordIndex < words.length) {
+          setDisplayedContent(prev => {
+            const nextWords = words.slice(0, currentWordIndex + 1).join(' ');
+            return nextWords;
+          });
+          currentWordIndex++;
+        } else {
+          clearInterval(timer);
+        }
+      }, 1500); // Match the 1.5s duration + delay feel
+
+      return () => clearInterval(timer);
     } else if (isUser) {
       setDisplayedContent(message.content);
     }
