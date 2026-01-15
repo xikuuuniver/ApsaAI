@@ -83,19 +83,19 @@ export function MessageBubble({ message }: MessageBubbleProps) {
     };
 
     const renderedContent = content ? (
-      <div className="flex flex-wrap items-baseline">
+      <div className="flex flex-wrap items-baseline relative">
         {content.split('```').map((part, index) => {
           if (index % 2 === 0) {
             // Text part
             return (
-              <span key={index}>
+              <div key={index} className="inline flex flex-wrap items-baseline">
                 {renderTextWithAnimation(part, keyIndex++)}
-              </span>
+              </div>
             );
           } else {
             // Code part (simpler version for immediate rendering)
             return (
-              <div key={index} className="w-full my-3 rounded-lg overflow-hidden border border-slate-200 dark:border-slate-700">
+              <div key={index} className="w-full my-3 rounded-lg overflow-hidden border border-slate-200 dark:border-slate-700 block">
                 <pre className="p-3 overflow-x-auto bg-slate-50 dark:bg-slate-900/50 text-xs font-mono">
                   <code>{part.split('\n').slice(1).join('\n')}</code>
                 </pre>
@@ -260,15 +260,14 @@ export function MessageBubble({ message }: MessageBubbleProps) {
       )}>
         
         <motion.div 
-          layout
+          layout="position"
           initial={{ width: "fit-content", height: "auto" }}
           animate={{ 
             width: "fit-content",
-            height: "auto",
-            transition: { 
-              duration: 0.2, // Quick adjustment to content
-              layout: { duration: 0.5, ease: "easeOut" } 
-            } 
+            height: "auto"
+          }}
+          transition={{ 
+            layout: { duration: 0.3, ease: "easeOut" } 
           }}
           className={cn(
             "relative overflow-hidden rounded-2xl px-4 py-3 text-[17px] leading-relaxed",
@@ -279,7 +278,7 @@ export function MessageBubble({ message }: MessageBubbleProps) {
           )}
           style={{ 
             minHeight: '0px',
-            display: 'inline-block' // Ensure it only grows with visible content
+            display: 'inline-block' 
           }}
         >
           {/* Thinking Process (AI Only) */}
