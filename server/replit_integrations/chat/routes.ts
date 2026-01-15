@@ -100,7 +100,7 @@ export function registerChatRoutes(app: Express): void {
   // Get all conversations
   app.get("/api/conversations", async (req: Request, res: Response) => {
     try {
-      if (!req.isAuthenticated()) {
+      if (!(req as any).isAuthenticated?.()) {
         return res.json([]);
       }
       const userId = (req.user as any).id;
@@ -121,7 +121,7 @@ export function registerChatRoutes(app: Express): void {
         return res.status(404).json({ error: "Conversation not found" });
       }
       // Security check: only owner can see messages
-      if (req.isAuthenticated() && (conversation as any).userId && (conversation as any).userId !== (req.user as any).id) {
+      if ((req as any).isAuthenticated?.() && (conversation as any).userId && (conversation as any).userId !== (req.user as any).id) {
         return res.status(403).json({ error: "Unauthorized" });
       }
       const messages = await chatStorage.getMessagesByConversation(id);
@@ -136,7 +136,7 @@ export function registerChatRoutes(app: Express): void {
   app.post("/api/conversations", async (req: Request, res: Response) => {
     try {
       const { title } = req.body;
-      const userId = req.isAuthenticated() ? (req.user as any).id : null;
+      const userId = (req as any).isAuthenticated?.() ? (req.user as any).id : null;
       const conversation = await chatStorage.createConversation(title || "New Chat", userId);
       res.status(201).json(conversation);
     } catch (error) {
@@ -216,7 +216,7 @@ export function registerChatRoutes(app: Express): void {
 
       // Only save if conversation exists and belongs to user
       const conversation = await chatStorage.getConversation(conversationId);
-      const shouldSave = req.isAuthenticated() && conversation && (conversation as any).userId === (req.user as any).id;
+      const shouldSave = (req as any).isAuthenticated?.() && conversation && (conversation as any).userId === (req.user as any).id;
 
       if (shouldSave) {
         // Save user message

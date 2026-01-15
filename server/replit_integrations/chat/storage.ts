@@ -24,14 +24,14 @@ export const chatStorage: IChatStorage = {
   async getAllConversations(userId?: number) {
     if (userId) {
       return db.select().from(conversations)
-        .where(eq(conversations.userId as any, userId))
+        .where(eq((conversations as any).userId, userId))
         .orderBy(desc(conversations.createdAt));
     }
     return db.select().from(conversations).orderBy(desc(conversations.createdAt));
   },
 
   async createConversation(title: string, userId: number | null = null) {
-    const [conversation] = await db.insert(conversations).values({ title, userId: userId as any } as any).returning();
+    const [conversation] = await db.insert(conversations).values({ title, userId: userId as any }).returning();
     return conversation;
   },
 
