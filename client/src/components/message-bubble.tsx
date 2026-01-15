@@ -4,11 +4,39 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { cn } from "@/lib/utils";
 import { Message } from "@/lib/types";
-import { Bot, User, BrainCircuit, Volume2, VolumeX, Settings2, Square, Copy, Check, ThumbsUp, Heart, Laugh, Frown, Code, Smile, Angry, HelpCircle, Cpu } from "lucide-react";
+import { Bot, User, BrainCircuit, Volume2, VolumeX, Settings2, Square, Copy, Check, ThumbsUp, Heart, Laugh, Frown, Code, Smile, Angry, HelpCircle, Cpu, ExternalLink, Link2, ChevronDown, ChevronUp } from "lucide-react";
 
 interface MessageBubbleProps {
   message: Message;
 }
+
+const LinkButton = ({ href, children }: { href: string, children: React.ReactNode }) => {
+  const [showUrl, setShowUrl] = useState(false);
+  
+  return (
+    <div className="inline-flex flex-col gap-1 my-1 align-middle">
+      <div className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-full hover:bg-blue-100 dark:hover:bg-blue-900/30 transition-colors group cursor-pointer" onClick={() => window.open(href, '_blank')}>
+        <Link2 className="h-3.5 w-3.5 text-blue-500" />
+        <span className="text-sm font-medium text-blue-600 dark:text-blue-400 max-w-[200px] truncate">{children}</span>
+        <ExternalLink className="h-3 w-3 text-blue-400 group-hover:text-blue-500 transition-colors" />
+        <button 
+          onClick={(e) => {
+            e.stopPropagation();
+            setShowUrl(!showUrl);
+          }}
+          className="ml-1 p-0.5 hover:bg-blue-200 dark:hover:bg-blue-800 rounded transition-colors"
+        >
+          {showUrl ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
+        </button>
+      </div>
+      {showUrl && (
+        <div className="text-[10px] text-slate-400 dark:text-slate-500 break-all px-2 bg-slate-50 dark:bg-slate-800/50 py-1 rounded border border-slate-100 dark:border-slate-800 animate-in fade-in slide-in-from-top-1">
+          {href}
+        </div>
+      )}
+    </div>
+  );
+};
 
 export function MessageBubble({ message }: MessageBubbleProps) {
   const isUser = message.role === "user";
@@ -62,19 +90,20 @@ export function MessageBubble({ message }: MessageBubbleProps) {
       <ReactMarkdown 
         remarkPlugins={[remarkGfm]}
         components={{
-          p: ({ children }) => <div className="mb-3 last:mb-0 flex flex-wrap items-baseline">{children}</div>,
+          p: ({ children }) => <div className="mb-3 last:mb-0 flex flex-wrap items-center text-left">{children}</div>,
           strong: ({ children }) => <strong className="font-bold text-slate-900 dark:text-white mx-0.5">{children}</strong>,
           em: ({ children }) => <em className="italic mx-0.5">{children}</em>,
-          h1: ({ children }) => <h1 className="text-2xl font-bold mb-4 mt-6 w-full text-slate-900 dark:text-white border-b border-slate-200 dark:border-slate-800 pb-2">{children}</h1>,
-          h2: ({ children }) => <h2 className="text-xl font-bold mb-3 mt-5 w-full text-slate-800 dark:text-slate-100">{children}</h2>,
-          h3: ({ children }) => <h3 className="text-lg font-bold mb-2 mt-4 w-full text-slate-800 dark:text-slate-100">{children}</h3>,
+          h1: ({ children }) => <h1 className="text-2xl font-bold mb-4 mt-6 w-full text-left text-slate-900 dark:text-white border-b border-slate-200 dark:border-slate-800 pb-2">{children}</h1>,
+          h2: ({ children }) => <h2 className="text-xl font-bold mb-3 mt-5 w-full text-left text-slate-800 dark:text-slate-100">{children}</h2>,
+          h3: ({ children }) => <h3 className="text-lg font-bold mb-2 mt-4 w-full text-left text-slate-800 dark:text-slate-100">{children}</h3>,
           hr: () => <hr className="my-6 border-t border-slate-200 dark:border-slate-800 w-full" />,
-          ul: ({ children }) => <ul className="list-none ml-2 mb-4 space-y-2 w-full">{children}</ul>,
-          ol: ({ children }) => <ol className="list-decimal ml-6 mb-4 space-y-2 w-full text-slate-700 dark:text-slate-300">{children}</ol>,
+          ul: ({ children }) => <ul className="list-none ml-2 mb-4 space-y-2 w-full text-left">{children}</ul>,
+          ol: ({ children }) => <ol className="list-decimal ml-6 mb-4 space-y-2 w-full text-left text-slate-700 dark:text-slate-300">{children}</ol>,
+          a: ({ href, children }) => <LinkButton href={href || ''}>{children}</LinkButton>,
           li: ({ children }) => (
-            <li className="relative pl-6 leading-relaxed text-slate-700 dark:text-slate-300 group">
+            <li className="relative pl-6 leading-relaxed text-slate-700 dark:text-slate-300 group text-left">
               <span className="absolute left-0 top-[0.6em] h-1.5 w-1.5 rounded-full bg-slate-400 dark:bg-slate-600 group-last:bg-blue-500 font-bold" />
-              <div className="flex flex-wrap items-baseline">{children}</div>
+              <div className="flex flex-wrap items-center text-left">{children}</div>
             </li>
           ),
           code: ({ className, children }) => {
@@ -83,7 +112,7 @@ export function MessageBubble({ message }: MessageBubbleProps) {
             const isInline = !className?.includes('language-');
             
             if (isInline) {
-              return <code className="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 font-mono text-sm">{children}</code>;
+              return <code className="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 font-mono text-sm inline-block align-middle">{children}</code>;
             }
             return (
               <div className="w-full my-3 rounded-lg overflow-hidden border border-slate-200 dark:border-slate-700 block text-left">
@@ -110,7 +139,7 @@ export function MessageBubble({ message }: MessageBubbleProps) {
                   delay: i * 0.05,
                   ease: "easeOut" 
                 }}
-                className="inline-block mr-1"
+                className="inline-block mr-1 align-baseline"
               >
                 {word}
               </motion.span>
