@@ -202,9 +202,23 @@ export function MessageBubble({ message }: MessageBubbleProps) {
     // Auto-select voice based on content or message language if available
     const detectLanguage = () => {
       const content = message.content.toLowerCase();
-      // Simple detection for common local languages
+      // Expanded detection for many more languages
       if (/[\u0980-\u09FF]/.test(content)) return 'bn'; // Bengali
       if (/[\u0900-\u097F]/.test(content)) return 'hi'; // Hindi
+      if (/[\u0600-\u06FF]/.test(content)) return 'ar'; // Arabic
+      if (/[\u4E00-\u9FFF]/.test(content)) return 'zh'; // Chinese
+      if (/[\u3040-\u309F\u30A0-\u30FF]/.test(content)) return 'ja'; // Japanese
+      if (/[\uAC00-\uD7AF]/.test(content)) return 'ko'; // Korean
+      if (/[\u0400-\u04FF]/.test(content)) return 'ru'; // Russian
+      if (/[\u0E00-\u0E7F]/.test(content)) return 'th'; // Thai
+      if (/[\u0590-\u05FF]/.test(content)) return 'he'; // Hebrew
+      if (/[\u0370-\u03FF]/.test(content)) return 'el'; // Greek
+      if (/[\u10A0-\u10FF]/.test(content)) return 'ka'; // Georgian
+      if (/[\u0530-\u058F]/.test(content)) return 'hy'; // Armenian
+      if (/[\u0B80-\u0BFF]/.test(content)) return 'ta'; // Tamil
+      if (/[\u0C00-\u0C7F]/.test(content)) return 'te'; // Telugu
+      if (/[\u0C80-\u0CFF]/.test(content)) return 'kn'; // Kannada
+      if (/[\u0D00-\u0D7F]/.test(content)) return 'ml'; // Malayalam
       return 'en';
     };
 
@@ -213,7 +227,7 @@ export function MessageBubble({ message }: MessageBubbleProps) {
     
     // Sort voices to prefer "Premium", "Google", "Natural", or high quality ones
     const sortedVoices = [...availableVoices].sort((a, b) => {
-      const highQualityKeywords = ['natural', 'google', 'premium', 'neural', 'enhanced'];
+      const highQualityKeywords = ['natural', 'google', 'premium', 'neural', 'enhanced', 'microsoft'];
       const aLower = a.name.toLowerCase();
       const bLower = b.name.toLowerCase();
       
@@ -223,8 +237,8 @@ export function MessageBubble({ message }: MessageBubbleProps) {
       return bScore - aScore;
     });
     
-    // Try to find a voice that matches the detected language exactly (e.g. bn-BD) or generally (e.g. bn)
-    const bestVoice = sortedVoices.find(v => v.lang.startsWith(targetLangCode) || v.lang.includes(targetLangCode));
+    // Try to find a voice that matches the detected language exactly or generally
+    const bestVoice = sortedVoices.find(v => v.lang.startsWith(targetLangCode));
 
     if (bestVoice) {
       utterance.voice = bestVoice;
