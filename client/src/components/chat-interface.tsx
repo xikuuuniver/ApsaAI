@@ -180,7 +180,7 @@ export function ChatInterface() {
     setShowAttachMenu(false);
     toast({
       title: webSearchEnabled ? "Web Search Disabled" : "Web Search Enabled",
-      description: webSearchEnabled ? "Nexus will use its knowledge" : "Nexus will search the internet for latest info",
+      description: webSearchEnabled ? "Nexus will use its knowledge" : "Nexus (powered by Apsa AI) will search the internet for latest info",
     });
   };
 
@@ -513,11 +513,11 @@ export function ChatInterface() {
       return;
     }
     
-    let content = "Nexus AI - Conversation Export\n";
+    let content = "Nexus AI (powered by Apsa AI) - Conversation Export\n";
     content += "=".repeat(40) + "\n\n";
     
     messages.forEach((msg, index) => {
-      const sender = msg.role === 'user' ? 'You' : 'Nexus AI';
+      const sender = msg.role === 'user' ? 'You' : 'Nexus AI (powered by Apsa AI)';
       content += `${sender}:\n${msg.content}\n\n`;
       if (index < messages.length - 1) {
         content += "-".repeat(30) + "\n\n";

@@ -174,12 +174,12 @@ export function AppSidebar({ isOpen, onClose }: AppSidebarProps) {
                         <span className="text-xs text-slate-600 dark:text-slate-300">Nexus AI</span>
                       </div>
                       <div className="flex flex-col">
-                        <span className="text-[9px] text-slate-400 font-medium">Model Version</span>
-                        <span className="text-xs text-slate-600 dark:text-slate-300">2.1.0</span>
+                        <span className="text-[9px] text-slate-400 font-medium">Powered By</span>
+                        <span className="text-xs text-slate-600 dark:text-slate-300">Apsa AI</span>
                       </div>
                       <div className="flex flex-col">
-                        <span className="text-[9px] text-slate-400 font-medium">Customization ID</span>
-                        <span className="text-[10px] text-slate-500 dark:text-slate-400 font-mono">NX-9982</span>
+                        <span className="text-[9px] text-slate-400 font-medium">Model Version</span>
+                        <span className="text-xs text-slate-600 dark:text-slate-300">2.1.0</span>
                       </div>
                       <div className="flex flex-col">
                         <span className="text-[9px] text-slate-400 font-medium">Response Time</span>
