@@ -95,139 +95,6 @@ export function AppSidebar({ isOpen, onClose }: AppSidebarProps) {
     <div className="flex flex-col h-full bg-transparent overflow-hidden">
       {/* Navigation */}
       <div className="flex-1 overflow-y-auto py-4 scrollbar-hide pb-20">
-        {/* About Section - Collapsible */}
-        <div className="px-3 mb-6">
-          <button
-            onClick={() => setAboutExpanded(!aboutExpanded)}
-            className="w-full flex items-center justify-between px-3 py-2 text-slate-900 dark:text-white mb-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
-          >
-            <div className="flex items-center gap-2">
-              <Info className="h-4 w-4" />
-              <span className="text-sm font-bold">About</span>
-            </div>
-            <ChevronDown className={cn(
-              "h-4 w-4 text-slate-400 transition-transform duration-200",
-              aboutExpanded && "rotate-180"
-            )} />
-          </button>
-
-          <AnimatePresence>
-            {aboutExpanded && (
-              <motion.div
-                initial={{ height: 0, opacity: 0 }}
-                animate={{ height: "auto", opacity: 1 }}
-                exit={{ height: 0, opacity: 0 }}
-                transition={{ duration: 0.2 }}
-                className="overflow-hidden"
-              >
-                <div className="mx-1 p-4 rounded-2xl bg-slate-100/50 dark:bg-slate-800/50 border border-slate-200/50 dark:border-slate-700/50 space-y-4">
-                  {/* Conversation Info */}
-                  <div className="space-y-2">
-                    <h4 className="text-[10px] uppercase tracking-wider font-bold text-blue-500">Conversation Info</h4>
-                    <div className="grid gap-2">
-                      <div className="flex flex-col">
-                        <span className="text-[9px] text-slate-400 font-medium">Conversation Name</span>
-                        <span className="text-xs text-slate-700 dark:text-slate-200 truncate">{currentConversation?.title || "N/A"}</span>
-                      </div>
-                      <div className="flex flex-col">
-                        <span className="text-[9px] text-slate-400 font-medium">Conversation ID</span>
-                        <span className="text-[10px] text-slate-500 dark:text-slate-400 font-mono truncate">{currentConversationId || "N/A"}</span>
-                      </div>
-                      <div className="grid grid-cols-2 gap-2">
-                        <div className="flex flex-col">
-                          <span className="text-[9px] text-slate-400 font-medium">Created By</span>
-                          <span className="text-xs text-slate-600 dark:text-slate-300">You</span>
-                        </div>
-                        <div className="flex flex-col">
-                          <span className="text-[9px] text-slate-400 font-medium">Shared With</span>
-                          <span className="text-xs text-slate-600 dark:text-slate-300">None</span>
-                        </div>
-                        <div className="flex flex-col">
-                          <span className="text-[9px] text-slate-400 font-medium">Status</span>
-                          <span className="text-xs text-green-500 font-medium">Active</span>
-                        </div>
-                        <div className="flex flex-col">
-                          <span className="text-[9px] text-slate-400 font-medium">Priority</span>
-                          <span className="text-xs text-slate-600 dark:text-slate-300">Normal</span>
-                        </div>
-                      </div>
-                      <div className="flex flex-col">
-                        <span className="text-[9px] text-slate-400 font-medium">Conversation Topic</span>
-                        <span className="text-xs text-slate-600 dark:text-slate-300 truncate">General AI Assistance</span>
-                      </div>
-                      <div className="flex flex-col">
-                        <span className="text-[9px] text-slate-400 font-medium">Tags / Labels</span>
-                        <div className="flex gap-1 mt-0.5">
-                          <span className="px-1.5 py-0.5 rounded bg-blue-100 dark:bg-blue-900/30 text-[9px] text-blue-600 dark:text-blue-400">AI</span>
-                          <span className="px-1.5 py-0.5 rounded bg-purple-100 dark:bg-purple-900/30 text-[9px] text-purple-600 dark:text-purple-400">Chat</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* AI Information */}
-                  <div className="space-y-2 pt-2 border-t border-slate-200 dark:border-slate-700/50">
-                    <h4 className="text-[10px] uppercase tracking-wider font-bold text-purple-500">AI Information</h4>
-                    <div className="grid grid-cols-2 gap-2">
-                      <div className="flex flex-col">
-                        <span className="text-[9px] text-slate-400 font-medium">AI Model</span>
-                        <span className="text-xs text-slate-600 dark:text-slate-300">Nexus AI</span>
-                      </div>
-                      <div className="flex flex-col">
-                        <span className="text-[9px] text-slate-400 font-medium">Powered By</span>
-                        <span className="text-xs text-slate-600 dark:text-slate-300">Apsa AI</span>
-                      </div>
-                      <div className="flex flex-col">
-                        <span className="text-[9px] text-slate-400 font-medium">Model Version</span>
-                        <span className="text-xs text-slate-600 dark:text-slate-300">2.1.0</span>
-                      </div>
-                      <div className="flex flex-col">
-                        <span className="text-[9px] text-slate-400 font-medium">Response Time</span>
-                        <span className="text-xs text-slate-600 dark:text-slate-300">~1.2s</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Statistics */}
-                  <div className="space-y-2 pt-2 border-t border-slate-200 dark:border-slate-700/50">
-                    <h4 className="text-[10px] uppercase tracking-wider font-bold text-amber-500">Statistics</h4>
-                    <div className="grid grid-cols-1 gap-y-2">
-                      <div className="flex justify-between items-center text-[11px]">
-                        <span className="text-slate-400">AI Response</span>
-                        <span className="text-slate-600 dark:text-slate-300 font-medium">{(conversations.find(c => c.id === currentConversationId) as any)?.messageCount || 0}</span>
-                      </div>
-                      <div className="flex justify-between items-center text-[11px]">
-                        <span className="text-slate-400">Your Message</span>
-                        <span className="text-slate-600 dark:text-slate-300 font-medium">{(conversations.find(c => c.id === currentConversationId) as any)?.messageCount || 0}</span>
-                      </div>
-                      <div className="flex justify-between items-center text-[11px]">
-                        <span className="text-slate-400">Image Generate</span>
-                        <span className="text-slate-600 dark:text-slate-300 font-medium">0</span>
-                      </div>
-                      <div className="flex justify-between items-center text-[11px]">
-                        <span className="text-slate-400">Video Generate</span>
-                        <span className="text-slate-600 dark:text-slate-300 font-medium">0</span>
-                      </div>
-                      <div className="flex justify-between items-center text-[11px]">
-                        <span className="text-slate-400">Photo Upload</span>
-                        <span className="text-slate-600 dark:text-slate-300 font-medium">0</span>
-                      </div>
-                      <div className="flex justify-between items-center text-[11px]">
-                        <span className="text-slate-400">Video Upload</span>
-                        <span className="text-slate-600 dark:text-slate-300 font-medium">0</span>
-                      </div>
-                      <div className="flex justify-between items-center text-[11px] pt-1 border-t border-slate-100 dark:border-slate-800/50">
-                        <span className="text-slate-400 font-bold">Total Element</span>
-                        <span className="text-slate-600 dark:text-slate-300 font-bold">{(conversations.find(c => c.id === currentConversationId) as any)?.messageCount * 2 || 0}</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
-
         {/* Your Chats - Collapsible */}
         <div className="px-3 mb-6">
           <button
@@ -361,6 +228,139 @@ export function AppSidebar({ isOpen, onClose }: AppSidebarProps) {
                     </button>
                   );
                 })}
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+
+        {/* About Section - Collapsible */}
+        <div className="px-3 mb-6">
+          <button
+            onClick={() => setAboutExpanded(!aboutExpanded)}
+            className="w-full flex items-center justify-between px-3 py-2 text-slate-900 dark:text-white mb-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
+          >
+            <div className="flex items-center gap-2">
+              <Info className="h-4 w-4" />
+              <span className="text-sm font-bold">About</span>
+            </div>
+            <ChevronDown className={cn(
+              "h-4 w-4 text-slate-400 transition-transform duration-200",
+              aboutExpanded && "rotate-180"
+            )} />
+          </button>
+
+          <AnimatePresence>
+            {aboutExpanded && (
+              <motion.div
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: "auto", opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                transition={{ duration: 0.2 }}
+                className="overflow-hidden"
+              >
+                <div className="mx-1 p-4 rounded-2xl bg-slate-100/50 dark:bg-slate-800/50 border border-slate-200/50 dark:border-slate-700/50 space-y-4">
+                  {/* Conversation Info */}
+                  <div className="space-y-2">
+                    <h4 className="text-[10px] uppercase tracking-wider font-bold text-blue-500">Conversation Info</h4>
+                    <div className="grid gap-2">
+                      <div className="flex flex-col">
+                        <span className="text-[9px] text-slate-400 font-medium">Conversation Name</span>
+                        <span className="text-xs text-slate-700 dark:text-slate-200 truncate">{currentConversation?.title || "N/A"}</span>
+                      </div>
+                      <div className="flex flex-col">
+                        <span className="text-[9px] text-slate-400 font-medium">Conversation ID</span>
+                        <span className="text-[10px] text-slate-500 dark:text-slate-400 font-mono truncate">{currentConversationId || "N/A"}</span>
+                      </div>
+                      <div className="grid grid-cols-2 gap-2">
+                        <div className="flex flex-col">
+                          <span className="text-[9px] text-slate-400 font-medium">Created By</span>
+                          <span className="text-xs text-slate-600 dark:text-slate-300">You</span>
+                        </div>
+                        <div className="flex flex-col">
+                          <span className="text-[9px] text-slate-400 font-medium">Shared With</span>
+                          <span className="text-xs text-slate-600 dark:text-slate-300">None</span>
+                        </div>
+                        <div className="flex flex-col">
+                          <span className="text-[9px] text-slate-400 font-medium">Status</span>
+                          <span className="text-xs text-green-500 font-medium">Active</span>
+                        </div>
+                        <div className="flex flex-col">
+                          <span className="text-[9px] text-slate-400 font-medium">Priority</span>
+                          <span className="text-xs text-slate-600 dark:text-slate-300">Normal</span>
+                        </div>
+                      </div>
+                      <div className="flex flex-col">
+                        <span className="text-[9px] text-slate-400 font-medium">Conversation Topic</span>
+                        <span className="text-xs text-slate-600 dark:text-slate-300 truncate">General AI Assistance</span>
+                      </div>
+                      <div className="flex flex-col">
+                        <span className="text-[9px] text-slate-400 font-medium">Tags / Labels</span>
+                        <div className="flex gap-1 mt-0.5">
+                          <span className="px-1.5 py-0.5 rounded bg-blue-100 dark:bg-blue-900/30 text-[9px] text-blue-600 dark:text-blue-400">AI</span>
+                          <span className="px-1.5 py-0.5 rounded bg-purple-100 dark:bg-purple-900/30 text-[9px] text-purple-600 dark:text-purple-400">Chat</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* AI Information */}
+                  <div className="space-y-2 pt-2 border-t border-slate-200 dark:border-slate-700/50">
+                    <h4 className="text-[10px] uppercase tracking-wider font-bold text-purple-500">AI Information</h4>
+                    <div className="grid grid-cols-2 gap-2">
+                      <div className="flex flex-col">
+                        <span className="text-[9px] text-slate-400 font-medium">AI Model</span>
+                        <span className="text-xs text-slate-600 dark:text-slate-300">Nexus AI</span>
+                      </div>
+                      <div className="flex flex-col">
+                        <span className="text-[9px] text-slate-400 font-medium">Powered By</span>
+                        <span className="text-xs text-slate-600 dark:text-slate-300">Apsa AI</span>
+                      </div>
+                      <div className="flex flex-col">
+                        <span className="text-[9px] text-slate-400 font-medium">Model Version</span>
+                        <span className="text-xs text-slate-600 dark:text-slate-300">2.1.0</span>
+                      </div>
+                      <div className="flex flex-col">
+                        <span className="text-[9px] text-slate-400 font-medium">Response Time</span>
+                        <span className="text-xs text-slate-600 dark:text-slate-300">~1.2s</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Statistics */}
+                  <div className="space-y-2 pt-2 border-t border-slate-200 dark:border-slate-700/50">
+                    <h4 className="text-[10px] uppercase tracking-wider font-bold text-amber-500">Statistics</h4>
+                    <div className="grid grid-cols-1 gap-y-2">
+                      <div className="flex justify-between items-center text-[11px]">
+                        <span className="text-slate-400">AI Response</span>
+                        <span className="text-slate-600 dark:text-slate-300 font-medium">{(conversations.find(c => c.id === currentConversationId) as any)?.messageCount || 0}</span>
+                      </div>
+                      <div className="flex justify-between items-center text-[11px]">
+                        <span className="text-slate-400">Your Message</span>
+                        <span className="text-slate-600 dark:text-slate-300 font-medium">{(conversations.find(c => c.id === currentConversationId) as any)?.messageCount || 0}</span>
+                      </div>
+                      <div className="flex justify-between items-center text-[11px]">
+                        <span className="text-slate-400">Image Generate</span>
+                        <span className="text-slate-600 dark:text-slate-300 font-medium">0</span>
+                      </div>
+                      <div className="flex justify-between items-center text-[11px]">
+                        <span className="text-slate-400">Video Generate</span>
+                        <span className="text-slate-600 dark:text-slate-300 font-medium">0</span>
+                      </div>
+                      <div className="flex justify-between items-center text-[11px]">
+                        <span className="text-slate-400">Photo Upload</span>
+                        <span className="text-slate-600 dark:text-slate-300 font-medium">0</span>
+                      </div>
+                      <div className="flex justify-between items-center text-[11px]">
+                        <span className="text-slate-400">Video Upload</span>
+                        <span className="text-slate-600 dark:text-slate-300 font-medium">0</span>
+                      </div>
+                      <div className="flex justify-between items-center text-[11px] pt-1 border-t border-slate-100 dark:border-slate-800/50">
+                        <span className="text-slate-400 font-bold">Total Element</span>
+                        <span className="text-slate-600 dark:text-slate-300 font-bold">{(conversations.find(c => c.id === currentConversationId) as any)?.messageCount * 2 || 0}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </motion.div>
             )}
           </AnimatePresence>
