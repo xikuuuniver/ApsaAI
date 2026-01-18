@@ -614,11 +614,10 @@ export function ChatInterface() {
         </DialogContent>
       </Dialog>
 
-      <Drawer.Root open={sidebarOpen} onOpenChange={setSidebarOpen} direction="bottom">
+      <Drawer.Root open={sidebarOpen} onOpenChange={setSidebarOpen} direction="left">
         <Drawer.Portal>
           <Drawer.Overlay className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm" />
-          <Drawer.Content className="fixed bottom-0 left-0 right-0 z-50 mt-24 flex h-[85vh] flex-col rounded-t-[2rem] bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border-t border-slate-200/50 dark:border-slate-800/50 shadow-2xl outline-none">
-            <div className="mx-auto mt-4 h-1.5 w-12 shrink-0 rounded-full bg-slate-300 dark:bg-slate-700" />
+          <Drawer.Content className="fixed inset-y-0 left-0 z-50 flex w-[280px] flex-col bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border-r border-slate-200/50 dark:border-slate-800/50 shadow-2xl outline-none">
             <div className="flex-1 overflow-y-auto min-h-0">
               <AppSidebar isOpen={true} onClose={() => setSidebarOpen(false)} />
             </div>
