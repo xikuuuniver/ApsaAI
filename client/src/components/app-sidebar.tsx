@@ -41,20 +41,13 @@ export function HamburgerButton({ onClick }: { onClick: () => void }) {
       variant="ghost"
       size="icon"
       onClick={onClick}
-      className="group relative h-12 w-12 flex items-center justify-center transition-all duration-500 hover:scale-110 active:scale-90 rounded-2xl bg-white/10 hover:bg-white/20 dark:bg-slate-800/50 dark:hover:bg-slate-700/80 shadow-lg border border-white/20 dark:border-slate-700/50 overflow-hidden"
+      className="h-10 w-10 text-slate-500 hover:text-slate-900 dark:hover:text-white transition-all duration-300 hover:scale-110 active:scale-95 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full"
     >
-      {/* Animated Gradient Glow */}
-      <div className="absolute inset-0 bg-gradient-to-tr from-blue-500/20 via-purple-500/20 to-pink-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-xl" />
-      
-      {/* Three Line Menu Decoration */}
-      <div className="relative flex flex-col gap-1.5 items-center justify-center z-10">
-        <span className="w-6 h-0.5 bg-slate-700 dark:bg-slate-200 rounded-full transition-all duration-300 group-hover:w-4 group-hover:-translate-x-1 group-hover:bg-blue-500 shadow-sm" />
-        <span className="w-6 h-0.5 bg-slate-700 dark:bg-slate-200 rounded-full transition-all duration-300 group-hover:scale-x-110 group-hover:bg-purple-500 shadow-sm" />
-        <span className="w-6 h-0.5 bg-slate-700 dark:bg-slate-200 rounded-full transition-all duration-300 group-hover:w-4 group-hover:translate-x-1 group-hover:bg-pink-500 shadow-sm" />
+      <div className="flex flex-col gap-1 items-center justify-center">
+        <span className="w-5 h-0.5 bg-current rounded-full transition-all group-hover:w-6" />
+        <span className="w-5 h-0.5 bg-current rounded-full transition-all" />
+        <span className="w-5 h-0.5 bg-current rounded-full transition-all group-hover:w-4" />
       </div>
-
-      {/* Outer Rotating Ring Decoration */}
-      <div className="absolute inset-0 border-2 border-transparent border-t-blue-500/30 border-r-purple-500/30 rounded-2xl opacity-0 group-hover:opacity-100 group-hover:rotate-180 transition-all duration-700 pointer-events-none" />
     </Button>
   );
 }
