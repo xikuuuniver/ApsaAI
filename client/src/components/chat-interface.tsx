@@ -1035,7 +1035,7 @@ export function ChatInterface() {
               {/* Main Slim Box */}
               <motion.div 
                 className={cn(
-                  "relative flex items-end gap-2 bg-white/90 dark:bg-slate-900/90 backdrop-blur-3xl rounded-[2.5rem] border border-slate-200 dark:border-slate-800 p-2 shadow-2xl transition-all duration-500",
+                  "relative flex items-end gap-2 bg-white/90 dark:bg-slate-900/90 backdrop-blur-3xl rounded-[1.5rem] border border-slate-200 dark:border-slate-800 p-1.5 shadow-2xl transition-all duration-500",
                   "focus-within:border-blue-500/40 focus-within:ring-[12px] focus-within:ring-blue-500/5",
                   "hover:border-slate-300 dark:hover:border-slate-700"
                 )}
@@ -1045,9 +1045,9 @@ export function ChatInterface() {
                     <Button 
                       variant="ghost" 
                       size="icon" 
-                      className="h-12 w-12 shrink-0 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 transition-all duration-300"
+                      className="h-10 w-10 shrink-0 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 transition-all duration-300"
                     >
-                      <Plus className={cn("h-6 w-6 transition-transform duration-500", showAttachMenu && "rotate-[135deg] text-blue-500")} />
+                      <Plus className={cn("h-5 w-5 transition-transform duration-500", showAttachMenu && "rotate-[135deg] text-blue-500")} />
                     </Button>
                   </PopoverTrigger>
                   <PopoverContent side="top" align="start" sideOffset={12} className="w-64 p-2 rounded-3xl shadow-2xl backdrop-blur-2xl bg-white/95 dark:bg-slate-900/95 border border-slate-200 dark:border-slate-800 z-[100] animate-in slide-in-from-bottom-2 duration-300">
@@ -1078,29 +1078,29 @@ export function ChatInterface() {
                   </PopoverContent>
                 </Popover>
 
-                <div id="chat-input" className="flex-1 flex items-center min-w-0 pb-3">
+                <div id="chat-input" className="flex-1 flex items-center min-w-0 pb-1.5">
                   <textarea
                     ref={textareaRef}
                     value={inputValue}
                     onChange={(e) => setInputValue(e.target.value)}
                     onKeyDown={handleKeyDown}
                     placeholder="Message Nexus..."
-                    className="w-full bg-transparent py-2 px-1 text-[16px] focus:outline-none min-h-[44px] max-h-[300px] leading-relaxed placeholder:text-slate-400 dark:placeholder:text-slate-500 resize-none overflow-y-auto custom-scrollbar"
+                    className="w-full bg-transparent py-2 px-1 text-[16px] focus:outline-none min-h-[40px] max-h-[300px] leading-relaxed placeholder:text-slate-400 dark:placeholder:text-slate-500 resize-none overflow-y-auto custom-scrollbar"
                     rows={1}
                   />
                 </div>
 
-                <div className="flex items-center gap-1.5 pb-1">
+                <div className="flex items-center gap-1.5 pb-0.5">
                   <Button
                     variant="ghost"
                     size="icon"
                     onClick={toggleVoiceInput}
                     className={cn(
-                      "h-11 w-11 rounded-full transition-all duration-300",
+                      "h-9 w-9 rounded-full transition-all duration-300",
                       isListening ? "bg-red-500 text-white shadow-lg shadow-red-500/20 animate-pulse" : "text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"
                     )}
                   >
-                    {isListening ? <MicOff className="h-5 w-5" /> : <Mic className="h-5 w-5" />}
+                    {isListening ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
                   </Button>
 
                   <Button
@@ -1108,25 +1108,22 @@ export function ChatInterface() {
                     disabled={(!inputValue.trim() && attachments.length === 0) || isProcessing}
                     onClick={handleSendMessage}
                     className={cn(
-                      "h-11 w-11 rounded-full transition-all duration-500 shadow-xl",
+                      "h-9 w-9 rounded-full transition-all duration-500 shadow-xl",
                       (inputValue.trim() || attachments.length > 0) 
                         ? "bg-blue-600 text-white scale-100 rotate-0 shadow-blue-500/20 shadow-lg" 
                         : "bg-slate-100 dark:bg-slate-800 text-slate-300 dark:text-slate-600 scale-90"
                     )}
                   >
                     {isProcessing ? (
-                      <div className="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                      <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
                     ) : (
-                      <ArrowUp className={cn("h-6 w-6 transition-transform duration-500", (inputValue.trim() || attachments.length > 0) ? "translate-y-0" : "translate-y-1 opacity-50")} />
+                      <ArrowUp className={cn("h-5 w-5 transition-transform duration-500", (inputValue.trim() || attachments.length > 0) ? "translate-y-0" : "translate-y-1 opacity-50")} />
                     )}
                   </Button>
                 </div>
               </motion.div>
 
               <div className="mt-4 flex flex-col items-center gap-1 pb-2">
-                <p className="text-[11px] font-semibold text-slate-400 dark:text-slate-600 tracking-tight">
-                  Nexus can make mistakes. Verify important info.
-                </p>
               </div>
             </div>
           </div>
