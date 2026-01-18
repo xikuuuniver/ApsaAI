@@ -945,28 +945,11 @@ export function ChatInterface() {
             <AnimatePresence>
               {followUpSuggestions.length > 0 && !isProcessing && (
                 <div className="relative group max-w-full">
-                  <motion.button
-                    onClick={() => setFollowUpSuggestions([])}
-                    className="absolute -top-8 right-2 h-7 w-7 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-500 hover:text-red-500 transition-all shadow-md z-30 group-hover:scale-110"
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    whileHover={{ scale: 1.15 }}
-                    whileTap={{ scale: 0.9 }}
-                    title="Dismiss all suggestions"
-                  >
-                    <X className="h-4 w-4" />
-                  </motion.button>
-
                   <motion.div 
-                    className="flex overflow-x-auto gap-2 pb-2 scrollbar-hide no-scrollbar"
-                    initial={{ opacity: 0, y: 20 }}
+                    className="flex overflow-x-auto gap-2 pb-3 no-scrollbar"
+                    initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: 10 }}
-                    style={{
-                      scrollbarWidth: 'none',
-                      msOverflowStyle: 'none',
-                      WebkitOverflowScrolling: 'touch'
-                    }}
                   >
                     {followUpSuggestions.map((suggestion, index) => (
                       <motion.div
@@ -974,12 +957,11 @@ export function ChatInterface() {
                         className="flex-shrink-0"
                         initial={{ opacity: 0, scale: 0.9 }}
                         animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.8 }}
                         transition={{ delay: index * 0.05 }}
                       >
                         <button
                           onClick={() => handleFollowUpClick(suggestion)}
-                          className="px-4 py-2 text-xs font-medium bg-white/50 dark:bg-slate-900/50 backdrop-blur-md border border-slate-200 dark:border-slate-800 rounded-full text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-800 transition-all whitespace-nowrap shadow-sm"
+                          className="px-4 py-2 text-xs font-semibold bg-white/40 dark:bg-slate-900/40 backdrop-blur-xl border border-slate-200/50 dark:border-slate-800/50 rounded-2xl text-slate-600 dark:text-slate-300 hover:bg-blue-600 hover:text-white hover:border-blue-600 transition-all shadow-sm active:scale-95"
                         >
                           {suggestion}
                         </button>
@@ -990,80 +972,132 @@ export function ChatInterface() {
               )}
             </AnimatePresence>
 
-            <div className="relative">
+            <div className="relative group/input-container">
               {/* Attachments Preview */}
               <AnimatePresence>
                 {attachments.length > 0 && (
                   <motion.div 
-                    className="flex flex-wrap gap-2 mb-3 px-2"
+                    className="flex flex-wrap gap-2 mb-4 px-2"
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: 10 }}
                   >
                     {attachments.map((att, index) => (
-                      <div key={index} className="flex items-center gap-2 px-3 py-1.5 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border border-slate-200 dark:border-slate-800 rounded-xl text-xs shadow-sm">
+                      <motion.div 
+                        key={index}
+                        initial={{ scale: 0.8, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        className="flex items-center gap-2 px-3 py-2 bg-blue-50/50 dark:bg-blue-900/10 backdrop-blur-md border border-blue-100/50 dark:border-blue-800/50 rounded-2xl text-xs shadow-sm"
+                      >
                         <div className="text-blue-500">{getFileIcon(att.type)}</div>
-                        <span className="max-w-[100px] truncate font-medium">{att.name}</span>
-                        <button onClick={() => removeAttachment(index)} className="text-slate-400 hover:text-red-500">
+                        <span className="max-w-[120px] truncate font-semibold text-slate-700 dark:text-slate-200">{att.name}</span>
+                        <button onClick={() => removeAttachment(index)} className="ml-1 p-0.5 rounded-full hover:bg-red-100 dark:hover:bg-red-900/30 text-slate-400 hover:text-red-500 transition-colors">
                           <X className="h-3.5 w-3.5" />
                         </button>
-                      </div>
+                      </motion.div>
                     ))}
                   </motion.div>
                 )}
               </AnimatePresence>
 
+              {/* Status Indicators */}
+              <div className="absolute -top-10 left-4 flex items-center gap-3 z-10">
+                <AnimatePresence>
+                  {searchStatus && (
+                    <motion.div 
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: 10 }}
+                      className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-[10px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider backdrop-blur-md"
+                    >
+                      <Globe className="h-3 w-3 animate-spin" />
+                      <span>{searchStatus}</span>
+                    </motion.div>
+                  )}
+                  {isProcessing && !searchStatus && (
+                    <motion.div 
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: 10 }}
+                      className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-[10px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-wider backdrop-blur-md"
+                    >
+                      <div className="flex gap-1">
+                        <motion.span animate={{ opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 1.5 }} className="w-1 h-1 bg-current rounded-full"></motion.span>
+                        <motion.span animate={{ opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 1.5, delay: 0.2 }} className="w-1 h-1 bg-current rounded-full"></motion.span>
+                        <motion.span animate={{ opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 1.5, delay: 0.4 }} className="w-1 h-1 bg-current rounded-full"></motion.span>
+                      </div>
+                      <span>Thinking</span>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+
               {/* Main Slim Box */}
               <motion.div 
                 className={cn(
-                  "relative flex items-end gap-2 bg-white/80 dark:bg-slate-900/80 backdrop-blur-2xl rounded-[2rem] border border-slate-200/60 dark:border-slate-800/60 p-2 shadow-2xl transition-all duration-500",
-                  "focus-within:border-blue-500/50 focus-within:ring-4 focus-within:ring-blue-500/5"
+                  "relative flex items-end gap-2 bg-white/90 dark:bg-slate-900/90 backdrop-blur-3xl rounded-[2.5rem] border border-slate-200 dark:border-slate-800 p-2 shadow-2xl transition-all duration-500",
+                  "focus-within:border-blue-500/40 focus-within:ring-[12px] focus-within:ring-blue-500/5",
+                  "hover:border-slate-300 dark:hover:border-slate-700"
                 )}
               >
                 <Popover open={showAttachMenu} onOpenChange={setShowAttachMenu}>
                   <PopoverTrigger asChild>
-                    <Button variant="ghost" size="icon" className="h-10 w-10 shrink-0 rounded-full">
-                      <Plus className={cn("h-5 w-5 transition-transform", showAttachMenu && "rotate-45")} />
+                    <Button 
+                      variant="ghost" 
+                      size="icon" 
+                      className="h-12 w-12 shrink-0 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 transition-all duration-300"
+                    >
+                      <Plus className={cn("h-6 w-6 transition-transform duration-500", showAttachMenu && "rotate-[135deg] text-blue-500")} />
                     </Button>
                   </PopoverTrigger>
-                  <PopoverContent side="top" align="start" className="w-56 p-2 rounded-2xl shadow-2xl backdrop-blur-xl">
-                    <div className="grid gap-1">
-                      <Button variant="ghost" className="justify-start gap-3 rounded-xl h-10" onClick={handleFilesClick}>
-                        <Paperclip className="h-4 w-4 text-blue-500" />
-                        <span className="text-sm font-medium">Files</span>
+                  <PopoverContent side="top" align="start" sideOffset={12} className="w-64 p-2 rounded-3xl shadow-2xl backdrop-blur-2xl bg-white/95 dark:bg-slate-900/95 border border-slate-200 dark:border-slate-800 z-[100] animate-in slide-in-from-bottom-2 duration-300">
+                    <div className="grid gap-1.5">
+                      <Button variant="ghost" className="justify-start gap-3 rounded-2xl h-12 hover:bg-blue-50 dark:hover:bg-blue-900/20" onClick={handleFilesClick}>
+                        <div className="h-8 w-8 rounded-xl bg-blue-100 dark:bg-blue-900/40 flex items-center justify-center text-blue-600 dark:text-blue-400">
+                          <Paperclip className="h-4 w-4" />
+                        </div>
+                        <span className="text-sm font-semibold">Upload Files</span>
                       </Button>
-                      <Button variant="ghost" className="justify-start gap-3 rounded-xl h-10" onClick={handleCameraClick}>
-                        <Camera className="h-4 w-4 text-purple-500" />
-                        <span className="text-sm font-medium">Camera</span>
+                      <Button variant="ghost" className="justify-start gap-3 rounded-2xl h-12 hover:bg-purple-50 dark:hover:bg-purple-900/20" onClick={handleCameraClick}>
+                        <div className="h-8 w-8 rounded-xl bg-purple-100 dark:bg-purple-900/40 flex items-center justify-center text-purple-600 dark:text-purple-400">
+                          <Camera className="h-4 w-4" />
+                        </div>
+                        <span className="text-sm font-semibold">Take Photo</span>
                       </Button>
-                      <Button variant="ghost" className={cn("justify-start gap-3 rounded-xl h-10", webSearchEnabled && "bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600")} onClick={toggleWebSearch}>
-                        <Globe className={cn("h-4 w-4", webSearchEnabled ? "text-emerald-500" : "text-slate-400")} />
-                        <span className="text-sm font-medium">Web Search</span>
+                      <Button variant="ghost" className={cn("justify-start gap-3 rounded-2xl h-12", webSearchEnabled ? "bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600" : "hover:bg-emerald-50 dark:hover:bg-emerald-900/20")} onClick={toggleWebSearch}>
+                        <div className={cn("h-8 w-8 rounded-xl flex items-center justify-center transition-colors", webSearchEnabled ? "bg-emerald-500 text-white" : "bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400")}>
+                          <Globe className="h-4 w-4" />
+                        </div>
+                        <div className="flex flex-col items-start leading-tight">
+                          <span className="text-sm font-semibold">Web Search</span>
+                          <span className="text-[10px] text-slate-500 dark:text-slate-400 font-medium">Search the internet</span>
+                        </div>
+                        {webSearchEnabled && <div className="ml-auto h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />}
                       </Button>
                     </div>
                   </PopoverContent>
                 </Popover>
 
-              <div id="chat-input" className="flex-1 flex items-center min-w-0 pb-2">
-                <textarea
-                  ref={textareaRef}
-                  value={inputValue}
-                  onChange={(e) => setInputValue(e.target.value)}
-                  onKeyDown={handleKeyDown}
-                  placeholder="Ask Nexus anything..."
-                  className="w-full bg-transparent py-2.5 px-1 text-sm focus:outline-none min-h-[40px] max-h-[200px] leading-relaxed placeholder:text-slate-400 dark:placeholder:text-slate-500 resize-none overflow-hidden"
-                  rows={1}
-                />
-              </div>
+                <div id="chat-input" className="flex-1 flex items-center min-w-0 pb-3">
+                  <textarea
+                    ref={textareaRef}
+                    value={inputValue}
+                    onChange={(e) => setInputValue(e.target.value)}
+                    onKeyDown={handleKeyDown}
+                    placeholder="Message Nexus..."
+                    className="w-full bg-transparent py-2 px-1 text-[16px] focus:outline-none min-h-[44px] max-h-[300px] leading-relaxed placeholder:text-slate-400 dark:placeholder:text-slate-500 resize-none overflow-y-auto custom-scrollbar"
+                    rows={1}
+                  />
+                </div>
 
-                <div className="flex items-center gap-1">
+                <div className="flex items-center gap-1.5 pb-1">
                   <Button
                     variant="ghost"
                     size="icon"
                     onClick={toggleVoiceInput}
                     className={cn(
-                      "h-10 w-10 rounded-full",
-                      isListening ? "bg-red-50 text-red-500 animate-pulse" : "text-slate-400"
+                      "h-11 w-11 rounded-full transition-all duration-300",
+                      isListening ? "bg-red-500 text-white shadow-lg shadow-red-500/20 animate-pulse" : "text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"
                     )}
                   >
                     {isListening ? <MicOff className="h-5 w-5" /> : <Mic className="h-5 w-5" />}
@@ -1074,31 +1108,25 @@ export function ChatInterface() {
                     disabled={(!inputValue.trim() && attachments.length === 0) || isProcessing}
                     onClick={handleSendMessage}
                     className={cn(
-                      "h-10 w-10 rounded-full transition-all",
-                      (inputValue.trim() || attachments.length > 0) ? "bg-blue-600 text-white" : "bg-slate-100 text-slate-400"
+                      "h-11 w-11 rounded-full transition-all duration-500 shadow-xl",
+                      (inputValue.trim() || attachments.length > 0) 
+                        ? "bg-blue-600 text-white scale-100 rotate-0 shadow-blue-500/20 shadow-lg" 
+                        : "bg-slate-100 dark:bg-slate-800 text-slate-300 dark:text-slate-600 scale-90"
                     )}
                   >
-                    {isProcessing ? <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" /> : <ArrowUp className="h-5 w-5" />}
+                    {isProcessing ? (
+                      <div className="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                    ) : (
+                      <ArrowUp className={cn("h-6 w-6 transition-transform duration-500", (inputValue.trim() || attachments.length > 0) ? "translate-y-0" : "translate-y-1 opacity-50")} />
+                    )}
                   </Button>
                 </div>
               </motion.div>
 
-              <div className="absolute -bottom-6 left-6 flex items-center gap-4">
-                {searchStatus && (
-                  <div className="flex items-center gap-1.5 text-[10px] font-bold text-emerald-500 uppercase">
-                    <Globe className="h-3 w-3 animate-spin" /> {searchStatus}
-                  </div>
-                )}
-                {isProcessing && !searchStatus && (
-                  <div className="flex items-center gap-2 text-[10px] font-bold text-slate-400 uppercase">
-                    <span className="flex gap-1">
-                      <span className="w-1 h-1 bg-blue-500 rounded-full animate-bounce"></span>
-                      <span className="w-1 h-1 bg-blue-500 rounded-full animate-bounce [animation-delay:0.1s]"></span>
-                      <span className="w-1 h-1 bg-blue-500 rounded-full animate-bounce [animation-delay:0.2s]"></span>
-                    </span>
-                    Thinking
-                  </div>
-                )}
+              <div className="mt-4 flex flex-col items-center gap-1 pb-2">
+                <p className="text-[11px] font-semibold text-slate-400 dark:text-slate-600 tracking-tight">
+                  Nexus can make mistakes. Verify important info.
+                </p>
               </div>
             </div>
           </div>
