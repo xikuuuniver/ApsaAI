@@ -670,14 +670,27 @@ export function ChatInterface() {
       />
       
       {/* Header */}
-      <header className="sticky top-0 z-[100] flex items-center justify-between border-none bg-gradient-to-b from-white via-white/90 to-transparent dark:from-slate-950 dark:via-slate-950/90 dark:to-transparent px-4 md:px-6 py-3 transition-all duration-300 pointer-events-none">
-        <div className="flex items-center gap-2 pointer-events-auto">
+      <header className="sticky top-0 z-[100] flex items-center justify-between border-b border-slate-200/50 dark:border-slate-800/50 bg-white/80 dark:bg-slate-950/80 backdrop-blur-xl px-4 md:px-6 py-4 transition-all duration-300">
+        <div className="flex items-center gap-4">
           <HamburgerButton onClick={() => setSidebarOpen(true)} />
+          <div className="flex flex-col">
+            <h1 className="text-lg font-black tracking-tight bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent drop-shadow-sm">
+              Nexus AI
+            </h1>
+            <div className="flex items-center gap-1.5">
+              <span className="flex h-1.5 w-1.5 rounded-full bg-green-500 animate-pulse shadow-[0_0_8px_rgba(34,197,94,0.6)]" />
+              <span className="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">
+                Powered by Apsa AI
+              </span>
+            </div>
+          </div>
+        </div>
+        <div className="flex items-center gap-3">
           <Button
             variant="ghost"
             size="icon"
             onClick={toggleTheme}
-            className="h-10 w-10 text-slate-500 hover:text-slate-900 dark:hover:text-white transition-all duration-500 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full relative overflow-hidden group shrink-0"
+            className="h-10 w-10 text-slate-500 hover:text-blue-600 dark:hover:text-blue-400 transition-all duration-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-xl relative overflow-hidden group shrink-0 border border-transparent hover:border-blue-200/50"
           >
             <motion.div
               initial={false}
@@ -713,19 +726,14 @@ export function ChatInterface() {
               <SparklesIcon className="h-5 w-5 text-cyan-400" />
             </motion.div>
           </Button>
-          <div className="hidden sm:block">
-            <h1 className="text-sm font-semibold text-slate-900 dark:text-white">{t("app.title")}</h1>
-            <p className="text-[10px] text-slate-500 dark:text-slate-400 font-medium">{t("app.subtitle")}</p>
-          </div>
-        </div>
-        <div className="flex items-center gap-2 pointer-events-auto">
+
            {/* New Chat Button */}
            <Button
              id="new-chat-btn"
              variant="ghost"
              size="icon"
              onClick={handleNewSession}
-             className="h-9 w-9 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all button-animate"
+             className="h-10 w-10 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 dark:hover:text-blue-400 transition-all shadow-sm border border-transparent hover:border-blue-200/50"
              title="Start new chat"
            >
              <Plus className="h-5 w-5" />
