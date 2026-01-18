@@ -350,5 +350,3 @@ export function AppSidebar({ isOpen, onClose }: AppSidebarProps) {
     </div>
   );
 }
-  );
-}
