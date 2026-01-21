@@ -89,6 +89,21 @@ export function AppSidebar({ isOpen, onClose }: AppSidebarProps) {
     { id: "PARALLEL_TIMELINES" as Mode, labelKey: "mode.PARALLEL_TIMELINES.label", icon: Clock },
   ];
 
+  const personas = [
+    { id: "architect", name: "Architect", icon: Layers, desc: "System design & structure" },
+    { id: "developer", name: "Developer", icon: Cpu, desc: "Clean code & debugging" },
+    { id: "ux", name: "UX Designer", icon: Sparkles, desc: "User experience & UI" },
+  ];
+
+  const spaces = [
+    { id: "personal", name: "Personal Space", icon: User },
+    { id: "team-alpha", name: "Team Alpha", icon: MessageSquare },
+  ];
+
+  const [currentPersona, setCurrentPersona] = useState("developer");
+  const [spacesExpanded, setSpacesExpanded] = useState(false);
+  const [personasExpanded, setPersonasExpanded] = useState(false);
+
   const currentConversation = conversations.find(c => c.id === currentConversationId);
 
   return (
@@ -261,6 +276,115 @@ export function AppSidebar({ isOpen, onClose }: AppSidebarProps) {
                     </button>
                   );
                 })}
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+
+        {/* Collaborative Spaces */}
+        <div className="px-3 mb-4">
+          <button
+            onClick={() => setSpacesExpanded(!spacesExpanded)}
+            className={cn(
+              "w-full flex items-center justify-between px-4 py-3 rounded-2xl transition-all duration-300 group",
+              spacesExpanded 
+                ? "bg-white dark:bg-slate-800 shadow-md text-emerald-600 dark:text-emerald-400" 
+                : "text-slate-600 dark:text-slate-400 hover:bg-white/80 dark:hover:bg-slate-800/80"
+            )}
+          >
+            <div className="flex items-center gap-3">
+              <div className={cn(
+                "p-2 rounded-xl transition-colors",
+                spacesExpanded ? "bg-emerald-100 dark:bg-emerald-900/30" : "bg-slate-100 dark:bg-slate-800 group-hover:bg-white dark:group-hover:bg-slate-700"
+              )}>
+                <Layers className="h-4 w-4" />
+              </div>
+              <span className="text-sm font-black tracking-tight uppercase">Collab Spaces</span>
+            </div>
+            <ChevronDown className={cn(
+              "h-4 w-4 transition-transform duration-300 opacity-50",
+              spacesExpanded && "rotate-180 opacity-100"
+            )} />
+          </button>
+
+          <AnimatePresence>
+            {spacesExpanded && (
+              <motion.div
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: "auto", opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                className="overflow-hidden mt-2 space-y-1 px-1"
+              >
+                {spaces.map((space) => (
+                  <button
+                    key={space.id}
+                    className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-white dark:hover:bg-slate-800 transition-all text-slate-600 dark:text-slate-400 group"
+                  >
+                    <space.icon className="h-4 w-4 opacity-70 group-hover:opacity-100" />
+                    <span className="text-xs font-bold">{space.name}</span>
+                  </button>
+                ))}
+                <button className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl border border-dashed border-slate-300 dark:border-slate-700 text-slate-400 hover:text-emerald-500 hover:border-emerald-500/50 transition-all">
+                  <Plus className="h-3.5 w-3.5" />
+                  <span className="text-[11px] font-bold uppercase">New Space</span>
+                </button>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+
+        {/* Expert Personas */}
+        <div className="px-3 mb-4">
+          <button
+            onClick={() => setPersonasExpanded(!personasExpanded)}
+            className={cn(
+              "w-full flex items-center justify-between px-4 py-3 rounded-2xl transition-all duration-300 group",
+              personasExpanded 
+                ? "bg-white dark:bg-slate-800 shadow-md text-indigo-600 dark:text-indigo-400" 
+                : "text-slate-600 dark:text-slate-400 hover:bg-white/80 dark:hover:bg-slate-800/80"
+            )}
+          >
+            <div className="flex items-center gap-3">
+              <div className={cn(
+                "p-2 rounded-xl transition-colors",
+                personasExpanded ? "bg-indigo-100 dark:bg-indigo-900/30" : "bg-slate-100 dark:bg-slate-800 group-hover:bg-white dark:group-hover:bg-slate-700"
+              )}>
+                <User className="h-4 w-4" />
+              </div>
+              <span className="text-sm font-black tracking-tight uppercase">Expert Personas</span>
+            </div>
+            <ChevronDown className={cn(
+              "h-4 w-4 transition-transform duration-300 opacity-50",
+              personasExpanded && "rotate-180 opacity-100"
+            )} />
+          </button>
+
+          <AnimatePresence>
+            {personasExpanded && (
+              <motion.div
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: "auto", opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                className="overflow-hidden mt-2 space-y-1 px-1"
+              >
+                {personas.map((persona) => (
+                  <button
+                    key={persona.id}
+                    onClick={() => setCurrentPersona(persona.id)}
+                    className={cn(
+                      "w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all border",
+                      currentPersona === persona.id
+                        ? "bg-indigo-50 dark:bg-indigo-900/20 border-indigo-100 dark:border-indigo-800 text-indigo-700 dark:text-indigo-300"
+                        : "border-transparent text-slate-600 dark:text-slate-400 hover:bg-white dark:hover:bg-slate-800"
+                    )}
+                  >
+                    <persona.icon className="h-3.5 w-3.5 shrink-0" />
+                    <div className="text-left">
+                      <div className="text-[11px] font-bold leading-none">{persona.name}</div>
+                      <div className="text-[9px] opacity-70 truncate">{persona.desc}</div>
+                    </div>
+                  </button>
+                ))}
               </motion.div>
             )}
           </AnimatePresence>
