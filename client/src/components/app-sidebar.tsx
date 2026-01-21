@@ -90,9 +90,11 @@ export function AppSidebar({ isOpen, onClose }: AppSidebarProps) {
   ];
 
   const personas = [
-    { id: "architect", name: "Architect", icon: Layers, desc: "System design & structure" },
-    { id: "developer", name: "Developer", icon: Cpu, desc: "Clean code & debugging" },
-    { id: "ux", name: "UX Designer", icon: Sparkles, desc: "User experience & UI" },
+    { id: "default", name: "Default", icon: Sparkles, desc: "Standard AI behavior" },
+    { id: "analytical", name: "Analytical", icon: Brain, desc: "Logic & data focused" },
+    { id: "creative", name: "Creative", icon: Zap, desc: "Imaginative & expressive" },
+    { id: "practical", name: "Practical", icon: Cpu, desc: "Efficient & actionable" },
+    { id: "critical", name: "Critical", icon: Info, desc: "Evaluative & rigorous" },
   ];
 
   const spaces = [
@@ -100,7 +102,7 @@ export function AppSidebar({ isOpen, onClose }: AppSidebarProps) {
     { id: "team-alpha", name: "Team Alpha", icon: MessageSquare },
   ];
 
-  const [currentPersona, setCurrentPersona] = useState("developer");
+  const [currentPersona, setCurrentPersona] = useState("default");
   const [spacesExpanded, setSpacesExpanded] = useState(false);
   const [personasExpanded, setPersonasExpanded] = useState(false);
 
@@ -333,7 +335,7 @@ export function AppSidebar({ isOpen, onClose }: AppSidebarProps) {
           </AnimatePresence>
         </div>
 
-        {/* Expert Personas */}
+        {/* Expert Personas as Mode */}
         <div className="px-3 mb-4">
           <button
             onClick={() => setPersonasExpanded(!personasExpanded)}
@@ -349,9 +351,9 @@ export function AppSidebar({ isOpen, onClose }: AppSidebarProps) {
                 "p-2 rounded-xl transition-colors",
                 personasExpanded ? "bg-indigo-100 dark:bg-indigo-900/30" : "bg-slate-100 dark:bg-slate-800 group-hover:bg-white dark:group-hover:bg-slate-700"
               )}>
-                <User className="h-4 w-4" />
+                <Zap className="h-4 w-4" />
               </div>
-              <span className="text-sm font-black tracking-tight uppercase">Expert Personas</span>
+              <span className="text-sm font-black tracking-tight uppercase">Mode</span>
             </div>
             <ChevronDown className={cn(
               "h-4 w-4 transition-transform duration-300 opacity-50",
