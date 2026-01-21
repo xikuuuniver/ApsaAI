@@ -310,9 +310,21 @@ export function MessageBubble({ message }: MessageBubbleProps) {
         isUser ? "flex-row-reverse" : "flex-row"
       )}
     >
+      {/* Avatar (Left for AI, Right for User) */}
+      <div className="flex flex-col items-center gap-2 mt-1">
+        <div className={cn(
+          "w-10 h-10 rounded-2xl flex items-center justify-center shadow-lg transition-transform hover:rotate-12",
+          isUser 
+            ? "bg-slate-900 dark:bg-white text-white dark:text-slate-900" 
+            : "bg-blue-600 dark:bg-blue-500 text-white"
+        )}>
+          {isUser ? <User className="h-5 w-5" /> : <Bot className="h-5 w-5" />}
+        </div>
+      </div>
+
       {/* Content */}
       <div className={cn(
-        "flex flex-col gap-1 w-full",
+        "flex flex-col gap-1 max-w-[85%] md:max-w-[80%]",
         isUser ? "items-end" : "items-start"
       )}>
         
