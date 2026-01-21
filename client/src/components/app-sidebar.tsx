@@ -353,7 +353,7 @@ export function AppSidebar({ isOpen, onClose }: AppSidebarProps) {
               )}>
                 <Zap className="h-4 w-4" />
               </div>
-              <span className="text-sm font-black tracking-tight uppercase">Mode</span>
+              <span className="text-sm font-black tracking-tight uppercase">Modes</span>
             </div>
             <ChevronDown className={cn(
               "h-4 w-4 transition-transform duration-300 opacity-50",
