@@ -152,7 +152,7 @@ export default function AuthPage() {
         {/* Auth Card */}
         <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-700 p-6">
           {/* Toggle */}
-          <div className="flex bg-slate-100 dark:bg-slate-900 rounded-lg p-1 mb-6">
+          <div className="hidden bg-slate-100 dark:bg-slate-900 rounded-lg p-1 mb-6">
             <button
               onClick={() => { setIsLogin(true); setError(""); }}
               className={`flex-1 py-2 text-sm font-medium rounded-md transition-all ${
@@ -177,8 +177,35 @@ export default function AuthPage() {
             </button>
           </div>
 
+          {/* Google Sign-In */}
+          <div className="relative my-6">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-slate-200 dark:border-slate-700" />
+            </div>
+            <div className="relative flex justify-center text-xs">
+              <span className="bg-white dark:bg-slate-800 px-3 text-slate-500">
+                or continue with
+              </span>
+            </div>
+          </div>
+
+          <Button
+            className="w-full bg-white dark:bg-slate-800 text-slate-900 dark:text-white border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 flex items-center justify-center gap-3 py-6 rounded-2xl shadow-sm transition-all group"
+            onClick={() => window.location.href = "/api/login"}
+          >
+            <div className="bg-white p-1.5 rounded-lg shadow-sm group-hover:scale-110 transition-transform">
+              <svg width="18" height="18" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg">
+                <path d="M17.64 9.20455C17.64 8.56636 17.5827 7.95273 17.4764 7.36364H9V10.845H13.8436C13.635 11.97 13.0009 12.9232 12.0477 13.5614V15.8195H14.9564C16.6582 14.2527 17.64 11.9455 17.64 9.20455Z" fill="#4285F4"/>
+                <path d="M9 18C11.43 18 13.4673 17.1941 14.9564 15.8195L12.0477 13.5614C11.2418 14.1014 10.2109 14.4205 9 14.4205C6.65591 14.4205 4.67182 12.8373 3.96409 10.71H0.957273V13.0418C2.43818 15.9832 5.48182 18 9 18Z" fill="#34A853"/>
+                <path d="M3.96409 10.71C3.78409 10.17 3.68182 9.59318 3.68182 9C3.68182 8.40682 3.78409 7.83 3.96409 7.29V4.95818H0.957273C0.347727 6.17318 0 7.54773 0 9C0 10.4523 0.347727 11.8268 0.957273 13.0418L3.96409 10.71Z" fill="#FBBC05"/>
+                <path d="M9 3.57955C10.3214 3.57955 11.5077 4.03364 12.4405 4.92545L15.0218 2.34409C13.4632 0.891818 11.4259 0 9 0C5.48182 0 2.43818 2.01682 0.957273 4.95818L3.96409 7.29C4.67182 5.16273 6.65591 3.57955 9 3.57955Z" fill="#EA4335"/>
+              </svg>
+            </div>
+            <span className="font-bold">Continue with Google</span>
+          </Button>
+
           {/* Form */}
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="hidden">
             <AnimatePresence mode="wait">
               {!isLogin && (
                 <motion.div
@@ -297,7 +324,7 @@ export default function AuthPage() {
           </form>
 
           {/* Google Sign-In */}
-          {googleEnabled && (
+          {false && googleEnabled && (
             <>
               <div className="relative my-6">
                 <div className="absolute inset-0 flex items-center">
