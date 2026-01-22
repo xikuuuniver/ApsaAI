@@ -352,7 +352,7 @@ export function AppSidebar({ isOpen, onClose }: AppSidebarProps) {
                 exit={{ height: 0, opacity: 0 }}
                 className="overflow-hidden mb-2"
               >
-                <div className="mt-1 p-4 rounded-2xl bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 space-y-4">
+                <div className="mt-1 p-3 rounded-xl bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 space-y-3 max-h-[300px] overflow-y-auto custom-scrollbar">
                   {/* Conversation Info */}
                   <div className="space-y-2">
                     <h4 className="text-[10px] font-black text-blue-500 uppercase tracking-wider">Conversation Info</h4>
