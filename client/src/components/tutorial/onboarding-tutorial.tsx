@@ -56,9 +56,14 @@ export function OnboardingTutorial() {
     };
     window.addEventListener('nexus-trigger-tutorial', handleReset);
     
+    // Check if tutorial should show automatically
     const hasSeenTutorial = localStorage.getItem('nexus_tutorial_seen');
     if (!hasSeenTutorial) {
-      setTimeout(() => setIsVisible(true), 1500);
+      const timer = setTimeout(() => setIsVisible(true), 1500);
+      return () => {
+        window.removeEventListener('nexus-trigger-tutorial', handleReset);
+        clearTimeout(timer);
+      };
     }
     
     return () => window.removeEventListener('nexus-trigger-tutorial', handleReset);
