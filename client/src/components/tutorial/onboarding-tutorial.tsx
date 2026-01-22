@@ -50,23 +50,28 @@ export function OnboardingTutorial() {
   const [targetRect, setTargetRect] = useState<DOMRect | null>(null);
 
   useEffect(() => {
-    const handleReset = () => {
+    const handleTrigger = () => {
+      console.log("Tutorial trigger received");
       setCurrentStep(0);
       setIsVisible(true);
     };
-    window.addEventListener('nexus-trigger-tutorial', handleReset);
+    
+    window.addEventListener('nexus-trigger-tutorial', handleTrigger);
     
     // Check if tutorial should show automatically
     const hasSeenTutorial = localStorage.getItem('nexus_tutorial_seen');
     if (!hasSeenTutorial) {
-      const timer = setTimeout(() => setIsVisible(true), 1500);
+      const timer = setTimeout(() => {
+        console.log("Showing initial tutorial");
+        setIsVisible(true);
+      }, 1500);
       return () => {
-        window.removeEventListener('nexus-trigger-tutorial', handleReset);
+        window.removeEventListener('nexus-trigger-tutorial', handleTrigger);
         clearTimeout(timer);
       };
     }
     
-    return () => window.removeEventListener('nexus-trigger-tutorial', handleReset);
+    return () => window.removeEventListener('nexus-trigger-tutorial', handleTrigger);
   }, []);
 
   useEffect(() => {

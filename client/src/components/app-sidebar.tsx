@@ -469,7 +469,10 @@ export function AppSidebar({ isOpen, onClose }: AppSidebarProps) {
           </div>
           
           <button
-            onClick={() => {
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              console.log("Tutorial button clicked");
               window.dispatchEvent(new CustomEvent('nexus-trigger-tutorial'));
               if (onClose) onClose();
             }}
