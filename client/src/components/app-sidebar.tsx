@@ -476,10 +476,10 @@ export function AppSidebar({ isOpen, onClose }: AppSidebarProps) {
               window.dispatchEvent(new CustomEvent('nexus-trigger-tutorial'));
               if (onClose) onClose();
             }}
-            className="w-full flex items-center justify-center gap-2 px-3 py-2 mt-1 rounded-lg bg-slate-900 dark:bg-white text-white dark:text-slate-900 transition-all shadow-md hover:opacity-90 active:scale-95"
+            className="w-full flex items-center justify-center gap-2 px-4 py-3 mt-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-500/20 hover:shadow-blue-500/40 transition-all active:scale-95 group"
           >
-            <HelpCircle className="h-3.5 w-3.5" />
-            <span className="text-[10px] font-bold uppercase tracking-wider">Tutorial</span>
+            <HelpCircle className="h-4 w-4 transition-transform group-hover:rotate-12" />
+            <span className="text-xs font-bold uppercase tracking-wider">Tutorial</span>
           </button>
         </div>
       </div>

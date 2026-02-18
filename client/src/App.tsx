@@ -10,6 +10,7 @@ import { ModeProvider } from "@/contexts/mode-context";
 import { LanguageProvider } from "@/contexts/language-context";
 import { ConversationProvider } from "@/contexts/conversation-context";
 import { GoogleAuthProvider, useGoogleAuth } from "@/contexts/google-auth-context";
+import { OnboardingTutorial } from "@/components/tutorial/onboarding-tutorial";
 import Home from "@/pages/Home";
 import AccountPage from "@/pages/account";
 import SettingsPage from "@/pages/settings";
@@ -59,6 +60,7 @@ function App() {
                 <AppWithGoogleAuth>
                   <TooltipProvider>
                     <Toaster />
+                    <OnboardingTutorial />
                     <Router />
                   </TooltipProvider>
                 </AppWithGoogleAuth>
