@@ -13,10 +13,10 @@ interface Step {
 
 const steps: Step[] = [
   {
-    targetId: 'hamburger-btn',
+    targetId: 'swipe-trigger',
     title: 'Menu',
-    description: 'Click here to access all your conversations. We have special thinking engines like "What If", "Chain Reaction", and "Parallel Timelines" to help you solve complex problems.',
-    position: 'bottom'
+    description: 'Swipe up from the bottom of the screen to access all your conversations. We have special thinking engines like "What If", "Chain Reaction", and "Parallel Timelines" to help you solve complex problems.',
+    position: 'top'
   },
   {
     targetId: 'new-chat-btn',
@@ -37,7 +37,7 @@ const steps: Step[] = [
     position: 'bottom'
   },
   {
-    targetId: 'chat-input-container',
+    targetId: 'chat-input',
     title: 'Start Chatting',
     description: 'Type your questions here to start a conversation with Nexus AI.',
     position: 'top'
@@ -155,15 +155,15 @@ export function OnboardingTutorial() {
           zIndex: 101
         } }
       >
-        <Card className="p-4 border-primary/30 bg-background/95 backdrop-blur-md shadow-2xl relative overflow-hidden w-full max-w-[320px] pointer-events-auto">
-          {step.targetId === 'hamburger-btn' && (
+        <Card className="p-4 border-primary/30 bg-background/95 backdrop-blur-md shadow-2xl relative overflow-hidden w-full max-w-[320px]">
+          {step.targetId === 'swipe-trigger' && (
             <div className="fixed inset-0 pointer-events-none flex items-center justify-center z-[-1]">
               <div className="flex flex-col items-center gap-8">
                 {[...Array(4)].map((_, i) => (
                   <motion.div
                     key={i}
-                    initial={{ opacity: 0, x: -50 }}
-                    animate={{ opacity: [0, 0.4, 0], x: [-100, 200] }}
+                    initial={{ opacity: 0, y: 50 }}
+                    animate={{ opacity: [0, 0.4, 0], y: [100, -200] }}
                     transition={{ 
                       repeat: Infinity, 
                       duration: 2, 
@@ -172,7 +172,7 @@ export function OnboardingTutorial() {
                     }}
                     className="text-primary font-bold text-[120px] leading-none select-none"
                   >
-                    &gt;
+                    ^
                   </motion.div>
                 ))}
               </div>
