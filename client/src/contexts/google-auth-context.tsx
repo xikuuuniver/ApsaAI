@@ -19,6 +19,13 @@ export function GoogleAuthProvider({ children }: { children: ReactNode }) {
   const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
+    const timer = setTimeout(() => {
+      if (!isReady) {
+        console.log("Google auth check timed out, proceeding...");
+        setIsReady(true);
+      }
+    }, 2000);
+
     fetch("/api/auth/google-client-id")
       .then(res => res.json())
       .then(data => {
@@ -28,7 +35,8 @@ export function GoogleAuthProvider({ children }: { children: ReactNode }) {
       .catch(() => {
         setClientId(null);
         setIsReady(true);
-      });
+      })
+      .finally(() => clearTimeout(timer));
   }, []);
 
   return (

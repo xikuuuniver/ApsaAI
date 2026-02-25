@@ -13,12 +13,6 @@ interface Step {
 
 const steps: Step[] = [
   {
-    targetId: 'swipe-trigger',
-    title: 'Menu',
-    description: 'Swipe up from the bottom of the screen to access all your conversations. We have special thinking engines like "What If", "Chain Reaction", and "Parallel Timelines" to help you solve complex problems.',
-    position: 'top'
-  },
-  {
     targetId: 'new-chat-btn',
     title: 'New Chat',
     description: 'Start a fresh conversation anytime by clicking the New Chat button.',
@@ -80,6 +74,16 @@ export function OnboardingTutorial() {
       if (element) {
         element.scrollIntoView({ behavior: 'smooth', block: 'center' });
         setTargetRect(element.getBoundingClientRect());
+      } else {
+        console.warn(`Tutorial target element not found: ${steps[currentStep].targetId}`);
+        // If first step fails, skip to next or just show something
+        if (currentStep === 0 && steps.length > 1) {
+          // Try to find any other step's element
+          const nextElement = document.getElementById(steps[1].targetId);
+          if (nextElement) {
+            setCurrentStep(1);
+          }
+        }
       }
     }
   }, [isVisible, currentStep]);

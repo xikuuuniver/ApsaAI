@@ -592,7 +592,7 @@ export function ChatInterface() {
   ];
 
   return (
-    <div className="flex h-screen w-full flex-col bg-slate-50 dark:bg-slate-950 relative">
+    <div className="flex h-screen w-full flex-col bg-slate-50 dark:bg-slate-950 relative overflow-hidden">
       <ParticlesBackground />
       <OnboardingTutorial />
 
@@ -670,7 +670,7 @@ export function ChatInterface() {
       />
       
       {/* Header */}
-      <header className="sticky top-0 z-[100] flex items-center justify-between border-none bg-gradient-to-b from-white via-white/90 to-transparent dark:from-slate-950 dark:via-slate-950/90 dark:to-transparent px-4 md:px-6 py-3 transition-all duration-300 pointer-events-none">
+      <header className="sticky top-0 z-[100] flex items-center justify-between border-none bg-gradient-to-b from-white via-white/90 to-transparent dark:from-slate-950 dark:via-slate-950/90 dark:to-transparent px-4 md:px-6 py-3 transition-all duration-300">
         <div className="flex items-center gap-2 pointer-events-auto">
           <HamburgerButton onClick={() => setSidebarOpen(true)} />
           <Button

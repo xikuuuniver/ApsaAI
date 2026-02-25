@@ -35,7 +35,11 @@ function AppWithGoogleAuth({ children }: { children: React.ReactNode }) {
   const { clientId, isReady } = useGoogleAuth();
 
   if (!isReady) {
-    return <>{children}</>;
+    return (
+      <div className="flex h-screen w-full items-center justify-center bg-slate-50 dark:bg-slate-950">
+        <div className="animate-pulse text-slate-400 font-medium">Loading Nexus...</div>
+      </div>
+    );
   }
 
   if (clientId) {
@@ -60,7 +64,6 @@ function App() {
                 <AppWithGoogleAuth>
                   <TooltipProvider>
                     <Toaster />
-                    <OnboardingTutorial />
                     <Router />
                   </TooltipProvider>
                 </AppWithGoogleAuth>
