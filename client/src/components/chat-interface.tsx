@@ -849,7 +849,7 @@ export function ChatInterface() {
       {/* Main Chat Area */}
       <main className="flex-1 overflow-hidden flex flex-col relative z-10">
         {/* Messages */}
-        <div className="flex-1 overflow-y-auto scroll-smooth custom-scrollbar">
+        <div className="flex-1 overflow-y-auto custom-scrollbar" style={{ overscrollBehavior: 'contain' }}>
           <div className="mx-auto max-w-5xl w-full px-4 pt-4 pb-20 md:pt-8">
             {isLoading ? (
               <div className="space-y-6 animate-pulse">
