@@ -9,7 +9,7 @@ interface ConversationContextType {
   isLoading: boolean;
   loadConversations: () => Promise<void>;
   selectConversation: (id: number) => Promise<void>;
-  startNewConversation: () => Promise<void>;
+  startNewConversation: () => Promise<number | null>;
   deleteConversation: (id: number) => Promise<void>;
   setMessages: React.Dispatch<React.SetStateAction<Message[]>>;
   updateConversationTitle: (id: number, title: string) => void;
@@ -51,15 +51,17 @@ export function ConversationProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
-  const startNewConversation = useCallback(async () => {
+  const startNewConversation = useCallback(async (): Promise<number | null> => {
     setIsLoading(true);
     try {
       const conversation = await api.createConversation("New Chat");
       setCurrentConversationId(conversation.id);
       setMessages([]);
       await loadConversations();
+      return conversation.id;
     } catch (error) {
       console.error("Failed to create conversation:", error);
+      return null;
     } finally {
       setIsLoading(false);
     }
@@ -96,11 +98,8 @@ export function ConversationProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (!isLoading && currentConversationId === null && conversations.length > 0) {
       selectConversation(conversations[0].id);
-    } else if (!isLoading && currentConversationId === null && conversations.length === 0) {
-      // Ensure we have a conversation to send messages to
-      startNewConversation();
     }
-  }, [conversations, isLoading, currentConversationId, selectConversation, startNewConversation]);
+  }, [conversations, isLoading, currentConversationId, selectConversation]);
 
   return (
     <ConversationContext.Provider value={{

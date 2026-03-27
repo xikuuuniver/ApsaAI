@@ -282,7 +282,13 @@ export function ChatInterface() {
   };
 
   const handleSendMessage = async () => {
-    if ((!inputValue.trim() && attachments.length === 0) || isProcessing || !currentConversationId) return;
+    if ((!inputValue.trim() && attachments.length === 0) || isProcessing) return;
+
+    let conversationId = currentConversationId;
+    if (!conversationId) {
+      conversationId = await startNewConversation();
+      if (!conversationId) return;
+    }
     if (attachments.some(a => a.uploading)) {
       toast({
         title: "Please wait",
@@ -347,7 +353,7 @@ export function ChatInterface() {
       const titlePreview = messageContent.slice(0, 40) + (messageContent.length > 40 ? "..." : "");
 
       await api.sendMessage(
-        currentConversationId,
+        conversationId,
         messageContent,
         currentMode,
         (chunk) => {
@@ -387,15 +393,15 @@ export function ChatInterface() {
             return prev;
           });
           
-          if (isFirstMessage && currentConversationId) {
+          if (isFirstMessage && conversationId) {
             // Generate AI smart title for the conversation (fire and forget)
-            api.generateSmartTitle(currentConversationId, messageContent)
+            api.generateSmartTitle(conversationId, messageContent)
               .then(({ title }) => {
-                updateConversationTitle(currentConversationId, title);
+                updateConversationTitle(conversationId!, title);
               })
               .catch((error) => {
                 console.error("Failed to generate smart title, using preview:", error);
-                updateConversationTitle(currentConversationId, titlePreview);
+                updateConversationTitle(conversationId!, titlePreview);
               })
               .finally(() => {
                 loadConversations();
