@@ -28,7 +28,6 @@ import {
   Sun,
   Moon
 } from "lucide-react";
-import { Drawer } from "vaul";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { useTheme as useThemeContext } from "@/contexts/theme-context";
 import { cn } from "@/lib/utils";
@@ -40,7 +39,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useMode } from "@/contexts/mode-context";
 import { useLanguage, languageNames, Language } from "@/contexts/language-context";
 import { useConversation } from "@/contexts/conversation-context";
-import { HamburgerButton, AppSidebar } from "./app-sidebar";
+import { SwipeUpPanel, SwipeUpHint } from "./swipe-up-panel";
 import { ParticlesBackground } from "./particles-background";
 import { useUpload } from "@/hooks/use-upload";
 import { useAuth } from "@/hooks/use-auth";
@@ -80,6 +79,7 @@ export function ChatInterface() {
   const [followUpSuggestions, setFollowUpSuggestions] = useState<string[]>([]);
   const [showConfetti, setShowConfetti] = useState(false);
   const [isFirstMessageEver, setIsFirstMessageEver] = useState(true);
+  const touchStartYRef = useRef<number | null>(null);
   const recognitionRef = useRef<any>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -598,7 +598,16 @@ export function ChatInterface() {
   ];
 
   return (
-    <div className="flex h-screen w-full flex-col bg-slate-50 dark:bg-slate-950 relative overflow-hidden">
+    <div
+      className="flex h-screen w-full flex-col bg-slate-50 dark:bg-slate-950 relative overflow-hidden"
+      onTouchStart={(e) => { touchStartYRef.current = e.touches[0].clientY; }}
+      onTouchEnd={(e) => {
+        if (touchStartYRef.current === null) return;
+        const deltaY = touchStartYRef.current - e.changedTouches[0].clientY;
+        if (deltaY > 40 && !sidebarOpen) setSidebarOpen(true);
+        touchStartYRef.current = null;
+      }}
+    >
       <ParticlesBackground />
       <OnboardingTutorial />
 
@@ -620,16 +629,7 @@ export function ChatInterface() {
         </DialogContent>
       </Dialog>
 
-      <Drawer.Root open={sidebarOpen} onOpenChange={setSidebarOpen} direction="left">
-        <Drawer.Portal>
-          <Drawer.Overlay className="fixed inset-0 z-[60] bg-black/40 backdrop-blur-sm" />
-          <Drawer.Content className="fixed inset-y-0 left-0 z-[70] flex w-[280px] flex-col bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border-r border-slate-200/50 dark:border-slate-800/50 shadow-2xl outline-none">
-            <div className="flex-1 overflow-y-auto min-h-0">
-              <AppSidebar isOpen={true} onClose={() => setSidebarOpen(false)} />
-            </div>
-          </Drawer.Content>
-        </Drawer.Portal>
-      </Drawer.Root>
+      <SwipeUpPanel isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
       {/* Confetti Celebration */}
       <AnimatePresence>
@@ -678,7 +678,6 @@ export function ChatInterface() {
       {/* Header */}
       <header className="sticky top-0 z-[100] flex items-center justify-between border-none bg-gradient-to-b from-white via-white/90 to-transparent dark:from-slate-950 dark:via-slate-950/90 dark:to-transparent px-4 md:px-6 py-3 transition-all duration-300">
         <div className="flex items-center gap-2 pointer-events-auto">
-          <HamburgerButton onClick={() => setSidebarOpen(true)} />
           <Button
             variant="ghost"
             size="icon"
@@ -902,6 +901,11 @@ export function ChatInterface() {
                 </button>
               ))}
             </motion.div>
+
+            {/* Swipe-up hint */}
+            <div className="mt-4">
+              <SwipeUpHint />
+            </div>
           </div>
         )}
 
