@@ -940,7 +940,7 @@ export function ChatInterface() {
         )}
 
         {/* Input & Controls Area - Modern Slim Design */}
-        <div className="w-full px-4 z-20" style={{ paddingBottom: 'max(1.25rem, env(safe-area-inset-bottom, 1.25rem))' }}>
+        <div className="w-full px-4 z-20" style={{ paddingBottom: 'max(2.5rem, env(safe-area-inset-bottom, 2.5rem))' }}>
           <div className="mx-auto max-w-4xl space-y-4">
             {/* Follow-up Suggestions - Slidable Horizontal List */}
             <AnimatePresence>
