@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import { LoginModal } from "./login-modal";
 import { motion, AnimatePresence } from "framer-motion";
 import { Message } from "@/lib/types";
 import { MessageBubble } from "./message-bubble";
@@ -94,6 +95,7 @@ export function ChatInterface() {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [accountOpen, setAccountOpen] = useState(false);
   const [languageMenuOpen, setLanguageMenuOpen] = useState(false);
+  const [loginModalOpen, setLoginModalOpen] = useState(false);
   const { language, setLanguage, t } = useLanguage();
   const { theme, toggleTheme } = useThemeContext();
   const { uploadFile, isUploading } = useUpload({
@@ -611,6 +613,8 @@ export function ChatInterface() {
       <ParticlesBackground />
       <OnboardingTutorial />
 
+      <LoginModal open={loginModalOpen} onClose={() => setLoginModalOpen(false)} />
+
       <Dialog open={settingsOpen} onOpenChange={setSettingsOpen}>
         <DialogContent className="max-w-[95vw] md:max-w-4xl h-[90vh] md:h-[80vh] overflow-hidden p-0 border-none bg-slate-50 dark:bg-slate-950 shadow-2xl rounded-[2rem] flex flex-col z-[100]">
           <DialogTitle className="sr-only">Settings</DialogTitle>
@@ -834,7 +838,7 @@ export function ChatInterface() {
            ) : (
              <button
                id="login-btn"
-               onClick={() => window.location.href = "/auth"}
+               onClick={() => setLoginModalOpen(true)}
                className={cn(
                  "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold shadow-sm hover:shadow-md transition-all button-animate",
                  theme === "dark" || theme === "neon"
