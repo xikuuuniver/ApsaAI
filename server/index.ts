@@ -13,12 +13,7 @@ declare module "http" {
   }
 }
 
-// Setup Auth first
-(async () => {
-  await setupAuth(app);
-  registerAuthRoutes(app);
-})();
-
+// Body parsers must be registered before routes
 app.use(
   express.json({
     verify: (req, _res, buf) => {
@@ -28,6 +23,12 @@ app.use(
 );
 
 app.use(express.urlencoded({ extended: false }));
+
+// Setup Auth after body parsers
+(async () => {
+  await setupAuth(app);
+  registerAuthRoutes(app);
+})();
 
 export function log(message: string, source = "express") {
   const formattedTime = new Date().toLocaleTimeString("en-US", {

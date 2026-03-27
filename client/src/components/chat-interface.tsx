@@ -58,6 +58,17 @@ import { OnboardingTutorial } from './tutorial/onboarding-tutorial';
 import AccountPage from "@/pages/account";
 import SettingsPage from "@/pages/settings";
 
+const PLAYFUL_STYLES = ["bottts", "fun-emoji", "adventurer", "lorelei", "thumbs", "pixel-art"];
+
+function getPlayfulAvatar(seed: string): string {
+  let hash = 0;
+  for (let i = 0; i < seed.length; i++) {
+    hash = (hash * 31 + seed.charCodeAt(i)) >>> 0;
+  }
+  const style = PLAYFUL_STYLES[hash % PLAYFUL_STYLES.length];
+  return `https://api.dicebear.com/9.x/${style}/svg?seed=${encodeURIComponent(seed)}&radius=50`;
+}
+
 export function ChatInterface() {
   const { 
     messages, 
@@ -91,7 +102,6 @@ export function ChatInterface() {
   const { toast } = useToast();
   const { user, isLoading: authLoading, isAuthenticated, logout } = useAuth();
   const [, setLocation] = useLocation();
-  const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [accountOpen, setAccountOpen] = useState(false);
   const [languageMenuOpen, setLanguageMenuOpen] = useState(false);
@@ -780,61 +790,21 @@ export function ChatInterface() {
            {authLoading ? (
              <div className="h-8 w-8 rounded-full bg-slate-200 dark:bg-slate-700 animate-pulse" />
            ) : isAuthenticated && user ? (
-             <Popover open={userMenuOpen} onOpenChange={setUserMenuOpen}>
-               <PopoverTrigger asChild>
-                 <button 
-                   className="h-8 w-8 rounded-full overflow-hidden ring-2 ring-transparent hover:ring-blue-500/50 transition-all cursor-pointer"
-                   data-testid="button-user-menu"
-                 >
-                   {user.profileImageUrl ? (
-                     <img 
-                       src={user.profileImageUrl} 
-                       alt={user.firstName || "User"} 
-                       className="h-full w-full object-cover"
-                       data-testid="img-user-avatar"
-                     />
-                   ) : (
-                     <div className="h-full w-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white text-xs font-bold">
-                       {user.firstName?.[0] || user.email?.[0] || "U"}
-                     </div>
-                   )}
-                 </button>
-               </PopoverTrigger>
-               <PopoverContent className="w-56 p-2" align="end">
-                 <div className="px-2 py-2 border-b border-slate-100 dark:border-slate-800 mb-2">
-                   <p className="text-sm font-medium text-slate-900 dark:text-white">
-                     {user.username || (user.firstName ? `${user.firstName} ${user.lastName || ""}`.trim() : "User")}
-                   </p>
-                   <p className="text-xs text-slate-500 dark:text-slate-400 truncate">{user.email}</p>
-                 </div>
-                 <button
-                   onClick={() => { setUserMenuOpen(false); setAccountOpen(true); }}
-                   className="w-full flex items-center gap-2 px-2 py-2 rounded-md text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors button-animate"
-                   data-testid="menu-account"
-                 >
-                   <UserIcon className="h-4 w-4" />
-                   {t("menu.account")}
-                 </button>
-                 <button
-                   onClick={() => { setUserMenuOpen(false); setSettingsOpen(true); }}
-                   className="w-full flex items-center gap-2 px-2 py-2 rounded-md text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors button-animate"
-                   data-testid="menu-settings"
-                 >
-                   <Settings className="h-4 w-4" />
-                   {t("menu.settings")}
-                 </button>
-                 <div className="border-t border-slate-100 dark:border-slate-800 mt-2 pt-2">
-                   <button
-                     onClick={() => window.location.href = "/api/logout"}
-                     className="w-full flex items-center gap-2 px-2 py-2 rounded-md text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors button-animate"
-                     data-testid="button-logout"
-                   >
-                     <LogOut className="h-4 w-4" />
-                     {t("button.logout")}
-                   </button>
-                 </div>
-               </PopoverContent>
-             </Popover>
+             <a
+               href="https://account.actroo.com"
+               target="_blank"
+               rel="noopener noreferrer"
+               className="h-9 w-9 rounded-full overflow-hidden ring-2 ring-transparent hover:ring-purple-400 transition-all cursor-pointer block shrink-0"
+               title={user.username || user.firstName || "My Account"}
+               data-testid="button-user-menu"
+             >
+               <img
+                 src={getPlayfulAvatar(user.username || user.firstName || user.email || "user")}
+                 alt={user.username || user.firstName || "User"}
+                 className="h-full w-full object-cover bg-slate-100 dark:bg-slate-700"
+                 data-testid="img-user-avatar"
+               />
+             </a>
            ) : (
              <button
                id="login-btn"
