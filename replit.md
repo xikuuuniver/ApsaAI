@@ -41,16 +41,16 @@ Preferred communication style: Simple, everyday language.
 ### Key Design Patterns
 - **Shared Types**: `/shared` directory contains schemas and types used by both client and server
 - **Path Aliases**: `@/` for client source, `@shared/` for shared code
-- **Modular Integrations**: `/server/replit_integrations/` contains isolated feature modules (chat, object storage, image generation, batch processing)
+- **Modular Integrations**: `/server/integrations/` contains isolated feature modules (chat, object storage, image generation, batch processing)
 
 ## External Dependencies
 
 ### AI Services
 - **OpenRouter**: Primary AI provider for chat completions (requires `OPENROUTER_API_KEY`)
-- **OpenAI-compatible API**: Image generation via Replit AI Integrations (`AI_INTEGRATIONS_OPENAI_API_KEY`)
+- **OpenAI-compatible API**: Image generation via AI Integrations (`AI_INTEGRATIONS_OPENAI_API_KEY`)
 
 ### Cloud Storage
-- **Google Cloud Storage**: File uploads with presigned URLs, accessed via Replit sidecar at `http://127.0.0.1:1106`
+- **Google Cloud Storage**: File uploads with presigned URLs, accessed via sidecar at `http://127.0.0.1:1106`
 
 ### Database
 - **PostgreSQL**: Required for production (requires `DATABASE_URL` environment variable)
@@ -62,5 +62,5 @@ Preferred communication style: Simple, everyday language.
 ### Required Environment Variables
 - `DATABASE_URL` - PostgreSQL connection string
 - `OPENROUTER_API_KEY` - OpenRouter API authentication
-- `AI_INTEGRATIONS_OPENAI_API_KEY` - Replit AI image generation (optional)
-- `AI_INTEGRATIONS_OPENAI_BASE_URL` - Replit AI base URL (optional)
+- `AI_INTEGRATIONS_OPENAI_API_KEY` - AI image generation (optional)
+- `AI_INTEGRATIONS_OPENAI_BASE_URL` - AI base URL (optional)
