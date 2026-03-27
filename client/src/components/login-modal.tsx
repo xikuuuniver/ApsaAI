@@ -38,40 +38,23 @@ export function LoginModal({ open, onClose }: LoginModalProps) {
     try {
       const username = getRandomUsername();
       const randomEmail = `${username.toLowerCase()}@beta.nexus`;
+      const password = Math.random().toString(36).slice(2) + Math.random().toString(36).slice(2);
+
       const response = await fetch("/api/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email: randomEmail,
-          password: Math.random().toString(36).slice(2) + Math.random().toString(36).slice(2),
-          firstName: username,
-          lastName: "",
-          username,
-        }),
+        body: JSON.stringify({ email: randomEmail, password, firstName: username, lastName: "" }),
         credentials: "include",
       });
 
       if (response.ok) {
-        queryClient.invalidateQueries({ queryKey: ["/api/auth/user"] });
+        const userData = await response.json();
+        queryClient.setQueryData(["/api/auth/user"], userData);
         onClose();
         return;
       }
 
-      const loginResp = await fetch("/api/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: randomEmail, password: "beta" }),
-        credentials: "include",
-      });
-
-      if (loginResp.ok) {
-        queryClient.invalidateQueries({ queryKey: ["/api/auth/user"] });
-        onClose();
-      } else {
-        setError(`Signed in as ${username} (beta).`);
-        queryClient.invalidateQueries({ queryKey: ["/api/auth/user"] });
-        onClose();
-      }
+      setError("Login failed. Please try again.");
     } catch {
       setError("Login failed. Please try again.");
     } finally {
@@ -95,7 +78,7 @@ export function LoginModal({ open, onClose }: LoginModalProps) {
         setError(data.message || "Invalid credentials. Please try again.");
         return;
       }
-      queryClient.invalidateQueries({ queryKey: ["/api/auth/user"] });
+      queryClient.setQueryData(["/api/auth/user"], data);
       onClose();
     } catch {
       setError("Connection error. Please try again.");
