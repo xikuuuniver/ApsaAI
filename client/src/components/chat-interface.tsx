@@ -848,101 +848,96 @@ export function ChatInterface() {
 
       {/* Main Chat Area */}
       <main className="flex-1 overflow-hidden flex flex-col relative z-10">
-        {/* Messages */}
-        <div className="flex-1 overflow-y-auto custom-scrollbar" style={{ overscrollBehavior: 'contain' }}>
-          <div className="mx-auto max-w-5xl w-full px-4 pt-4 pb-20 md:pt-8">
-            {isLoading ? (
-              <div className="space-y-6 animate-pulse">
-                {[...Array(3)].map((_, i) => (
-                  <div key={i} className={`flex ${i % 2 === 0 ? 'justify-start' : 'justify-end'}`}>
-                    <div className={`max-w-[80%] rounded-2xl p-4 ${i % 2 === 0 ? 'bg-slate-100 dark:bg-slate-800' : 'bg-blue-100 dark:bg-blue-900/30'}`}>
-                      <div className="h-4 w-32 bg-slate-200 dark:bg-slate-700 rounded mb-2" />
-                      <div className="h-3 w-48 bg-slate-200 dark:bg-slate-700 rounded" />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ) : messages.length === 0 ? (
-              <motion.div 
-                className="flex flex-col items-center justify-center pt-20 pb-10 text-center"
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.6, ease: "easeOut" }}
-              >
-                <motion.div 
-                  className="h-16 w-16 bg-gradient-to-tr from-slate-200 to-slate-100 dark:from-slate-800 dark:to-slate-700 rounded-2xl mb-6 flex items-center justify-center shadow-inner"
-                  animate={{ y: [0, -8, 0] }}
-                  transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+        {/* Empty welcome state — no scroll, fills space */}
+        {!isLoading && messages.length === 0 && (
+          <div className="flex-1 flex flex-col items-center justify-center px-4 text-center">
+            <motion.div
+              className="h-16 w-16 bg-gradient-to-tr from-slate-200 to-slate-100 dark:from-slate-800 dark:to-slate-700 rounded-2xl mb-4 flex items-center justify-center shadow-inner shrink-0"
+              animate={{ y: [0, -8, 0] }}
+              transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+            >
+              <motion.div
+                className="h-8 w-8 bg-black dark:bg-white rounded-lg"
+                animate={{ rotate: 360 }}
+                transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+              />
+            </motion.div>
+            <motion.h2
+              className="text-xl font-semibold text-slate-900 dark:text-white mb-2"
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4 }}
+            >
+              {t("empty.greeting")}
+            </motion.h2>
+            <motion.p
+              className="text-slate-500 dark:text-slate-400 max-w-sm text-sm leading-relaxed mb-5"
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1, duration: 0.4 }}
+            >
+              {t("empty.disclaimer")}
+            </motion.p>
+
+            {/* Starter Prompts */}
+            <motion.div
+              className="grid grid-cols-2 gap-3 w-full max-w-sm"
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2, duration: 0.4 }}
+            >
+              {starterPrompts.map((prompt, index) => (
+                <button
+                  key={index}
+                  onClick={() => {
+                    setInputValue(prompt.text);
+                    textareaRef.current?.focus();
+                  }}
+                  className="flex flex-col items-start gap-1.5 p-3 rounded-xl glass-card active:scale-95 transition-transform duration-150 text-left"
+                  data-testid={`starter-prompt-${index}`}
                 >
-                  <motion.div 
-                    className="h-8 w-8 bg-black dark:bg-white rounded-lg"
-                    animate={{ rotate: 360 }}
-                    transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
-                  />
-                </motion.div>
-                <motion.h2 
-                  className="text-xl font-semibold text-slate-900 dark:text-white mb-2"
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.2, duration: 0.5 }}
-                >
-                  {t("empty.greeting")}
-                </motion.h2>
-                <motion.p 
-                  className="text-slate-500 dark:text-slate-400 max-w-md text-sm leading-relaxed mb-8"
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.4, duration: 0.5 }}
-                >
-                  {t("empty.disclaimer")}
-                </motion.p>
-                
-                {/* Starter Prompts */}
-                <motion.div 
-                  className="grid grid-cols-2 gap-3 w-full max-w-lg"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.6, duration: 0.5 }}
-                >
-                  {starterPrompts.map((prompt, index) => (
-                    <motion.button
-                      key={index}
-                      onClick={() => {
-                        setInputValue(prompt.text);
-                        textareaRef.current?.focus();
-                      }}
-                      className="group flex flex-col items-start gap-2 p-4 rounded-xl glass-card hover:shadow-float transition-all duration-300 text-left"
-                      initial={{ opacity: 0, scale: 0.9 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      transition={{ delay: 0.7 + index * 0.1 }}
-                      whileHover={{ scale: 1.02, y: -2 }}
-                      whileTap={{ scale: 0.98 }}
-                      data-testid={`starter-prompt-${index}`}
-                    >
-                      <span className="text-2xl">{prompt.icon}</span>
-                      <span className="text-xs font-medium text-slate-600 dark:text-slate-300 line-clamp-2">{prompt.text}</span>
-                      <span className="text-[10px] text-slate-400 dark:text-slate-500 uppercase tracking-wider">{prompt.category}</span>
-                    </motion.button>
-                  ))}
-                </motion.div>
-              </motion.div>
-            ) : (
-              <motion.div 
-                className="space-y-6"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.3 }}
-              >
-                <AnimatePresence mode="popLayout">
-                  {messages.map((msg) => (
-                    <MessageBubble key={msg.id} message={msg} />
-                  ))}
-                </AnimatePresence>
-                <div ref={messagesEndRef} />
-              </motion.div>
-            )}
+                  <span className="text-2xl">{prompt.icon}</span>
+                  <span className="text-xs font-medium text-slate-600 dark:text-slate-300 line-clamp-2">{prompt.text}</span>
+                  <span className="text-[10px] text-slate-400 dark:text-slate-500 uppercase tracking-wider">{prompt.category}</span>
+                </button>
+              ))}
+            </motion.div>
           </div>
-        </div>
+        )}
+
+        {/* Messages list — only rendered when there are messages or loading */}
+        {(isLoading || messages.length > 0) && (
+          <div className="flex-1 overflow-y-auto custom-scrollbar" style={{ overscrollBehavior: 'contain' }}>
+            <div className="mx-auto max-w-5xl w-full px-4 pt-4 pb-20 md:pt-8">
+              {isLoading ? (
+                <div className="space-y-6 animate-pulse">
+                  {[...Array(3)].map((_, i) => (
+                    <div key={i} className={`flex ${i % 2 === 0 ? 'justify-start' : 'justify-end'}`}>
+                      <div className={`max-w-[80%] rounded-2xl p-4 ${i % 2 === 0 ? 'bg-slate-100 dark:bg-slate-800' : 'bg-blue-100 dark:bg-blue-900/30'}`}>
+                        <div className="h-4 w-32 bg-slate-200 dark:bg-slate-700 rounded mb-2" />
+                        <div className="h-3 w-48 bg-slate-200 dark:bg-slate-700 rounded" />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <motion.div
+                  className="space-y-6"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <AnimatePresence mode="popLayout">
+                    {messages.map((msg) => (
+                      <MessageBubble key={msg.id} message={msg} />
+                    ))}
+                  </AnimatePresence>
+                  <div ref={messagesEndRef} />
+                </motion.div>
+              )}
+            </div>
+          </div>
+        )}
 
         {/* Input & Controls Area - Modern Slim Design */}
         <div className="w-full px-4 pb-4 z-20">
