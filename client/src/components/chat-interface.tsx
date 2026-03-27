@@ -676,13 +676,13 @@ export function ChatInterface() {
       />
       
       {/* Header */}
-      <header className="sticky top-0 z-[100] flex items-center justify-between border-none bg-gradient-to-b from-white via-white/90 to-transparent dark:from-slate-950 dark:via-slate-950/90 dark:to-transparent px-4 md:px-6 py-3 transition-all duration-300">
-        <div className="flex items-center gap-2 pointer-events-auto">
+      <header className="sticky top-0 z-[100] flex items-center justify-between border-none bg-gradient-to-b from-white via-white/90 to-transparent dark:from-slate-950 dark:via-slate-950/90 dark:to-transparent px-4 md:px-6 py-2 transition-all duration-300">
+        <div className="flex items-center gap-1.5 pointer-events-auto">
           <Button
             variant="ghost"
             size="icon"
             onClick={toggleTheme}
-            className="h-10 w-10 text-slate-500 hover:text-slate-900 dark:hover:text-white transition-all duration-500 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full relative overflow-hidden group shrink-0"
+            className="h-8 w-8 text-slate-500 hover:text-slate-900 dark:hover:text-white transition-all duration-500 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full relative overflow-hidden group shrink-0"
           >
             <motion.div
               initial={false}
@@ -723,17 +723,17 @@ export function ChatInterface() {
             <p className="text-[10px] text-slate-500 dark:text-slate-400 font-medium">{t("app.subtitle")}</p>
           </div>
         </div>
-        <div className="flex items-center gap-2 pointer-events-auto">
+        <div className="flex items-center gap-1.5 pointer-events-auto">
            {/* New Chat Button */}
            <Button
              id="new-chat-btn"
              variant="ghost"
              size="icon"
              onClick={handleNewSession}
-             className="h-9 w-9 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all button-animate"
+             className="h-8 w-8 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all button-animate"
              title="Start new chat"
            >
-             <Plus className="h-5 w-5" />
+             <Plus className="h-4 w-4" />
            </Button>
 
            {/* Language Selector in Header */}
@@ -741,7 +741,7 @@ export function ChatInterface() {
              <PopoverTrigger asChild>
                <button
                  id="language-selector"
-                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all button-animate bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700"
+                 className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all button-animate bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700"
                  data-testid="button-language-selector"
                >
                  <Languages className="h-3.5 w-3.5" />
@@ -835,7 +835,12 @@ export function ChatInterface() {
              <button
                id="login-btn"
                onClick={() => window.location.href = "/auth"}
-               className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-gradient-to-r from-green-500 to-emerald-500 text-white shadow-md hover:shadow-lg transition-all button-animate"
+               className={cn(
+                 "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold shadow-sm hover:shadow-md transition-all button-animate",
+                 theme === "dark" || theme === "neon"
+                   ? "bg-white text-slate-900 hover:bg-slate-100"
+                   : "bg-slate-900 text-white hover:bg-slate-700"
+               )}
                data-testid="button-login"
              >
                <LogIn className="h-3.5 w-3.5" />
