@@ -3,14 +3,19 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Eye, EyeOff, X } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 
-const RANDOM_USERNAMES = [
-  "CosmicFox42", "NeonPanda7", "StarlightOwl", "CrystalWolf99", "PixelDragon",
-  "ShadowLynx", "ElectricEagle", "MysticBear21", "TurboTiger", "GlitchRaven",
-  "AuroraHawk", "CyberCat88", "NovaBison", "QuantumFalcon", "VortexOtter",
+const DISPLAY_NAMES = [
+  "CosmicFox", "NeonPanda", "StarlightOwl", "CrystalWolf", "PixelDragon",
+  "ShadowLynx", "ElectricEagle", "MysticBear", "TurboTiger", "GlitchRaven",
+  "AuroraHawk", "CyberCat", "NovaBison", "QuantumFalcon", "VortexOtter",
+  "FrozenBadger", "LaserLlama", "ThunderSloth", "NebulaCrab", "PlasmaGoose",
 ];
 
-function getRandomUsername() {
-  return RANDOM_USERNAMES[Math.floor(Math.random() * RANDOM_USERNAMES.length)];
+function generateBetaCredentials() {
+  const name = DISPLAY_NAMES[Math.floor(Math.random() * DISPLAY_NAMES.length)];
+  const suffix = Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+  const uniqueEmail = `${name.toLowerCase()}_${suffix}@beta.nexus`;
+  const password = Math.random().toString(36).slice(2) + Math.random().toString(36).slice(2);
+  return { name, uniqueEmail, password };
 }
 
 interface LoginModalProps {
@@ -36,14 +41,12 @@ export function LoginModal({ open, onClose }: LoginModalProps) {
     setError("");
     setIsLoading(true);
     try {
-      const username = getRandomUsername();
-      const randomEmail = `${username.toLowerCase()}@beta.nexus`;
-      const password = Math.random().toString(36).slice(2) + Math.random().toString(36).slice(2);
+      const { name, uniqueEmail, password } = generateBetaCredentials();
 
       const response = await fetch("/api/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: randomEmail, password, firstName: username, lastName: "" }),
+        body: JSON.stringify({ email: uniqueEmail, password, firstName: name, lastName: "" }),
         credentials: "include",
       });
 
@@ -54,7 +57,8 @@ export function LoginModal({ open, onClose }: LoginModalProps) {
         return;
       }
 
-      setError("Login failed. Please try again.");
+      const errData = await response.json().catch(() => ({}));
+      setError(errData.message || "Login failed. Please try again.");
     } catch {
       setError("Login failed. Please try again.");
     } finally {
