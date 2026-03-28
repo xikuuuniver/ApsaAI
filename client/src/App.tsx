@@ -11,6 +11,7 @@ import { LanguageProvider } from "@/contexts/language-context";
 import { ConversationProvider } from "@/contexts/conversation-context";
 import { GoogleAuthProvider, useGoogleAuth } from "@/contexts/google-auth-context";
 import { OnboardingTutorial } from "@/components/tutorial/onboarding-tutorial";
+import { ChatTabsProvider } from "@/contexts/chat-tabs-context";
 import Home from "@/pages/Home";
 import AccountPage from "@/pages/account";
 import SettingsPage from "@/pages/settings";
@@ -58,18 +59,20 @@ function App() {
     <ThemeProvider>
       <LanguageProvider>
         <ModeProvider>
-          <ConversationProvider>
-            <QueryClientProvider client={queryClient}>
-              <GoogleAuthProvider>
-                <AppWithGoogleAuth>
-                  <TooltipProvider>
-                    <Toaster />
-                    <Router />
-                  </TooltipProvider>
-                </AppWithGoogleAuth>
-              </GoogleAuthProvider>
-            </QueryClientProvider>
-          </ConversationProvider>
+          <ChatTabsProvider>
+            <ConversationProvider>
+              <QueryClientProvider client={queryClient}>
+                <GoogleAuthProvider>
+                  <AppWithGoogleAuth>
+                    <TooltipProvider>
+                      <Toaster />
+                      <Router />
+                    </TooltipProvider>
+                  </AppWithGoogleAuth>
+                </GoogleAuthProvider>
+              </QueryClientProvider>
+            </ConversationProvider>
+          </ChatTabsProvider>
         </ModeProvider>
       </LanguageProvider>
     </ThemeProvider>

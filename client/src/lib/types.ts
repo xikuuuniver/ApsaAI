@@ -6,6 +6,7 @@ export interface Message {
   content: string;
   timestamp: Date;
   mode?: ThinkingMode;
-  thinkingProcess?: string[]; // The "steps" the AI took
+  thinkingProcess?: string[];
   isThinking?: boolean;
+  isSending?: boolean;
 }

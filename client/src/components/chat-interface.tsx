@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { LoginModal } from "./login-modal";
 import { motion, AnimatePresence } from "framer-motion";
 import { Message } from "@/lib/types";
@@ -45,6 +45,8 @@ import { ParticlesBackground } from "./particles-background";
 import { useUpload } from "@/hooks/use-upload";
 import { useAuth } from "@/hooks/use-auth";
 import { useLocation } from "wouter";
+import { useChatTabs } from "@/contexts/chat-tabs-context";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface Attachment {
   name: string;
@@ -59,6 +61,18 @@ import AccountPage from "@/pages/account";
 import SettingsPage from "@/pages/settings";
 
 const PLAYFUL_STYLES = ["bottts", "fun-emoji", "adventurer", "lorelei", "thumbs", "pixel-art"];
+
+const tabSlideVariants = {
+  enter: (direction: number) => ({
+    x: direction > 0 ? '-100%' : '100%',
+    opacity: 0,
+  }),
+  center: { x: 0, opacity: 1 },
+  exit: (direction: number) => ({
+    x: direction > 0 ? '100%' : '-100%',
+    opacity: 0,
+  }),
+};
 
 function getPlayfulAvatar(seed: string): string {
   let hash = 0;
@@ -92,6 +106,7 @@ export function ChatInterface() {
   const [showConfetti, setShowConfetti] = useState(false);
   const [isFirstMessageEver, setIsFirstMessageEver] = useState(true);
   const touchStartYRef = useRef<number | null>(null);
+  const touchStartXRef = useRef<number | null>(null);
   const recognitionRef = useRef<any>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -108,6 +123,11 @@ export function ChatInterface() {
   const [loginModalOpen, setLoginModalOpen] = useState(false);
   const { language, setLanguage, t } = useLanguage();
   const { theme, toggleTheme } = useThemeContext();
+  const isMobile = useIsMobile();
+  const chatTabs = useChatTabs();
+
+  const displayMessages = isMobile ? chatTabs.tabMessages : messages;
+  const displayIsLoading = isMobile ? false : isLoading;
 
   const { uploadFile, isUploading } = useUpload({
     onSuccess: (response) => {
@@ -136,6 +156,13 @@ export function ChatInterface() {
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+
+  useEffect(() => {
+    if (isMobile) {
+      const t = setTimeout(() => scrollToBottom(), 320);
+      return () => clearTimeout(t);
+    }
+  }, [chatTabs.tabMessages.length, chatTabs.activeTabIndex]);
 
   useEffect(() => {
     if (textareaRef.current) {
@@ -297,6 +324,15 @@ export function ChatInterface() {
   const handleSendMessage = async () => {
     if ((!inputValue.trim() && attachments.length === 0) || isProcessing) return;
 
+    if (isMobile) {
+      const content = inputValue.trim();
+      if (!content) return;
+      setInputValue("");
+      if (textareaRef.current) textareaRef.current.style.height = 'auto';
+      chatTabs.addUserMessage(content);
+      return;
+    }
+
     let conversationId = currentConversationId;
     if (!conversationId) {
       conversationId = await startNewConversation();
@@ -444,6 +480,11 @@ export function ChatInterface() {
   };
 
   const handleNewSession = async () => {
+    if (isMobile) {
+      chatTabs.createNewTab();
+      setAttachments([]);
+      return;
+    }
     try {
       await startNewConversation();
       setAttachments([]);
@@ -613,12 +654,29 @@ export function ChatInterface() {
   return (
     <div
       className="flex h-screen w-full flex-col bg-slate-50 dark:bg-slate-950 relative overflow-hidden"
-      onTouchStart={(e) => { touchStartYRef.current = e.touches[0].clientY; }}
+      onTouchStart={(e) => {
+        touchStartYRef.current = e.touches[0].clientY;
+        touchStartXRef.current = e.touches[0].clientX;
+      }}
       onTouchEnd={(e) => {
         if (touchStartYRef.current === null) return;
         const deltaY = touchStartYRef.current - e.changedTouches[0].clientY;
-        if (deltaY > 40 && !sidebarOpen) setSidebarOpen(true);
+        const deltaX = touchStartXRef.current !== null
+          ? touchStartXRef.current - e.changedTouches[0].clientX
+          : 0;
         touchStartYRef.current = null;
+        touchStartXRef.current = null;
+
+        if (isMobile && Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 60) {
+          if (deltaX > 0) {
+            chatTabs.goToNewer();
+          } else {
+            chatTabs.goToOlder();
+          }
+          return;
+        }
+
+        if (deltaY > 40 && !sidebarOpen) setSidebarOpen(true);
       }}
     >
       <ParticlesBackground />
@@ -827,8 +885,40 @@ export function ChatInterface() {
 
       {/* Main Chat Area */}
       <main className="flex-1 overflow-hidden flex flex-col relative z-10">
+
+        {/* Tab indicator — mobile only, shown when more than 1 tab */}
+        {isMobile && chatTabs.tabs.length > 1 && (
+          <div className="flex items-center justify-center gap-2 py-1.5 z-20">
+            {chatTabs.tabs.map((_, i) => (
+              <motion.div
+                key={i}
+                animate={{
+                  width: i === chatTabs.activeTabIndex ? 20 : 6,
+                  opacity: i === chatTabs.activeTabIndex ? 1 : 0.35,
+                }}
+                transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                className="h-1.5 rounded-full bg-blue-500 dark:bg-blue-400"
+              />
+            ))}
+            <span className="ml-1 text-[10px] font-semibold text-slate-400 dark:text-slate-500 tracking-tight">
+              {chatTabs.activeTab?.name}
+            </span>
+          </div>
+        )}
+
+        <AnimatePresence mode="popLayout" custom={chatTabs.switchDirection}>
+        <motion.div
+          key={`tab_${isMobile ? chatTabs.activeTabIndex : 'desktop'}`}
+          custom={chatTabs.switchDirection}
+          variants={isMobile ? tabSlideVariants : undefined}
+          initial={false}
+          animate="center"
+          exit={isMobile ? "exit" : undefined}
+          transition={{ type: 'tween', ease: [0.32, 0, 0.67, 0], duration: 0.28 }}
+          className="flex-1 overflow-hidden flex flex-col min-h-0"
+        >
         {/* Empty welcome state — no scroll, fills space */}
-        {!isLoading && messages.length === 0 && (
+        {!displayIsLoading && displayMessages.length === 0 && (
           <div className="flex-1 flex flex-col items-center justify-center px-4 text-center">
             <motion.div
               className="h-16 w-16 bg-gradient-to-tr from-slate-200 to-slate-100 dark:from-slate-800 dark:to-slate-700 rounded-2xl mb-4 flex items-center justify-center shadow-inner shrink-0"
@@ -890,10 +980,10 @@ export function ChatInterface() {
         )}
 
         {/* Messages list — only rendered when there are messages or loading */}
-        {(isLoading || messages.length > 0) && (
+        {(displayIsLoading || displayMessages.length > 0) && (
           <div className="flex-1 overflow-y-auto custom-scrollbar" style={{ overscrollBehavior: 'contain' }}>
             <div className="mx-auto max-w-5xl w-full px-4 pt-4 pb-20 md:pt-8">
-              {isLoading ? (
+              {displayIsLoading ? (
                 <div className="space-y-6 animate-pulse">
                   {[...Array(3)].map((_, i) => (
                     <div key={i} className={`flex ${i % 2 === 0 ? 'justify-start' : 'justify-end'}`}>
@@ -912,7 +1002,7 @@ export function ChatInterface() {
                   transition={{ duration: 0.3 }}
                 >
                   <AnimatePresence mode="popLayout">
-                    {messages.map((msg) => (
+                    {displayMessages.map((msg) => (
                       <MessageBubble key={msg.id} message={msg} />
                     ))}
                   </AnimatePresence>
@@ -922,6 +1012,8 @@ export function ChatInterface() {
             </div>
           </div>
         )}
+        </motion.div>
+        </AnimatePresence>
 
         {/* Input & Controls Area - Modern Slim Design */}
         <div className="w-full px-4 z-20" style={{ paddingBottom: 'max(2.5rem, env(safe-area-inset-bottom, 2.5rem))' }}>
