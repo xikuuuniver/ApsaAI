@@ -42,6 +42,11 @@ import { useLanguage, languageNames, Language } from "@/contexts/language-contex
 import { useConversation } from "@/contexts/conversation-context";
 import { SwipeUpPanel, SwipeUpHint } from "./swipe-up-panel";
 import { ParticlesBackground } from "./particles-background";
+import { SpaceBackground } from "./backgrounds/space-background";
+import { NatureBackground } from "./backgrounds/nature-background";
+import { OceanBackground } from "./backgrounds/ocean-background";
+import { ThemeSelector } from "./theme-selector";
+import { useBgTheme } from "@/contexts/bg-theme-context";
 import { useUpload } from "@/hooks/use-upload";
 import { useAuth } from "@/hooks/use-auth";
 import { useLocation } from "wouter";
@@ -108,6 +113,41 @@ export function ChatInterface() {
   const [loginModalOpen, setLoginModalOpen] = useState(false);
   const { language, setLanguage, t } = useLanguage();
   const { theme, toggleTheme } = useThemeContext();
+  const { bgTheme } = useBgTheme();
+
+  /* Long-press for theme selector */
+  const [themeSelectorOpen, setThemeSelectorOpen] = useState(false);
+  const [longPressProgress, setLongPressProgress] = useState(0); // 0-1
+  const longPressTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const longPressStartRef = useRef<number | null>(null);
+  const LONG_PRESS_MS = 2000;
+
+  const startLongPress = (clientX: number, clientY: number) => {
+    longPressStartRef.current = Date.now();
+    setLongPressProgress(0);
+    longPressTimerRef.current = setInterval(() => {
+      const elapsed = Date.now() - (longPressStartRef.current ?? Date.now());
+      const progress = Math.min(elapsed / LONG_PRESS_MS, 1);
+      setLongPressProgress(progress);
+      if (progress >= 1) {
+        clearInterval(longPressTimerRef.current!);
+        longPressTimerRef.current = null;
+        longPressStartRef.current = null;
+        setLongPressProgress(0);
+        setThemeSelectorOpen(true);
+      }
+    }, 30);
+  };
+
+  const cancelLongPress = () => {
+    if (longPressTimerRef.current) {
+      clearInterval(longPressTimerRef.current);
+      longPressTimerRef.current = null;
+    }
+    longPressStartRef.current = null;
+    setLongPressProgress(0);
+  };
+
   const { uploadFile, isUploading } = useUpload({
     onSuccess: (response) => {
       setAttachments(prev => prev.map(att => 
@@ -612,15 +652,64 @@ export function ChatInterface() {
   return (
     <div
       className="flex h-screen w-full flex-col bg-slate-50 dark:bg-slate-950 relative overflow-hidden"
-      onTouchStart={(e) => { touchStartYRef.current = e.touches[0].clientY; }}
+      onMouseDown={(e) => {
+        const target = e.target as HTMLElement;
+        if (target.closest("button,input,textarea,a,[role='dialog'],[role='listbox']")) return;
+        startLongPress(e.clientX, e.clientY);
+      }}
+      onMouseUp={cancelLongPress}
+      onMouseLeave={cancelLongPress}
+      onTouchStart={(e) => {
+        touchStartYRef.current = e.touches[0].clientY;
+        const target = e.target as HTMLElement;
+        if (!target.closest("button,input,textarea,a,[role='dialog'],[role='listbox']")) {
+          startLongPress(e.touches[0].clientX, e.touches[0].clientY);
+        }
+      }}
       onTouchEnd={(e) => {
+        cancelLongPress();
         if (touchStartYRef.current === null) return;
         const deltaY = touchStartYRef.current - e.changedTouches[0].clientY;
         if (deltaY > 40 && !sidebarOpen) setSidebarOpen(true);
         touchStartYRef.current = null;
       }}
+      onTouchMove={cancelLongPress}
     >
-      <ParticlesBackground />
+      {bgTheme === "particles" && <ParticlesBackground />}
+      {bgTheme === "space" && <SpaceBackground />}
+      {bgTheme === "nature" && <NatureBackground />}
+      {bgTheme === "ocean" && <OceanBackground />}
+
+      {/* Long-press progress ring */}
+      {longPressProgress > 0 && (
+        <div
+          className="fixed bottom-28 left-1/2 -translate-x-1/2 pointer-events-none flex flex-col items-center gap-2"
+          style={{ zIndex: 190 }}
+        >
+          <svg width="52" height="52" viewBox="0 0 52 52">
+            <circle cx="26" cy="26" r="22" fill="none" stroke="rgba(255,255,255,0.15)" strokeWidth="4" />
+            <circle
+              cx="26" cy="26" r="22" fill="none"
+              stroke="rgba(99,179,237,0.9)" strokeWidth="4"
+              strokeDasharray={`${2 * Math.PI * 22}`}
+              strokeDashoffset={`${2 * Math.PI * 22 * (1 - longPressProgress)}`}
+              strokeLinecap="round"
+              transform="rotate(-90 26 26)"
+            />
+            <text x="26" y="30" textAnchor="middle" fill="rgba(255,255,255,0.85)" fontSize="10" fontWeight="600">
+              {Math.round(longPressProgress * 100)}%
+            </text>
+          </svg>
+          <span
+            className="text-xs font-medium px-3 py-1 rounded-full"
+            style={{ background: "rgba(0,0,0,0.45)", color: "rgba(255,255,255,0.8)", backdropFilter: "blur(8px)" }}
+          >
+            Hold to change theme…
+          </span>
+        </div>
+      )}
+
+      <ThemeSelector open={themeSelectorOpen} onClose={() => setThemeSelectorOpen(false)} />
       <OnboardingTutorial />
 
       <LoginModal open={loginModalOpen} onClose={() => setLoginModalOpen(false)} />
