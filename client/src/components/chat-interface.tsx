@@ -107,6 +107,7 @@ export function ChatInterface() {
   const [isFirstMessageEver, setIsFirstMessageEver] = useState(true);
   const touchStartYRef = useRef<number | null>(null);
   const touchStartXRef = useRef<number | null>(null);
+  const swipeDirectionRef = useRef<'horizontal' | 'vertical' | null>(null);
   const recognitionRef = useRef<any>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
