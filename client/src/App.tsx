@@ -6,7 +6,6 @@ import { GoogleOAuthProvider } from "@react-oauth/google";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { ThemeProvider } from "@/contexts/theme-context";
-import { BgThemeProvider } from "@/contexts/bg-theme-context";
 import { ModeProvider } from "@/contexts/mode-context";
 import { LanguageProvider } from "@/contexts/language-context";
 import { ConversationProvider } from "@/contexts/conversation-context";
@@ -57,7 +56,6 @@ function AppWithGoogleAuth({ children }: { children: React.ReactNode }) {
 function App() {
   return (
     <ThemeProvider>
-      <BgThemeProvider>
       <LanguageProvider>
         <ModeProvider>
           <ConversationProvider>
@@ -74,7 +72,6 @@ function App() {
           </ConversationProvider>
         </ModeProvider>
       </LanguageProvider>
-      </BgThemeProvider>
     </ThemeProvider>
   );
 }
