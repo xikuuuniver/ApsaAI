@@ -120,7 +120,7 @@ export function ChatInterface() {
   const [longPressProgress, setLongPressProgress] = useState(0); // 0-1
   const longPressTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const longPressStartRef = useRef<number | null>(null);
-  const LONG_PRESS_MS = 2000;
+  const LONG_PRESS_MS = 10000;
 
   const startLongPress = (clientX: number, clientY: number) => {
     longPressStartRef.current = Date.now();
