@@ -1109,6 +1109,9 @@ export function ChatInterface() {
               </motion.div>
 
               <div className="mt-4 flex flex-col items-center gap-1 pb-2">
+                <p className="text-[11px] font-semibold text-slate-400 dark:text-slate-600 tracking-tight">
+                  Nexus can make mistakes. Verify important info.
+                </p>
               </div>
             </div>
           </div>
