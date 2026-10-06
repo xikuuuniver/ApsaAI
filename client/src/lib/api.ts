@@ -3,6 +3,9 @@ import { ThinkingMode } from "./types";
 export interface Conversation {
   id: number;
   title: string;
+  isPinned: boolean;
+  isPrivate: boolean;
+  isArchived: boolean;
   createdAt: Date;
 }
 
@@ -45,12 +48,20 @@ export const api = {
   },
 
   async updateConversationTitle(id: number, title: string): Promise<void> {
+    await this.updateConversation(id, { title });
+  },
+
+  async updateConversation(
+    id: number,
+    updates: Partial<Pick<Conversation, "title" | "isPinned" | "isPrivate" | "isArchived">>
+  ): Promise<Conversation> {
     const response = await fetch(`/api/conversations/${id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ title }),
+      body: JSON.stringify(updates),
     });
-    if (!response.ok) throw new Error("Failed to update conversation title");
+    if (!response.ok) throw new Error("Failed to update conversation");
+    return response.json();
   },
 
   async generateSmartTitle(id: number, userMessage: string): Promise<{ title: string }> {

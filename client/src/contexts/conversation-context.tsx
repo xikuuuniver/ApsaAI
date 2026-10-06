@@ -13,6 +13,10 @@ interface ConversationContextType {
   deleteConversation: (id: number) => Promise<void>;
   setMessages: React.Dispatch<React.SetStateAction<Message[]>>;
   updateConversationTitle: (id: number, title: string) => void;
+  updateConversationMetadata: (
+    id: number,
+    updates: Partial<Pick<Conversation, "title" | "isPinned" | "isPrivate" | "isArchived">>
+  ) => Promise<void>;
 }
 
 const ConversationContext = createContext<ConversationContextType | undefined>(undefined);
@@ -81,14 +85,24 @@ export function ConversationProvider({ children }: { children: ReactNode }) {
   }, [currentConversationId]);
 
   const updateConversationTitle = useCallback(async (id: number, title: string) => {
-    setConversations(prev => prev.map(c => 
-      c.id === id ? { ...c, title } : c
-    ));
     try {
       await api.updateConversationTitle(id, title);
+      setConversations(prev => prev.map(c =>
+        c.id === id ? { ...c, title } : c
+      ));
     } catch (error) {
       console.error("Failed to update conversation title:", error);
     }
+  }, []);
+
+  const updateConversationMetadata = useCallback(async (
+    id: number,
+    updates: Partial<Pick<Conversation, "title" | "isPinned" | "isPrivate" | "isArchived">>
+  ) => {
+    const updatedConversation = await api.updateConversation(id, updates);
+    setConversations(prev => prev.map(conversation =>
+      conversation.id === id ? { ...conversation, ...updatedConversation } : conversation
+    ));
   }, []);
 
   useEffect(() => {
@@ -113,6 +127,7 @@ export function ConversationProvider({ children }: { children: ReactNode }) {
       deleteConversation,
       setMessages,
       updateConversationTitle,
+      updateConversationMetadata,
     }}>
       {children}
     </ConversationContext.Provider>

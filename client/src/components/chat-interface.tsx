@@ -41,6 +41,7 @@ import { useMode } from "@/contexts/mode-context";
 import { useLanguage, languageNames, Language } from "@/contexts/language-context";
 import { useConversation } from "@/contexts/conversation-context";
 import { SwipeUpPanel, SwipeUpHint } from "./swipe-up-panel";
+import { DesktopSidebar } from "./desktop-sidebar";
 import { ParticlesBackground } from "./particles-background";
 import { useUpload } from "@/hooks/use-upload";
 import { useAuth } from "@/hooks/use-auth";
@@ -85,6 +86,7 @@ function getPlayfulAvatar(seed: string): string {
 
 export function ChatInterface() {
   const { 
+    conversations,
     messages, 
     setMessages, 
     currentConversationId, 
@@ -126,6 +128,9 @@ export function ChatInterface() {
   const { theme, toggleTheme } = useThemeContext();
   const isMobile = useIsMobile();
   const chatTabs = useChatTabs();
+  const currentConversationTitle = conversations.find(
+    (conversation) => conversation.id === currentConversationId
+  )?.title || "New chat";
 
   const displayMessages = isMobile ? chatTabs.tabMessages : messages;
   const displayIsLoading = isMobile ? false : isLoading;
@@ -308,13 +313,16 @@ export function ChatInterface() {
   useEffect(() => {
     const handleOpenSettings = () => setSettingsOpen(true);
     const handleOpenAccount = () => setAccountOpen(true);
+    const handleOpenImagePicker = () => photoInputRef.current?.click();
     
     window.addEventListener('nexus-open-settings', handleOpenSettings);
     window.addEventListener('nexus-open-account', handleOpenAccount);
+    window.addEventListener('apsa-open-image-picker', handleOpenImagePicker);
     
     return () => {
       window.removeEventListener('nexus-open-settings', handleOpenSettings);
       window.removeEventListener('nexus-open-account', handleOpenAccount);
+      window.removeEventListener('apsa-open-image-picker', handleOpenImagePicker);
     };
   }, []);
 
@@ -654,7 +662,7 @@ export function ChatInterface() {
 
   return (
     <div
-      className="flex h-screen w-full flex-col bg-slate-50 dark:bg-slate-950 relative overflow-hidden"
+      className="relative flex h-screen min-h-0 w-full overflow-hidden bg-slate-50 dark:bg-slate-950"
       onTouchStart={(e) => {
         touchStartYRef.current = e.touches[0].clientY;
         touchStartXRef.current = e.touches[0].clientX;
@@ -677,33 +685,35 @@ export function ChatInterface() {
           return;
         }
 
-        if (deltaY > 40 && !sidebarOpen) setSidebarOpen(true);
+        if (isMobile && deltaY > 40 && !sidebarOpen) setSidebarOpen(true);
       }}
     >
       <ParticlesBackground />
-      <OnboardingTutorial />
+      {!isMobile && <DesktopSidebar />}
+      <div className="relative z-10 flex h-full min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
+        <OnboardingTutorial />
 
-      <LoginModal open={loginModalOpen} onClose={() => setLoginModalOpen(false)} />
+        <LoginModal open={loginModalOpen} onClose={() => setLoginModalOpen(false)} />
 
-      <Dialog open={settingsOpen} onOpenChange={setSettingsOpen}>
-        <DialogContent className="max-w-[95vw] md:max-w-4xl h-[90vh] md:h-[80vh] overflow-hidden p-0 border-none bg-slate-50 dark:bg-slate-950 shadow-2xl rounded-[2rem] flex flex-col z-[100]">
-          <DialogTitle className="sr-only">Settings</DialogTitle>
-          <div className="flex-1 overflow-y-auto custom-scrollbar min-h-0">
-            <SettingsPage isPopup onClose={() => setSettingsOpen(false)} />
-          </div>
-        </DialogContent>
-      </Dialog>
+        <Dialog open={settingsOpen} onOpenChange={setSettingsOpen}>
+          <DialogContent className="max-w-[95vw] md:max-w-4xl h-[90vh] md:h-[80vh] overflow-hidden p-0 border-none bg-slate-50 dark:bg-slate-950 shadow-2xl rounded-[2rem] flex flex-col z-[100]">
+            <DialogTitle className="sr-only">Settings</DialogTitle>
+            <div className="flex-1 overflow-y-auto custom-scrollbar min-h-0">
+              <SettingsPage isPopup onClose={() => setSettingsOpen(false)} />
+            </div>
+          </DialogContent>
+        </Dialog>
 
-      <Dialog open={accountOpen} onOpenChange={setAccountOpen}>
-        <DialogContent className="max-w-[95vw] md:max-w-4xl h-[90vh] md:h-[80vh] overflow-hidden p-0 border-none bg-slate-50 dark:bg-slate-950 shadow-2xl rounded-[2rem] flex flex-col z-[100]">
-          <DialogTitle className="sr-only">Account</DialogTitle>
-          <div className="flex-1 overflow-y-auto custom-scrollbar min-h-0">
-            <AccountPage isPopup onClose={() => setAccountOpen(false)} />
-          </div>
-        </DialogContent>
-      </Dialog>
+        <Dialog open={accountOpen} onOpenChange={setAccountOpen}>
+          <DialogContent className="max-w-[95vw] md:max-w-4xl h-[90vh] md:h-[80vh] overflow-hidden p-0 border-none bg-slate-50 dark:bg-slate-950 shadow-2xl rounded-[2rem] flex flex-col z-[100]">
+            <DialogTitle className="sr-only">Account</DialogTitle>
+            <div className="flex-1 overflow-y-auto custom-scrollbar min-h-0">
+              <AccountPage isPopup onClose={() => setAccountOpen(false)} />
+            </div>
+          </DialogContent>
+        </Dialog>
 
-      <SwipeUpPanel isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+        <SwipeUpPanel isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
       {/* Confetti Celebration */}
       <AnimatePresence>
@@ -750,7 +760,7 @@ export function ChatInterface() {
       />
       
       {/* Header */}
-      <header className="sticky top-0 z-[100] flex items-center justify-between border-none bg-gradient-to-b from-white via-white/90 to-transparent dark:from-slate-950 dark:via-slate-950/90 dark:to-transparent px-4 md:px-6 py-2 transition-all duration-300">
+      <header className="sticky top-0 z-[100] flex items-center justify-between border-none bg-gradient-to-b from-white via-white/90 to-transparent px-4 py-2 transition-all duration-300 dark:from-slate-950 dark:via-slate-950/90 dark:to-transparent md:px-6">
         <div className="flex items-center gap-1.5 pointer-events-auto">
           <Button
             variant="ghost"
@@ -792,9 +802,10 @@ export function ChatInterface() {
               <SparklesIcon className="h-5 w-5 text-cyan-400" />
             </motion.div>
           </Button>
-          <div className="hidden sm:block">
-            <h1 className="text-sm font-semibold text-slate-900 dark:text-white">{t("app.title")}</h1>
-            <p className="text-[10px] text-slate-500 dark:text-slate-400 font-medium">{t("app.subtitle")}</p>
+          <div className="min-w-0">
+            <h1 className="truncate text-sm font-semibold text-slate-900 dark:text-white md:max-w-[28rem]">
+              {isMobile ? "ApsaAI" : currentConversationTitle}
+            </h1>
           </div>
         </div>
         <div className="flex items-center gap-1.5 pointer-events-auto">
@@ -804,7 +815,7 @@ export function ChatInterface() {
              variant="ghost"
              size="icon"
              onClick={handleNewSession}
-             className="h-8 w-8 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all button-animate"
+             className="h-8 w-8 rounded-full bg-slate-100 text-slate-600 transition-all button-animate hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700 md:hidden"
              title="Start new chat"
            >
              <Plus className="h-4 w-4" />
@@ -973,10 +984,12 @@ export function ChatInterface() {
               ))}
             </motion.div>
 
-            {/* Swipe-up hint */}
-            <div className="mt-4">
-              <SwipeUpHint />
-            </div>
+            {/* Kept for the mobile history panel; hidden in the desktop experience. */}
+            {isMobile && (
+              <div className="mt-4">
+                <SwipeUpHint />
+              </div>
+            )}
           </div>
         )}
 
@@ -1162,7 +1175,7 @@ export function ChatInterface() {
                     value={inputValue}
                     onChange={(e) => setInputValue(e.target.value)}
                     onKeyDown={handleKeyDown}
-                    placeholder="Message Nexus..."
+                    placeholder="Message ApsaAI..."
                     className="w-full bg-transparent py-2 px-1 text-[16px] focus:outline-none min-h-[40px] max-h-[300px] leading-relaxed placeholder:text-slate-400 dark:placeholder:text-slate-500 resize-none overflow-y-auto custom-scrollbar"
                     rows={1}
                   />
@@ -1203,13 +1216,14 @@ export function ChatInterface() {
 
               <div className="mt-4 flex flex-col items-center gap-1 pb-2">
                 <p className="text-[11px] font-semibold text-slate-400 dark:text-slate-600 tracking-tight">
-                  Nexus can make mistakes. Verify important info.
+                  ApsaAI can make mistakes. Verify important info.
                 </p>
               </div>
             </div>
           </div>
         </div>
-      </main>
+        </main>
+      </div>
     </div>
   );
 }

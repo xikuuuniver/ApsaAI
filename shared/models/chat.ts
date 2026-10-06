@@ -1,4 +1,4 @@
-import { pgTable, serial, integer, text, timestamp } from "drizzle-orm/pg-core";
+import { pgTable, serial, integer, text, timestamp, boolean } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 import { sql } from "drizzle-orm";
@@ -7,6 +7,9 @@ export const conversations = pgTable("conversations", {
   id: serial("id").primaryKey(),
   title: text("title").notNull(),
   userId: integer("user_id"),
+  isPinned: boolean("is_pinned").notNull().default(false),
+  isPrivate: boolean("is_private").notNull().default(false),
+  isArchived: boolean("is_archived").notNull().default(false),
   createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`).notNull(),
 });
 

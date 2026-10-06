@@ -1,0 +1,181 @@
+Update the existing ApsaAI project. The app was previously designed primarily for mobile, but from now on we want to prioritize the **PC/Desktop experience first**.
+
+IMPORTANT:
+
+* Do NOT rebuild the app from scratch.
+* Preserve all existing functionality, backend logic, APIs, data, and working features.
+* Make changes carefully within the existing architecture.
+* Do not permanently delete features that are only being disabled temporarily.
+* Before modifying anything, inspect the existing UI structure and reuse existing components where possible.
+
+## 1. Desktop-first layout
+
+Redesign the main chat interface for PC/Desktop.
+
+The layout should have:
+
+* A fixed/structured **left sidebar**
+* The main **chat area on the right**
+
+The current chat UI contains:
+
+> Nexus Pro
+> Enterprise thinking engine
+
+Remove this element from the current chat interface. It should no longer appear in the chat area.
+
+Do not remove unrelated functionality connected to the chat engine.
+
+## 2. Sidebar
+
+Create a clean, modern ApsaAI sidebar on the left.
+
+At the very top of the sidebar, display:
+
+**ApsaAI**
+
+Make the ApsaAI text large and bold so it clearly acts as the primary sidebar branding.
+
+Directly underneath it, add these navigation options:
+
+* New Chat
+* Image
+* Library
+* Plugin
+* Archive
+* Private
+
+Use the existing design system/components where possible and keep the UI consistent with the rest of ApsaAI.
+
+## 3. Recent chat sessions
+
+Below the main navigation options, display the user's recent chat sessions.
+
+Each chat session should have:
+
+* Chat/session title
+* A three-dot menu button
+* A pin icon/action
+
+The chat list should remain scrollable if there are many sessions.
+
+Do not break the existing chat-history functionality.
+
+## 4. Chat session menu
+
+When the user clicks the three-dot menu on a chat session, open a dropdown menu.
+
+The dropdown must contain:
+
+1. Rename
+2. Pin Chat
+3. Move to Private
+4. Archive
+
+These actions should work with the existing chat/session data and functionality.
+
+The dropdown should appear cleanly beside the selected chat and should not cause the sidebar layout to jump or resize unexpectedly.
+
+## 5. Pinned Chats
+
+Implement a dedicated **Pinned Chats** section in the sidebar.
+
+When a user pins a chat:
+
+* That chat becomes part of the Pinned Chats section.
+* The Pinned Chats section should appear near the top of the chat-history area.
+* The pinned chat should NOT appear as a duplicate in the normal recent-chat list if the existing UX can support separating it cleanly.
+
+### Important visibility rule
+
+If there are **zero pinned chats**, completely hide the "Pinned Chats" section.
+
+Do NOT show an empty:
+
+> Pinned Chats
+
+section.
+
+Only display the section when at least one chat is actually pinned.
+
+### Unpin behavior
+
+Pinned chats must have an **unpin icon/action**.
+
+When the user clicks the unpin action:
+
+* Remove the chat from Pinned Chats.
+* Return it to the normal recent-chat list.
+* If there are now zero pinned chats, automatically hide the Pinned Chats section.
+
+The pin/unpin state must persist correctly using the existing data/state system.
+
+## 6. "Swipe up for history" — temporarily disable
+
+There is currently a UI element above the chat input box that says:
+
+> Swipe up for history
+
+For the **PC/Desktop version**, temporarily disable/hide this element.
+
+IMPORTANT:
+
+* Do NOT permanently delete the feature.
+* Do NOT remove the underlying implementation if it may be needed later.
+* Simply disable/hide it for now so it does not appear in the current desktop UI.
+* Keep the code/component available so it can be re-enabled in a future mobile-focused implementation.
+
+## 7. Responsive behavior
+
+The existing app was originally optimized for phones.
+
+Do not destroy the mobile implementation while making the desktop version.
+
+For this task:
+
+**Desktop/PC = primary priority.**
+
+Keep the existing mobile functionality intact as much as reasonably possible.
+
+Structure the UI so that future responsive/mobile refinements can be made without rewriting the entire application.
+
+## 8. Visual requirements
+
+The sidebar should feel like a polished modern AI application.
+
+Prioritize:
+
+* Clean spacing
+* Clear hierarchy
+* Smooth hover states
+* Proper active-state indication
+* Consistent typography
+* Proper icon alignment
+* Smooth dropdown behavior
+* Good scrolling behavior
+* No unnecessary visual clutter
+
+Do not introduce random new colors or redesign the entire brand identity.
+
+Use the existing ApsaAI visual language where possible.
+
+## 9. Do not break existing functionality
+
+Before finishing:
+
+* Test creating a new chat.
+* Test opening existing chats.
+* Test renaming a chat.
+* Test pinning a chat.
+* Test unpinning a chat.
+* Test moving a chat to Private.
+* Test archiving a chat.
+* Test the Pinned Chats section appearing/disappearing correctly.
+* Test the sidebar with many chat sessions.
+* Test the desktop chat input.
+* Verify that "Swipe up for history" is hidden but its implementation is not permanently deleted.
+* Verify that the existing AI/chat functionality still works.
+
+Do not make unrelated changes to the project.
+
+The goal is to **convert the existing ApsaAI interface into a polished PC-first desktop chat experience while preserving the existing application and its functionality.**

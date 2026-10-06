@@ -164,9 +164,44 @@ export function registerChatRoutes(app: Express): void {
   app.patch("/api/conversations/:id", async (req: Request, res: Response) => {
     try {
       const id = parseInt(req.params.id);
-      const { title } = req.body;
-      await chatStorage.updateConversationTitle(id, title);
-      res.json({ success: true });
+      const { title, isPinned, isPrivate, isArchived } = req.body ?? {};
+      const updates: Record<string, unknown> = {};
+
+      if (title !== undefined) {
+        if (typeof title !== "string" || !title.trim()) {
+          return res.status(400).json({ error: "title must be a non-empty string" });
+        }
+        updates.title = title.trim();
+      }
+      if (isPinned !== undefined) {
+        if (typeof isPinned !== "boolean") {
+          return res.status(400).json({ error: "isPinned must be a boolean" });
+        }
+        updates.isPinned = isPinned;
+      }
+      if (isPrivate !== undefined) {
+        if (typeof isPrivate !== "boolean") {
+          return res.status(400).json({ error: "isPrivate must be a boolean" });
+        }
+        updates.isPrivate = isPrivate;
+      }
+      if (isArchived !== undefined) {
+        if (typeof isArchived !== "boolean") {
+          return res.status(400).json({ error: "isArchived must be a boolean" });
+        }
+        updates.isArchived = isArchived;
+      }
+      if (Object.keys(updates).length === 0) {
+        return res.status(400).json({ error: "At least one conversation field is required" });
+      }
+
+      if (updates.isPrivate === true) updates.isArchived = false;
+      if (updates.isArchived === true) updates.isPrivate = false;
+
+      await chatStorage.updateConversation(id, updates as any);
+      const conversation = await chatStorage.getConversation(id);
+      if (!conversation) return res.status(404).json({ error: "Conversation not found" });
+      res.json(conversation);
     } catch (error) {
       console.error("Error updating conversation:", error);
       res.status(500).json({ error: "Failed to update conversation" });
