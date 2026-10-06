@@ -1,0 +1,53 @@
+Make one targeted UI behavior change to the existing ApsaAI desktop sidebar.
+
+IMPORTANT:
+
+* Do NOT redesign the sidebar.
+* Do NOT modify unrelated functionality.
+* Preserve the existing Image, Library, and Plugin features and their underlying logic.
+* Only change how these three features are opened/displayed.
+
+## Image, Library and Plugin should open as popups
+
+The sidebar currently contains these navigation options:
+
+* Image
+* Library
+* Plugin
+
+When the user clicks any of these three options, they should open as a **popup/modal overlay**, rather than navigating to a separate full-page view or replacing the main chat screen.
+
+### Image
+
+Clicking **Image** should open the existing Image functionality inside a centered popup/modal.
+
+### Library
+
+Clicking **Library** should open the existing Library functionality inside a centered popup/modal.
+
+### Plugin
+
+Clicking **Plugin** should open the existing Plugin functionality inside a centered popup/modal.
+
+## Popup behavior
+
+The popup should:
+
+* Appear above the current chat interface.
+* Keep the sidebar and underlying chat interface in place.
+* Use a clean modern modal design.
+* Have a clear close button.
+* Close when the user explicitly clicks the close button.
+* If the existing application already supports an appropriate outside-click behavior, preserve it without causing accidental closures.
+* Be responsive so it works properly on different desktop screen sizes.
+* Follow the currently selected ApsaAI theme.
+
+The popup should feel like part of the existing ApsaAI interface, not like a separate website.
+
+## Important
+
+Do NOT delete or rebuild the existing Image, Library, or Plugin functionality.
+
+Reuse the existing components, data, state, APIs, and functionality wherever possible. Only change their presentation from a separate navigation/view into a popup/modal experience.
+
+Do not change New Chat, Archive, Private, Pinned Chats, Recent Chats, or the main chat functionality.

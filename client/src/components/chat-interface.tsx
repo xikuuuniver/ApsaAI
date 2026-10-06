@@ -313,7 +313,7 @@ export function ChatInterface() {
   useEffect(() => {
     const handleOpenSettings = () => setSettingsOpen(true);
     const handleOpenAccount = () => setAccountOpen(true);
-    const handleOpenImagePicker = () => photoInputRef.current?.click();
+    const handleOpenImagePicker = () => fileInputRef.current?.click();
     
     window.addEventListener('nexus-open-settings', handleOpenSettings);
     window.addEventListener('nexus-open-account', handleOpenAccount);

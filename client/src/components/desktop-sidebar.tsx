@@ -36,7 +36,9 @@ import {
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 
-type SidebarSection = "chats" | "archive" | "private" | "library" | "plugin";
+type SidebarSection = "chats" | "archive" | "private";
+type SidebarNavItem = "archive" | "private" | "library" | "plugin";
+type SidebarPopup = "image" | "library" | "plugin" | null;
 
 export function DesktopSidebar() {
   const {
@@ -49,6 +51,7 @@ export function DesktopSidebar() {
   } = useConversation();
   const { toast } = useToast();
   const [section, setSection] = useState<SidebarSection>("chats");
+  const [openPopup, setOpenPopup] = useState<SidebarPopup>(null);
   const [search, setSearch] = useState("");
   const [renameTarget, setRenameTarget] = useState<Conversation | null>(null);
   const [renameValue, setRenameValue] = useState("");
@@ -146,11 +149,11 @@ export function DesktopSidebar() {
   };
 
   const handleImageNavigation = () => {
-    window.dispatchEvent(new CustomEvent("apsa-open-image-picker"));
+    setOpenPopup("image");
   };
 
   const navItems: {
-    id: Exclude<SidebarSection, "chats">;
+    id: SidebarNavItem;
     label: string;
     icon: typeof ImageIcon;
   }[] = [
@@ -210,6 +213,7 @@ export function DesktopSidebar() {
             <button
               type="button"
               onClick={handleImageNavigation}
+              aria-current={openPopup === "image" ? "page" : undefined}
               className="flex h-10 w-full items-center gap-3 rounded-xl px-3 text-left text-[13px] font-medium text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-950 dark:text-slate-300 dark:hover:bg-slate-900 dark:hover:text-white"
             >
               <ImageIcon className="h-[17px] w-[17px] text-slate-500 dark:text-slate-400" />
@@ -219,18 +223,24 @@ export function DesktopSidebar() {
               <button
                 key={id}
                 type="button"
-                onClick={() => setSection(id)}
-                aria-current={section === id ? "page" : undefined}
+                onClick={() => {
+                  if (id === "library" || id === "plugin") {
+                    setOpenPopup(id);
+                  } else {
+                    setSection(id);
+                  }
+                }}
+                aria-current={section === id || openPopup === id ? "page" : undefined}
                 className={cn(
                   "flex h-10 w-full items-center gap-3 rounded-xl px-3 text-left text-[13px] font-medium transition-colors",
-                  section === id
+                  section === id || openPopup === id
                     ? "bg-blue-50 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300"
                     : "text-slate-600 hover:bg-slate-100 hover:text-slate-950 dark:text-slate-300 dark:hover:bg-slate-900 dark:hover:text-white",
                 )}
               >
                 <Icon className={cn(
                   "h-[17px] w-[17px]",
-                  section === id ? "text-blue-600 dark:text-blue-400" : "text-slate-500 dark:text-slate-400",
+                  section === id || openPopup === id ? "text-blue-600 dark:text-blue-400" : "text-slate-500 dark:text-slate-400",
                 )} />
                 {label}
                 {id === "archive" && conversations.some((conversation) => conversation.isArchived) && (
@@ -250,9 +260,7 @@ export function DesktopSidebar() {
             <h2 className="text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-400 dark:text-slate-500">
               {section === "archive" ? "Archived chats"
                 : section === "private" ? "Private chats"
-                  : section === "library" ? "Library"
-                    : section === "plugin" ? "Plugins"
-                      : "Recent"}
+                  : "Recent"}
             </h2>
             {(section === "chats" || section === "archive" || section === "private") && (
               <span className="text-[11px] tabular-nums text-slate-400 dark:text-slate-500">
@@ -315,7 +323,7 @@ export function DesktopSidebar() {
                   ) : null}
                 </section>
               </>
-            ) : section === "archive" || section === "private" ? (
+            ) : (
               visibleConversations.length > 0 ? (
                 <div className="space-y-0.5">
                   {visibleConversations.map((conversation) => renderConversation(conversation))}
@@ -327,10 +335,6 @@ export function DesktopSidebar() {
                   detail={search ? "Try another search." : section === "archive" ? "Archived chats will appear here." : "Chats moved to Private will appear here."}
                 />
               )
-            ) : section === "library" ? (
-              <EmptySidebarState icon={Library} title="Your library is empty" detail="Saved files and media will appear here." />
-            ) : (
-              <EmptySidebarState icon={Blocks} title="No plugins available" detail="Connected plugins will appear here." />
             )}
           </div>
         </div>
@@ -356,6 +360,59 @@ export function DesktopSidebar() {
           </div>
         </div>
       </aside>
+
+      <Dialog
+        open={openPopup !== null}
+        onOpenChange={(open) => {
+          if (!open) setOpenPopup(null);
+        }}
+      >
+        <DialogContent className="max-h-[85vh] w-[calc(100%-2rem)] overflow-y-auto sm:max-w-lg">
+          {openPopup === "image" && (
+            <>
+              <DialogHeader>
+                <DialogTitle>Image</DialogTitle>
+                <DialogDescription>
+                  Choose images or files to attach to your current chat.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="flex justify-center py-2">
+                <Button
+                  type="button"
+                  onClick={() => window.dispatchEvent(new CustomEvent("apsa-open-image-picker"))}
+                >
+                  <ImageIcon className="mr-2 h-4 w-4" />
+                  Choose images
+                </Button>
+              </div>
+            </>
+          )}
+          {openPopup === "library" && (
+            <>
+              <DialogHeader>
+                <DialogTitle>Library</DialogTitle>
+              </DialogHeader>
+              <EmptySidebarState
+                icon={Library}
+                title="Your library is empty"
+                detail="Saved files and media will appear here."
+              />
+            </>
+          )}
+          {openPopup === "plugin" && (
+            <>
+              <DialogHeader>
+                <DialogTitle>Plugins</DialogTitle>
+              </DialogHeader>
+              <EmptySidebarState
+                icon={Blocks}
+                title="No plugins available"
+                detail="Connected plugins will appear here."
+              />
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
 
       <Dialog
         open={renameTarget !== null}
