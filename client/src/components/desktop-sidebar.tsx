@@ -186,7 +186,7 @@ export function DesktopSidebar() {
 
   return (
     <>
-      <aside className="hidden h-screen w-[272px] shrink-0 flex-col border-r border-slate-200 bg-white/95 text-slate-900 dark:border-slate-800 dark:bg-slate-950/95 dark:text-white md:flex xl:w-[288px]">
+      <aside className="relative z-10 hidden h-screen w-[272px] shrink-0 flex-col overflow-y-auto overscroll-contain border-r border-slate-200 bg-white text-slate-900 dark:border-slate-800 dark:bg-slate-950 dark:text-white md:flex xl:w-[288px]">
         <div className="px-5 pb-4 pt-5">
           <div className="mb-6 flex items-center gap-3">
             <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-600 text-white shadow-sm shadow-blue-600/20">
@@ -245,7 +245,7 @@ export function DesktopSidebar() {
 
         <div className="mx-5 border-t border-slate-200 dark:border-slate-800" />
 
-        <div className="flex min-h-0 flex-1 flex-col px-3 pb-3 pt-4">
+        <div className="flex flex-1 flex-col px-3 pb-3 pt-4">
           <div className="mb-3 flex items-center justify-between px-2">
             <h2 className="text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-400 dark:text-slate-500">
               {section === "archive" ? "Archived chats"
@@ -276,7 +276,7 @@ export function DesktopSidebar() {
             </label>
           )}
 
-          <div className="min-h-0 flex-1 space-y-5 overflow-y-auto overscroll-contain pr-1">
+          <div className="flex-1 space-y-5 pr-1">
             {isLoading && (section === "chats" || section === "archive" || section === "private") ? (
               <div className="space-y-2 px-1 pt-1" aria-label="Loading chats">
                 {[0, 1, 2].map((item) => (

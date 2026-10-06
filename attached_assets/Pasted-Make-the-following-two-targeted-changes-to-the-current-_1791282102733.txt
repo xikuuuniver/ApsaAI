@@ -1,0 +1,74 @@
+Make the following two targeted changes to the current ApsaAI desktop sidebar implementation.
+
+IMPORTANT:
+
+* Do NOT redesign the sidebar from scratch.
+* Do NOT change the existing sidebar structure or functionality.
+* Do NOT modify unrelated parts of the application.
+* Preserve all existing chat, pin, archive, private, navigation, and theme functionality.
+
+## 1. Remove all particle effects from the sidebar
+
+The sidebar currently has animated/decorative particle effects.
+
+Remove/disable ALL particle-related visual effects from the sidebar.
+
+The sidebar must have a completely clean, solid background.
+
+Theme behavior must remain dynamic:
+
+* When the user selects the White/Light theme → the entire sidebar should use the appropriate solid light/white background.
+* When the user selects the Black/Dark theme → the entire sidebar should use the appropriate solid dark/black background.
+* The sidebar should automatically follow the currently selected application theme.
+
+There must be:
+
+* No floating particles
+* No animated dots
+* No moving background elements
+* No particle trails
+* No decorative particle animation
+
+Keep the normal theme-based colors, text colors, borders, hover states, and other UI styling intact.
+
+The goal is a clean, static sidebar background that changes only according to the selected theme.
+
+## 2. Change sidebar scrolling behavior
+
+Currently, the chat/session list has its own independent scroll area.
+
+Change this behavior.
+
+The **entire sidebar should function as one unified scrollable area**, similar to the general sidebar behavior used by modern AI chat applications.
+
+The user should be able to scroll the whole sidebar as one continuous section.
+
+This means:
+
+* Navigation items
+* Pinned Chats
+* Recent Chats
+* Other sidebar content
+
+should all belong to the same sidebar scrolling context.
+
+Do NOT create a separate scrollbar specifically for the chat/session list.
+
+There should be only one main vertical scrolling behavior for the sidebar.
+
+The main chat area on the right should keep its own independent scrolling behavior.
+
+## 3. Preserve existing functionality
+
+After implementing these changes, verify that:
+
+* Theme switching still works correctly.
+* Light/white theme produces a clean light sidebar.
+* Dark/black theme produces a clean dark sidebar.
+* No particle animation remains in the sidebar.
+* The entire sidebar can scroll vertically as one section.
+* The chat list does not have a separate internal scrollbar.
+* The main chat area remains independently scrollable.
+* Existing sidebar navigation and chat-session functionality continue working normally.
+
+Do not make any other UI or functional changes.
