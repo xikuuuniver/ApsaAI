@@ -1,0 +1,172 @@
+Make the following targeted UI improvements to the existing ApsaAI desktop interface.
+
+IMPORTANT:
+
+* Do NOT rebuild the application.
+* Preserve all existing functionality and data.
+* Do NOT modify unrelated features.
+* Reuse the existing components and logic wherever possible.
+* The goal is to refine the current UI, not replace it.
+
+## 1. Standardize popup size
+
+The Image, Library, and Plugin popups must all use the **same fixed/responsive popup size**.
+
+The popup should be:
+
+* Large enough to feel like a major workspace.
+* Clearly larger than a small dialog.
+* Not completely fullscreen.
+* Approximately a large centered panel that occupies a substantial portion of the screen while still leaving visible space around it.
+
+Do NOT allow Image, Library, and Plugin to have different popup dimensions.
+
+All three must use the same popup/modal container and sizing rules.
+
+The popup should remain centered and adapt reasonably to different desktop screen sizes.
+
+## 2. Improve the Image popup initial state
+
+When the user opens the Image popup, create a polished initial generation state.
+
+Before the image-generation interface/content is displayed, show a subtle **image-generation/loading visual state**, such as a soft image shadow/glow or loading placeholder.
+
+This should visually communicate that the Image workspace is initializing/loading.
+
+After the loading/initialization state finishes, show a friendly empty-state message.
+
+Replace the current wording with something more polished, for example:
+
+**"You haven't generated anything yet."**
+
+Then add a supporting message such as:
+
+**"Imagine something extraordinary and bring your idea to life. Describe what you want to create, and let ApsaAI generate it for you."**
+
+The empty state should look intentional and polished, not like an error or missing-content screen.
+
+Do not imply that an image is actually being generated if no generation request has been made.
+
+## 3. Simplify the ApsaAI branding area
+
+At the top of the sidebar, keep only:
+
+**ApsaAI**
+
+Remove any unnecessary additional text, labels, subtitles, or branding text currently displayed beside or underneath it.
+
+The **ApsaAI name should have its own distinct typography/style**, so it feels like the primary brand identity of the sidebar.
+
+Use the existing ApsaAI visual identity where possible.
+
+Do not add unnecessary decorative elements.
+
+## 4. Add sidebar minimize/collapse control
+
+Add a sidebar minimize/collapse control next to the ApsaAI branding area.
+
+When the user clicks it, the sidebar should transition into a compact/minimized state.
+
+### Expanded sidebar
+
+The expanded sidebar should contain the current full navigation and chat/session structure.
+
+### Minimized sidebar
+
+When minimized, show only the essential navigation icons:
+
+* New Chat
+* Image
+* Plugin
+* Archive
+
+The minimized sidebar should NOT display the full text labels for these items.
+
+At the top of the minimized sidebar, show only the **ApsaAI logo/brand mark**.
+
+The minimized state should be narrow and compact while remaining easy to use.
+
+The transition between expanded and minimized states should be smooth.
+
+Do not remove functionality when the sidebar is minimized. The icons must remain clickable and functional.
+
+Use tooltips or an appropriate hover indicator so users can understand what each minimized icon does.
+
+The ApsaAI logo/brand mark should remain visually recognizable in the minimized state.
+
+## 5. Reduce sidebar component size
+
+The current sidebar components are visually too large.
+
+Make the sidebar navigation items and chat/session rows more compact.
+
+Reduce:
+
+* Excessive vertical padding
+* Excessive item height
+* Excessive spacing between navigation elements
+* Oversized icons where appropriate
+
+The goal is to allow more navigation items and chat sessions to fit naturally within the sidebar while maintaining readability and comfortable click targets.
+
+Do NOT make the sidebar cramped or difficult to use.
+
+Aim for a compact, polished AI-assistant sidebar rather than a large-spaced dashboard sidebar.
+
+## 6. Remove Settings and Account from the bottom
+
+Remove the **Settings** and **Account** options currently displayed at the very bottom of the sidebar.
+
+For this iteration, they should not be visible in the sidebar.
+
+IMPORTANT:
+
+* Do not permanently delete their underlying functionality if it exists.
+* Only remove them from the current sidebar UI.
+* Keep the implementation available for potential future use.
+
+## 7. Maintain existing sidebar behavior
+
+Do not break the previously implemented sidebar behavior.
+
+Keep:
+
+* Theme-based sidebar background
+* No particle effects
+* Unified sidebar scrolling
+* Pinned Chats
+* Recent Chats
+* Chat session menus
+* Rename
+* Pin/Unpin
+* Move to Private
+* Archive
+* New Chat
+* Image
+* Library
+* Plugin
+
+Image, Library, and Plugin should continue opening as the previously implemented standardized popup/modal.
+
+## 8. Final visual goal
+
+The final interface should feel:
+
+* Compact
+* Modern
+* Clean
+* Premium
+* Desktop-first
+* AI-product focused
+* Easy to navigate
+
+Avoid excessive empty space and oversized components.
+
+The sidebar should feel similar in usability to a modern AI chat application's navigation system, while retaining ApsaAI's own branding and design identity.
+
+After implementation, test both:
+
+1. Expanded sidebar
+2. Minimized sidebar
+
+Also test all three popup types and make sure their dimensions remain consistent.

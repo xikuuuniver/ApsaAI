@@ -1,4 +1,4 @@
-import { useMemo, useState, type FormEvent } from "react";
+import { useEffect, useMemo, useState, type FormEvent } from "react";
 import {
   Archive,
   Blocks,
@@ -7,12 +7,12 @@ import {
   LockKeyhole,
   MessageSquare,
   MoreHorizontal,
+  PanelLeftClose,
+  PanelLeftOpen,
   Pin,
   PinOff,
   Plus,
   Search,
-  Settings,
-  UserRound,
 } from "lucide-react";
 import { useConversation } from "@/contexts/conversation-context";
 import type { Conversation } from "@/lib/api";
@@ -52,10 +52,23 @@ export function DesktopSidebar() {
   const { toast } = useToast();
   const [section, setSection] = useState<SidebarSection>("chats");
   const [openPopup, setOpenPopup] = useState<SidebarPopup>(null);
+  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [imageWorkspaceLoading, setImageWorkspaceLoading] = useState(false);
   const [search, setSearch] = useState("");
   const [renameTarget, setRenameTarget] = useState<Conversation | null>(null);
   const [renameValue, setRenameValue] = useState("");
   const [isRenaming, setIsRenaming] = useState(false);
+
+  useEffect(() => {
+    if (openPopup !== "image") {
+      setImageWorkspaceLoading(false);
+      return;
+    }
+
+    setImageWorkspaceLoading(true);
+    const timeout = window.setTimeout(() => setImageWorkspaceLoading(false), 700);
+    return () => window.clearTimeout(timeout);
+  }, [openPopup]);
 
   const pinnedConversations = useMemo(
     () => conversations.filter((conversation) =>
@@ -149,6 +162,7 @@ export function DesktopSidebar() {
   };
 
   const handleImageNavigation = () => {
+    setImageWorkspaceLoading(true);
     setOpenPopup("image");
   };
 
@@ -189,176 +203,241 @@ export function DesktopSidebar() {
 
   return (
     <>
-      <aside className="relative z-10 hidden h-screen w-[272px] shrink-0 flex-col overflow-y-auto overscroll-contain border-r border-slate-200 bg-white text-slate-900 dark:border-slate-800 dark:bg-slate-950 dark:text-white md:flex xl:w-[288px]">
-        <div className="px-5 pb-4 pt-5">
-          <div className="mb-6 flex items-center gap-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-600 text-white shadow-sm shadow-blue-600/20">
-              <MessageSquare className="h-[18px] w-[18px]" />
-            </div>
-            <span className="text-[21px] font-bold tracking-tight">ApsaAI</span>
-          </div>
-
-          <Button
-            onClick={handleNewChat}
-            className="h-10 w-full justify-start gap-2.5 rounded-xl bg-blue-600 px-3.5 text-sm font-semibold text-white shadow-sm shadow-blue-600/15 hover:bg-blue-700"
-          >
-            <Plus className="h-4 w-4" />
-            New Chat
-            <span className="ml-auto rounded-md border border-white/25 px-1.5 py-0.5 text-[10px] font-medium text-blue-50">
-              Ctrl N
-            </span>
-          </Button>
-
-          <nav aria-label="Main navigation" className="mt-4 space-y-1">
-            <button
-              type="button"
-              onClick={handleImageNavigation}
-              aria-current={openPopup === "image" ? "page" : undefined}
-              className="flex h-10 w-full items-center gap-3 rounded-xl px-3 text-left text-[13px] font-medium text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-950 dark:text-slate-300 dark:hover:bg-slate-900 dark:hover:text-white"
-            >
-              <ImageIcon className="h-[17px] w-[17px] text-slate-500 dark:text-slate-400" />
-              Image
-            </button>
-            {navItems.map(({ id, label, icon: Icon }) => (
-              <button
-                key={id}
-                type="button"
-                onClick={() => {
-                  if (id === "library" || id === "plugin") {
-                    setOpenPopup(id);
-                  } else {
-                    setSection(id);
-                  }
-                }}
-                aria-current={section === id || openPopup === id ? "page" : undefined}
-                className={cn(
-                  "flex h-10 w-full items-center gap-3 rounded-xl px-3 text-left text-[13px] font-medium transition-colors",
-                  section === id || openPopup === id
-                    ? "bg-blue-50 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300"
-                    : "text-slate-600 hover:bg-slate-100 hover:text-slate-950 dark:text-slate-300 dark:hover:bg-slate-900 dark:hover:text-white",
-                )}
-              >
-                <Icon className={cn(
-                  "h-[17px] w-[17px]",
-                  section === id || openPopup === id ? "text-blue-600 dark:text-blue-400" : "text-slate-500 dark:text-slate-400",
-                )} />
-                {label}
-                {id === "archive" && conversations.some((conversation) => conversation.isArchived) && (
-                  <span className="ml-auto text-[11px] text-slate-400">
-                    {conversations.filter((conversation) => conversation.isArchived).length}
-                  </span>
-                )}
-              </button>
-            ))}
-          </nav>
-        </div>
-
-        <div className="mx-5 border-t border-slate-200 dark:border-slate-800" />
-
-        <div className="flex flex-1 flex-col px-3 pb-3 pt-4">
-          <div className="mb-3 flex items-center justify-between px-2">
-            <h2 className="text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-400 dark:text-slate-500">
-              {section === "archive" ? "Archived chats"
-                : section === "private" ? "Private chats"
-                  : "Recent"}
-            </h2>
-            {(section === "chats" || section === "archive" || section === "private") && (
-              <span className="text-[11px] tabular-nums text-slate-400 dark:text-slate-500">
-                {section === "chats"
-                  ? recentConversations.length + pinnedConversations.length
-                  : visibleConversations.length}
+      <aside
+        className={cn(
+          "relative z-10 hidden h-screen shrink-0 flex-col overflow-y-auto overscroll-contain border-r border-slate-200 bg-white text-slate-900 transition-[width] duration-300 ease-in-out dark:border-slate-800 dark:bg-slate-950 dark:text-white md:flex",
+          isCollapsed ? "w-[68px]" : "w-[272px] xl:w-[288px]",
+        )}
+      >
+        <div className={cn("flex items-center py-4", isCollapsed ? "justify-between px-1" : "justify-between px-4")}>
+          <div className="flex min-w-0 items-center gap-2.5">
+            <img
+              src="/apsaai-brand-mark.png"
+              alt="ApsaAI"
+              className={cn("shrink-0 object-contain", isCollapsed ? "h-7 w-7" : "h-9 w-9")}
+            />
+            {!isCollapsed && (
+              <span className="truncate text-[21px] font-bold tracking-[-0.04em] text-slate-950 dark:text-white">
+                ApsaAI
               </span>
             )}
           </div>
-
-          {(section === "chats" || section === "archive" || section === "private") && (
-            <label className="relative mb-3 block">
-              <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-              <input
-                value={search}
-                onChange={(event) => setSearch(event.target.value)}
-                placeholder="Search chats"
-                aria-label="Search chats"
-                className="h-9 w-full rounded-xl border border-slate-200 bg-slate-50 pl-9 pr-3 text-xs text-slate-800 outline-none transition focus:border-blue-400 focus:bg-white focus:ring-2 focus:ring-blue-500/10 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200 dark:focus:bg-slate-900"
-              />
-            </label>
-          )}
-
-          <div className="flex-1 space-y-5 pr-1">
-            {isLoading && (section === "chats" || section === "archive" || section === "private") ? (
-              <div className="space-y-2 px-1 pt-1" aria-label="Loading chats">
-                {[0, 1, 2].map((item) => (
-                  <div key={item} className="h-9 animate-pulse rounded-lg bg-slate-100 dark:bg-slate-900" />
-                ))}
-              </div>
-            ) : section === "chats" ? (
-              <>
-                {filteredPinned.length > 0 && (
-                  <section aria-label="Pinned chats">
-                    <div className="mb-1.5 flex items-center gap-2 px-2">
-                      <Pin className="h-3 w-3 text-blue-500" />
-                      <h3 className="text-[11px] font-semibold text-slate-500 dark:text-slate-400">Pinned Chats</h3>
-                    </div>
-                    <div className="space-y-0.5">
-                      {filteredPinned.map((conversation) => renderConversation(conversation, true))}
-                    </div>
-                  </section>
-                )}
-                <section aria-label="Recent chats">
-                  {filteredPinned.length > 0 && (
-                    <h3 className="mb-1.5 px-2 text-[11px] font-semibold text-slate-400 dark:text-slate-500">Recent chats</h3>
-                  )}
-                  {filteredRecent.length > 0 ? (
-                    <div className="space-y-0.5">
-                      {filteredRecent.map((conversation) => renderConversation(conversation))}
-                    </div>
-                  ) : recentConversations.length === 0 && filteredPinned.length === 0 ? (
-                    <EmptySidebarState
-                      icon={MessageSquare}
-                      title={search ? "No chats found" : "No conversations yet"}
-                      detail={search ? "Try another search." : "Start a new chat to see it here."}
-                    />
-                  ) : search && filteredRecent.length === 0 && filteredPinned.length === 0 ? (
-                    <EmptySidebarState icon={Search} title="No chats found" detail="Try another search." />
-                  ) : null}
-                </section>
-              </>
-            ) : (
-              visibleConversations.length > 0 ? (
-                <div className="space-y-0.5">
-                  {visibleConversations.map((conversation) => renderConversation(conversation))}
-                </div>
-              ) : (
-                <EmptySidebarState
-                  icon={section === "archive" ? Archive : LockKeyhole}
-                  title={search ? "No chats found" : section === "archive" ? "Nothing archived" : "No private chats"}
-                  detail={search ? "Try another search." : section === "archive" ? "Archived chats will appear here." : "Chats moved to Private will appear here."}
-                />
-              )
+          <button
+            type="button"
+            onClick={() => setIsCollapsed((collapsed) => !collapsed)}
+            aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+            aria-expanded={!isCollapsed}
+            title={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+            className={cn(
+              "flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:text-slate-400 dark:hover:bg-slate-900 dark:hover:text-white",
             )}
-          </div>
+          >
+            {isCollapsed
+              ? <PanelLeftOpen className="h-4 w-4" />
+              : <PanelLeftClose className="h-4 w-4" />}
+          </button>
         </div>
 
-        <div className="border-t border-slate-200 px-3 py-3 dark:border-slate-800">
-          <div className="grid grid-cols-2 gap-1">
+        {isCollapsed ? (
+          <nav aria-label="Main navigation" className="flex flex-col items-center gap-1 px-1 pb-4 pt-1">
             <button
               type="button"
-              onClick={() => window.dispatchEvent(new CustomEvent("nexus-open-settings"))}
-              className="flex h-9 items-center justify-center gap-2 rounded-lg text-xs font-medium text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-900 dark:hover:text-white"
+              onClick={handleNewChat}
+              aria-label="New Chat"
+              title="New Chat"
+              className="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-600 text-white shadow-sm transition-colors hover:bg-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
             >
-              <Settings className="h-3.5 w-3.5" />
-              Settings
+              <Plus className="h-4 w-4" />
             </button>
             <button
               type="button"
-              onClick={() => window.dispatchEvent(new CustomEvent("nexus-open-account"))}
-              className="flex h-9 items-center justify-center gap-2 rounded-lg text-xs font-medium text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-900 dark:hover:text-white"
+              onClick={handleImageNavigation}
+              aria-label="Image"
+              title="Image"
+              aria-current={openPopup === "image" ? "page" : undefined}
+              className={cn(
+                "flex h-9 w-9 items-center justify-center rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500",
+                openPopup === "image"
+                  ? "bg-blue-50 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300"
+                  : "text-slate-500 hover:bg-slate-100 hover:text-slate-950 dark:text-slate-300 dark:hover:bg-slate-900 dark:hover:text-white",
+              )}
             >
-              <UserRound className="h-3.5 w-3.5" />
-              Account
+              <ImageIcon className="h-4 w-4" />
             </button>
-          </div>
-        </div>
+            <button
+              type="button"
+              onClick={() => setOpenPopup("plugin")}
+              aria-label="Plugin"
+              title="Plugin"
+              aria-current={openPopup === "plugin" ? "page" : undefined}
+              className={cn(
+                "flex h-9 w-9 items-center justify-center rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500",
+                openPopup === "plugin"
+                  ? "bg-blue-50 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300"
+                  : "text-slate-500 hover:bg-slate-100 hover:text-slate-950 dark:text-slate-300 dark:hover:bg-slate-900 dark:hover:text-white",
+              )}
+            >
+              <Blocks className="h-4 w-4" />
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setSection("archive");
+                setIsCollapsed(false);
+              }}
+              aria-label="Archive"
+              title="Archive"
+              aria-current={section === "archive" ? "page" : undefined}
+              className={cn(
+                "flex h-9 w-9 items-center justify-center rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500",
+                section === "archive"
+                  ? "bg-blue-50 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300"
+                  : "text-slate-500 hover:bg-slate-100 hover:text-slate-950 dark:text-slate-300 dark:hover:bg-slate-900 dark:hover:text-white",
+              )}
+            >
+              <Archive className="h-4 w-4" />
+            </button>
+          </nav>
+        ) : (
+          <>
+            <div className="px-4 pb-3">
+              <Button
+                onClick={handleNewChat}
+                className="h-9 w-full justify-start gap-2 rounded-lg bg-blue-600 px-3 text-[13px] font-semibold text-white shadow-sm shadow-blue-600/15 hover:bg-blue-700"
+              >
+                <Plus className="h-4 w-4" />
+                New Chat
+                <span className="ml-auto rounded-md border border-white/25 px-1.5 py-0.5 text-[10px] font-medium text-blue-50">
+                  Ctrl N
+                </span>
+              </Button>
+
+              <nav aria-label="Main navigation" className="mt-2 space-y-0.5">
+                <button
+                  type="button"
+                  onClick={handleImageNavigation}
+                  aria-current={openPopup === "image" ? "page" : undefined}
+                  className="flex h-9 w-full items-center gap-2.5 rounded-lg px-2.5 text-left text-[13px] font-medium text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-950 dark:text-slate-300 dark:hover:bg-slate-900 dark:hover:text-white"
+                >
+                  <ImageIcon className="h-4 w-4 text-slate-500 dark:text-slate-400" />
+                  Image
+                </button>
+                {navItems.map(({ id, label, icon: Icon }) => (
+                  <button
+                    key={id}
+                    type="button"
+                    onClick={() => {
+                      if (id === "library" || id === "plugin") {
+                        setOpenPopup(id);
+                      } else {
+                        setSection(id);
+                      }
+                    }}
+                    aria-current={section === id || openPopup === id ? "page" : undefined}
+                    title={label}
+                    className={cn(
+                      "flex h-9 w-full items-center gap-2.5 rounded-lg px-2.5 text-left text-[13px] font-medium transition-colors",
+                      section === id || openPopup === id
+                        ? "bg-blue-50 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300"
+                        : "text-slate-600 hover:bg-slate-100 hover:text-slate-950 dark:text-slate-300 dark:hover:bg-slate-900 dark:hover:text-white",
+                    )}
+                  >
+                    <Icon className={cn(
+                      "h-4 w-4",
+                      section === id || openPopup === id ? "text-blue-600 dark:text-blue-400" : "text-slate-500 dark:text-slate-400",
+                    )} />
+                    {label}
+                    {id === "archive" && conversations.some((conversation) => conversation.isArchived) && (
+                      <span className="ml-auto text-[11px] text-slate-400">
+                        {conversations.filter((conversation) => conversation.isArchived).length}
+                      </span>
+                    )}
+                  </button>
+                ))}
+              </nav>
+            </div>
+
+            <div className="mx-4 border-t border-slate-200 dark:border-slate-800" />
+
+            <div className="flex min-h-0 flex-1 flex-col px-3 pb-3 pt-3">
+              <div className="mb-2 flex items-center justify-between px-2">
+                <h2 className="text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-400 dark:text-slate-500">
+                  {section === "archive" ? "Archived chats"
+                    : section === "private" ? "Private chats"
+                      : "Recent"}
+                </h2>
+                <span className="text-[11px] tabular-nums text-slate-400 dark:text-slate-500">
+                  {section === "chats"
+                    ? recentConversations.length + pinnedConversations.length
+                    : visibleConversations.length}
+                </span>
+              </div>
+
+              <label className="relative mb-2.5 block">
+                <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                <input
+                  value={search}
+                  onChange={(event) => setSearch(event.target.value)}
+                  placeholder="Search chats"
+                  aria-label="Search chats"
+                  className="h-8 w-full rounded-lg border border-slate-200 bg-slate-50 pl-9 pr-3 text-xs text-slate-800 outline-none transition focus:border-blue-400 focus:bg-white focus:ring-2 focus:ring-blue-500/10 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200 dark:focus:bg-slate-900"
+                />
+              </label>
+
+              <div className="flex-1 space-y-4 pr-1">
+                {isLoading ? (
+                  <div className="space-y-2 px-1 pt-1" aria-label="Loading chats">
+                    {[0, 1, 2].map((item) => (
+                      <div key={item} className="h-8 animate-pulse rounded-lg bg-slate-100 dark:bg-slate-900" />
+                    ))}
+                  </div>
+                ) : section === "chats" ? (
+                  <>
+                    {filteredPinned.length > 0 && (
+                      <section aria-label="Pinned chats">
+                        <div className="mb-1.5 flex items-center gap-2 px-2">
+                          <Pin className="h-3 w-3 text-blue-500" />
+                          <h3 className="text-[11px] font-semibold text-slate-500 dark:text-slate-400">Pinned Chats</h3>
+                        </div>
+                        <div className="space-y-0.5">
+                          {filteredPinned.map((conversation) => renderConversation(conversation, true))}
+                        </div>
+                      </section>
+                    )}
+                    <section aria-label="Recent chats">
+                      {filteredPinned.length > 0 && (
+                        <h3 className="mb-1.5 px-2 text-[11px] font-semibold text-slate-400 dark:text-slate-500">Recent chats</h3>
+                      )}
+                      {filteredRecent.length > 0 ? (
+                        <div className="space-y-0.5">
+                          {filteredRecent.map((conversation) => renderConversation(conversation))}
+                        </div>
+                      ) : recentConversations.length === 0 && filteredPinned.length === 0 ? (
+                        <EmptySidebarState
+                          icon={MessageSquare}
+                          title={search ? "No chats found" : "No conversations yet"}
+                          detail={search ? "Try another search." : "Start a new chat to see it here."}
+                        />
+                      ) : search && filteredRecent.length === 0 && filteredPinned.length === 0 ? (
+                        <EmptySidebarState icon={Search} title="No chats found" detail="Try another search." />
+                      ) : null}
+                    </section>
+                  </>
+                ) : visibleConversations.length > 0 ? (
+                  <div className="space-y-0.5">
+                    {visibleConversations.map((conversation) => renderConversation(conversation))}
+                  </div>
+                ) : (
+                  <EmptySidebarState
+                    icon={section === "archive" ? Archive : LockKeyhole}
+                    title={search ? "No chats found" : section === "archive" ? "Nothing archived" : "No private chats"}
+                    detail={search ? "Try another search." : section === "archive" ? "Archived chats will appear here." : "Chats moved to Private will appear here."}
+                  />
+                )}
+              </div>
+            </div>
+          </>
+        )}
       </aside>
 
       <Dialog
@@ -367,32 +446,64 @@ export function DesktopSidebar() {
           if (!open) setOpenPopup(null);
         }}
       >
-        <DialogContent className="max-h-[85vh] w-[calc(100%-2rem)] overflow-y-auto sm:max-w-lg">
+        <DialogContent className="flex h-[min(82vh,760px)] w-[calc(100vw-2rem)] max-w-none flex-col gap-0 overflow-hidden rounded-2xl border-slate-200 bg-white p-0 shadow-2xl dark:border-slate-800 dark:bg-slate-950 sm:w-[min(92vw,960px)]">
           {openPopup === "image" && (
             <>
-              <DialogHeader>
-                <DialogTitle>Image</DialogTitle>
-                <DialogDescription>
-                  Choose images or files to attach to your current chat.
+              <DialogHeader className="border-b border-slate-200 px-7 py-6 pr-14 dark:border-slate-800">
+                <DialogTitle className="text-xl">Image Studio</DialogTitle>
+                <DialogDescription className="max-w-2xl text-sm leading-relaxed">
+                  Create and organize images with ApsaAI.
                 </DialogDescription>
               </DialogHeader>
-              <div className="flex justify-center py-2">
+
+              <div className="flex min-h-0 flex-1 flex-col items-center justify-center px-6 py-8 text-center">
+                {imageWorkspaceLoading ? (
+                  <div className="w-full max-w-xl" role="status" aria-label="Preparing image workspace">
+                    <div className="relative h-56 overflow-hidden rounded-3xl border border-slate-200 bg-slate-50 shadow-[0_18px_65px_rgba(51,102,255,0.12)] dark:border-slate-800 dark:bg-slate-900/70 dark:shadow-[0_18px_65px_rgba(51,102,255,0.12)]">
+                      <div className="absolute inset-0 bg-gradient-to-br from-blue-100/80 via-white to-violet-100/70 dark:from-blue-950/50 dark:via-slate-900 dark:to-violet-950/40" />
+                      <div className="absolute left-1/2 top-1/2 h-36 w-36 -translate-x-1/2 -translate-y-1/2 rounded-full bg-blue-300/30 blur-3xl animate-pulse dark:bg-blue-500/20" />
+                      <div className="absolute bottom-7 left-1/2 h-2.5 w-36 -translate-x-1/2 animate-pulse rounded-full bg-white/80 dark:bg-slate-700/70" />
+                      <div className="absolute bottom-3 left-1/2 h-2 w-24 -translate-x-1/2 animate-pulse rounded-full bg-white/60 dark:bg-slate-800/80" />
+                    </div>
+                    <p className="mt-5 text-sm font-medium text-slate-500 dark:text-slate-400">
+                      Preparing your image workspace…
+                    </p>
+                  </div>
+                ) : (
+                  <div className="mx-auto flex max-w-xl flex-col items-center">
+                    <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-50 to-violet-100 text-blue-600 shadow-[0_12px_36px_rgba(51,102,255,0.14)] dark:from-blue-950/70 dark:to-violet-950/50 dark:text-blue-300">
+                      <ImageIcon className="h-7 w-7" />
+                    </div>
+                    <h2 className="mt-6 text-xl font-semibold tracking-tight text-slate-900 dark:text-white">
+                      You haven&apos;t generated anything yet.
+                    </h2>
+                    <p className="mt-3 max-w-lg text-sm leading-6 text-slate-500 dark:text-slate-400">
+                      Imagine something extraordinary and bring your idea to life. Describe what you want to create, and let ApsaAI generate it for you.
+                    </p>
+                  </div>
+                )}
+              </div>
+
+              <div className="flex shrink-0 justify-center border-t border-slate-200 px-6 py-4 dark:border-slate-800">
                 <Button
                   type="button"
                   onClick={() => window.dispatchEvent(new CustomEvent("apsa-open-image-picker"))}
                 >
                   <ImageIcon className="mr-2 h-4 w-4" />
-                  Choose images
+                  Choose images or files
                 </Button>
               </div>
             </>
           )}
           {openPopup === "library" && (
             <>
-              <DialogHeader>
-                <DialogTitle>Library</DialogTitle>
+              <DialogHeader className="border-b border-slate-200 px-7 py-6 pr-14 dark:border-slate-800">
+                <DialogTitle className="text-xl">Library</DialogTitle>
+                <DialogDescription className="text-sm">
+                  Find saved files and media.
+                </DialogDescription>
               </DialogHeader>
-              <EmptySidebarState
+              <WorkspaceEmptyState
                 icon={Library}
                 title="Your library is empty"
                 detail="Saved files and media will appear here."
@@ -401,10 +512,13 @@ export function DesktopSidebar() {
           )}
           {openPopup === "plugin" && (
             <>
-              <DialogHeader>
-                <DialogTitle>Plugins</DialogTitle>
+              <DialogHeader className="border-b border-slate-200 px-7 py-6 pr-14 dark:border-slate-800">
+                <DialogTitle className="text-xl">Plugins</DialogTitle>
+                <DialogDescription className="text-sm">
+                  Connect tools to extend your workspace.
+                </DialogDescription>
               </DialogHeader>
-              <EmptySidebarState
+              <WorkspaceEmptyState
                 icon={Blocks}
                 title="No plugins available"
                 detail="Connected plugins will appear here."
@@ -472,6 +586,26 @@ function EmptySidebarState({
   );
 }
 
+function WorkspaceEmptyState({
+  icon: Icon,
+  title,
+  detail,
+}: {
+  icon: typeof MessageSquare;
+  title: string;
+  detail: string;
+}) {
+  return (
+    <div className="flex min-h-0 flex-1 flex-col items-center justify-center px-8 py-10 text-center">
+      <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-slate-100 text-slate-500 dark:bg-slate-900 dark:text-slate-400">
+        <Icon className="h-7 w-7" />
+      </div>
+      <p className="mt-6 text-lg font-semibold tracking-tight text-slate-900 dark:text-white">{title}</p>
+      <p className="mt-2 max-w-sm text-sm leading-6 text-slate-500 dark:text-slate-400">{detail}</p>
+    </div>
+  );
+}
+
 function ConversationRow({
   conversation,
   isActive,
@@ -505,7 +639,7 @@ function ConversationRow({
         onClick={onSelect}
         aria-current={isActive ? "page" : undefined}
         className={cn(
-          "flex h-9 min-w-0 flex-1 items-center gap-2.5 px-1.5 text-left text-xs",
+          "flex h-8 min-w-0 flex-1 items-center gap-2 px-1.5 text-left text-xs",
           isActive ? "text-blue-700 dark:text-blue-300" : "text-slate-600 dark:text-slate-300",
         )}
         title={conversation.title}
