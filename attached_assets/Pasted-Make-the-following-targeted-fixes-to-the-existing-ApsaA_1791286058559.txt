@@ -1,0 +1,172 @@
+Make the following targeted fixes to the existing ApsaAI desktop UI.
+
+IMPORTANT:
+
+* Do NOT rebuild the UI.
+* Do NOT modify unrelated functionality.
+* Preserve all existing sidebar, chat, input, popup, theme, and state-management logic.
+* Fix only the behaviors described below.
+
+## 1. Fix the minimized sidebar expand interaction
+
+There is currently a conflict in the minimized sidebar.
+
+When the sidebar is minimized:
+
+* The ApsaAI logo/brand mark is visible.
+* An expand button/icon is also visible next to or around the logo.
+* This creates unnecessary visual conflict.
+
+Change this interaction.
+
+When the sidebar is minimized, the **ApsaAI logo itself should act as the expand trigger**.
+
+Normal minimized state:
+
+* Show only the ApsaAI logo/brand mark.
+* Do not permanently display a separate expand button beside it.
+
+Hover behavior:
+
+* When the user moves the mouse over the ApsaAI logo, smoothly transform/swap the logo area into the **Expand Sidebar** icon.
+* The expand icon should appear in the same location occupied by the ApsaAI logo.
+* The user can then click it to expand the sidebar.
+
+When the mouse leaves without clicking:
+
+* Return smoothly to the normal ApsaAI logo.
+
+When the user clicks the expand icon:
+
+* Expand the sidebar normally.
+
+The transition should be smooth and should not cause the sidebar layout to jump.
+
+## 2. Increase and neutralize the ApsaAI logo size
+
+The ApsaAI logo/brand mark is currently too small in both expanded and minimized states.
+
+Increase its size so it has a stronger visual presence.
+
+The logo should feel:
+
+* Clearly visible
+* Balanced
+* Neutral
+* Professional
+* Consistent between expanded and minimized states
+
+Do not make it oversized.
+
+Avoid excessive styling, glow, animation, or decorative effects.
+
+The logo should use a neutral visual treatment that works naturally with both light and dark themes.
+
+In the minimized sidebar, the ApsaAI logo should be large enough to be immediately recognizable.
+
+## 3. Expand the "+" menu options beside the chat input
+
+When the user clicks the **"+" button** beside the chat input, expand the existing menu.
+
+Keep the existing options:
+
+* Upload File
+* Take Photo
+* Web Search
+
+Add these additional options:
+
+* Upload Image
+* Deep Search
+* Research
+
+The menu should remain clean and organized.
+
+Use appropriate icons and consistent spacing for each option.
+
+Do not remove the existing options.
+
+## 4. Restore selected tool tags above the input box
+
+When the user opens the "+" menu and selects any of these tools:
+
+* Web Search
+* Deep Search
+* Research
+
+the selected tools should appear as **small tags/chips above the chat input box**.
+
+This behavior existed previously and should be restored.
+
+Example:
+
+If the user selects:
+
+Web Search
+
+then a small "Web Search" tag should appear above the input.
+
+If the user selects:
+
+Deep Search
+
+then "Deep Search" should appear as a tag.
+
+If the user selects:
+
+Research
+
+then "Research" should appear as a tag.
+
+Multiple tools can be selected simultaneously.
+
+For example:
+
+[Web Search] [Deep Search] [Research]
+
+These tags should:
+
+* Appear directly above the input box.
+* Clearly show which tools are currently active.
+* Follow the current ApsaAI theme.
+* Be visually compact.
+* Have a clear way to remove/deactivate the selected tool if the existing UI supports this behavior.
+
+When the user removes a selected tool, its tag should disappear and that tool should no longer be active.
+
+## 5. Selection state must persist correctly
+
+The selected tools should remain active while the user is composing the current message.
+
+Opening and closing the "+" menu must NOT reset the selected tools.
+
+The UI should clearly distinguish:
+
+* Available tools in the "+" menu
+* Currently selected/active tools
+
+When a tool is already active, the "+" menu should reflect its active state rather than behaving as if it has never been selected.
+
+## 6. Preserve existing functionality
+
+After making these changes, test:
+
+* Minimized sidebar
+* Hovering over the ApsaAI logo
+* Expand interaction
+* Expanded sidebar
+* Light theme
+* Dark theme
+* "+" menu
+* Upload File
+* Take Photo
+* Upload Image
+* Web Search
+* Deep Search
+* Research
+* Selecting multiple tools
+* Tool tags appearing above the input
+* Removing selected tool tags
+* Sending a message with selected tools
+
+Do not introduce any unrelated changes.

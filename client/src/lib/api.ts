@@ -1,5 +1,7 @@
 import { ThinkingMode } from "./types";
 
+export type ChatToolId = "webSearch" | "deepSearch" | "research";
+
 export interface Conversation {
   id: number;
   title: string;
@@ -82,12 +84,13 @@ export const api = {
     onDone: () => void,
     attachments?: { name: string; type: string; url: string }[],
     webSearchEnabled?: boolean,
-    onSearchStatus?: (status: string) => void
+    onSearchStatus?: (status: string) => void,
+    selectedTools?: ChatToolId[]
   ): Promise<void> {
     const response = await fetch(`/api/conversations/${conversationId}/messages`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ content, mode, attachments, webSearchEnabled }),
+      body: JSON.stringify({ content, mode, attachments, webSearchEnabled, selectedTools }),
     });
 
     if (!response.ok) throw new Error("Failed to send message");

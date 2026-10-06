@@ -250,7 +250,22 @@ export function registerChatRoutes(app: Express): void {
   app.post("/api/conversations/:id/messages", async (req: Request, res: Response) => {
     try {
       const conversationId = parseInt(req.params.id);
-      const { content, mode, attachments, webSearchEnabled } = req.body;
+      const {
+        content,
+        mode,
+        attachments,
+        webSearchEnabled,
+        selectedTools: requestedTools,
+      } = req.body;
+      const allowedTools = ["webSearch", "deepSearch", "research"] as const;
+      const selectedTools: string[] = Array.isArray(requestedTools)
+        ? [...new Set(requestedTools.filter((tool: unknown): tool is string =>
+          typeof tool === "string" && allowedTools.includes(tool as typeof allowedTools[number])
+        ))]
+        : [];
+      if (webSearchEnabled && !selectedTools.includes("webSearch")) {
+        selectedTools.push("webSearch");
+      }
 
       // Only save if conversation exists and belongs to user
       const conversation = await chatStorage.getConversation(conversationId);
@@ -378,6 +393,16 @@ You are now connected to the internet via Perplexity's real-time search engine. 
 4. Acknowledge that you're using web search when asked about your capabilities
 
 When the user asks if you can search or have internet access, CONFIRM that yes, Web Search mode is enabled and you have real-time internet access.`;
+      }
+
+      if (selectedTools.includes("deepSearch")) {
+        systemPrompt += `\n\nDEEP SEARCH MODE ACTIVE
+Take a thorough, multi-step approach. Break complex questions into subquestions, compare plausible explanations, cross-check important claims, and state uncertainty clearly. Use live sources only when Web Search is also enabled; otherwise, do not imply that you accessed current external sources.`;
+      }
+
+      if (selectedTools.includes("research")) {
+        systemPrompt += `\n\nRESEARCH MODE ACTIVE
+Present the response as a clear research brief with scope, key findings, supporting evidence, and limitations. Distinguish established facts from interpretation. Include source links only when they are genuinely available, and never fabricate citations.`;
       }
 
       // Check if there are media attachments

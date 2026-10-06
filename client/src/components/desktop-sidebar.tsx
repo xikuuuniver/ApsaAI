@@ -209,34 +209,48 @@ export function DesktopSidebar() {
           isCollapsed ? "w-[68px]" : "w-[272px] xl:w-[288px]",
         )}
       >
-        <div className={cn("flex items-center py-4", isCollapsed ? "justify-between px-1" : "justify-between px-4")}>
-          <div className="flex min-w-0 items-center gap-2.5">
-            <img
-              src="/apsaai-brand-mark.png"
-              alt="ApsaAI"
-              className={cn("shrink-0 object-contain", isCollapsed ? "h-7 w-7" : "h-9 w-9")}
-            />
-            {!isCollapsed && (
+        {isCollapsed ? (
+          <div className="flex justify-center py-3">
+            <button
+              type="button"
+              onClick={() => setIsCollapsed(false)}
+              aria-label="Expand sidebar"
+              aria-expanded={false}
+              title="Expand sidebar"
+              className="group/brand relative flex h-11 w-11 items-center justify-center rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+            >
+              <img
+                src="/apsaai-brand-mark.png"
+                alt="ApsaAI"
+                className="h-11 w-11 object-contain transition-opacity duration-200 group-hover/brand:opacity-0 group-focus-visible/brand:opacity-0"
+              />
+              <PanelLeftOpen className="absolute h-5 w-5 text-slate-500 opacity-0 transition-opacity duration-200 group-hover/brand:opacity-100 group-focus-visible/brand:opacity-100 dark:text-slate-300" />
+            </button>
+          </div>
+        ) : (
+          <div className="flex items-center justify-between px-4 py-4">
+            <div className="flex min-w-0 items-center gap-2.5">
+              <img
+                src="/apsaai-brand-mark.png"
+                alt="ApsaAI"
+                className="h-11 w-11 shrink-0 object-contain"
+              />
               <span className="truncate text-[21px] font-bold tracking-[-0.04em] text-slate-950 dark:text-white">
                 ApsaAI
               </span>
-            )}
+            </div>
+            <button
+              type="button"
+              onClick={() => setIsCollapsed(true)}
+              aria-label="Collapse sidebar"
+              aria-expanded={true}
+              title="Collapse sidebar"
+              className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:text-slate-400 dark:hover:bg-slate-900 dark:hover:text-white"
+            >
+              <PanelLeftClose className="h-4 w-4" />
+            </button>
           </div>
-          <button
-            type="button"
-            onClick={() => setIsCollapsed((collapsed) => !collapsed)}
-            aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
-            aria-expanded={!isCollapsed}
-            title={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
-            className={cn(
-              "flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:text-slate-400 dark:hover:bg-slate-900 dark:hover:text-white",
-            )}
-          >
-            {isCollapsed
-              ? <PanelLeftOpen className="h-4 w-4" />
-              : <PanelLeftClose className="h-4 w-4" />}
-          </button>
-        </div>
+        )}
 
         {isCollapsed ? (
           <nav aria-label="Main navigation" className="flex flex-col items-center gap-1 px-1 pb-4 pt-1">

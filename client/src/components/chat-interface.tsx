@@ -11,9 +11,11 @@ import {
   Video, 
   X, 
   Camera, 
+  BookOpen,
   FolderOpen, 
   Globe, 
   Paperclip, 
+  Search,
   LogIn, 
   LogOut, 
   User as UserIcon, 
@@ -35,7 +37,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { api } from "@/lib/api";
+import { api, type ChatToolId } from "@/lib/api";
 import { useToast } from "@/hooks/use-toast";
 import { useMode } from "@/contexts/mode-context";
 import { useLanguage, languageNames, Language } from "@/contexts/language-context";
@@ -62,6 +64,39 @@ import AccountPage from "@/pages/account";
 import SettingsPage from "@/pages/settings";
 
 const PLAYFUL_STYLES = ["bottts", "fun-emoji", "adventurer", "lorelei", "thumbs", "pixel-art"];
+
+const CHAT_TOOL_OPTIONS = [
+  {
+    id: "webSearch",
+    label: "Web Search",
+    description: "Search the internet",
+    icon: Globe,
+    activeClass: "bg-emerald-50 text-emerald-700 dark:bg-emerald-900/20 dark:text-emerald-300",
+    hoverClass: "hover:bg-emerald-50 dark:hover:bg-emerald-900/20",
+    activeIconClass: "bg-emerald-500 text-white",
+    iconClass: "bg-emerald-100 text-emerald-600 dark:bg-emerald-900/40 dark:text-emerald-400",
+  },
+  {
+    id: "deepSearch",
+    label: "Deep Search",
+    description: "Explore a question in depth",
+    icon: Search,
+    activeClass: "bg-blue-50 text-blue-700 dark:bg-blue-900/20 dark:text-blue-300",
+    hoverClass: "hover:bg-blue-50 dark:hover:bg-blue-900/20",
+    activeIconClass: "bg-blue-500 text-white",
+    iconClass: "bg-blue-100 text-blue-600 dark:bg-blue-900/40 dark:text-blue-400",
+  },
+  {
+    id: "research",
+    label: "Research",
+    description: "Build a structured research brief",
+    icon: BookOpen,
+    activeClass: "bg-violet-50 text-violet-700 dark:bg-violet-900/20 dark:text-violet-300",
+    hoverClass: "hover:bg-violet-50 dark:hover:bg-violet-900/20",
+    activeIconClass: "bg-violet-500 text-white",
+    iconClass: "bg-violet-100 text-violet-600 dark:bg-violet-900/40 dark:text-violet-400",
+  },
+] as const;
 
 const tabSlideVariants = {
   enter: (direction: number) => ({
@@ -101,7 +136,8 @@ export function ChatInterface() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [attachments, setAttachments] = useState<Attachment[]>([]);
   const [showAttachMenu, setShowAttachMenu] = useState(false);
-  const [webSearchEnabled, setWebSearchEnabled] = useState(false);
+  const [selectedTools, setSelectedTools] = useState<ChatToolId[]>([]);
+  const webSearchEnabled = selectedTools.includes("webSearch");
   const [searchStatus, setSearchStatus] = useState<string | null>(null);
   const [isListening, setIsListening] = useState(false);
   const [followUpSuggestions, setFollowUpSuggestions] = useState<string[]>([]);
@@ -179,10 +215,11 @@ export function ChatInterface() {
 
   
   const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (!files || files.length === 0) return;
+    const inputElement = e.currentTarget;
+    const files = Array.from(inputElement.files ?? []);
+    if (files.length === 0) return;
 
-    for (const file of Array.from(files)) {
+    for (const file of files) {
       const attachment: Attachment = {
         name: file.name,
         type: file.type,
@@ -193,9 +230,7 @@ export function ChatInterface() {
     }
     
     setShowAttachMenu(false);
-    if (fileInputRef.current) {
-      fileInputRef.current.value = '';
-    }
+    inputElement.value = "";
   };
 
   const removeAttachment = (index: number) => {
@@ -221,13 +256,25 @@ export function ChatInterface() {
     setShowAttachMenu(false);
   };
 
-  const toggleWebSearch = () => {
-    setWebSearchEnabled(!webSearchEnabled);
-    setShowAttachMenu(false);
-    toast({
-      title: webSearchEnabled ? "Web Search Disabled" : "Web Search Enabled",
-      description: webSearchEnabled ? "Nexus will use its knowledge" : "Nexus (powered by Apsa AI) will search the internet for latest info",
+  const setToolActive = (tool: ChatToolId, enabled: boolean, notify = false) => {
+    setSelectedTools((current) => {
+      if (enabled) return current.includes(tool) ? current : [...current, tool];
+      return current.filter((activeTool) => activeTool !== tool);
     });
+    setShowAttachMenu(false);
+
+    if (tool === "webSearch" && notify) {
+      toast({
+        title: enabled ? "Web Search Enabled" : "Web Search Disabled",
+        description: enabled
+          ? "Nexus (powered by Apsa AI) will search the internet for latest info"
+          : "Nexus will use its knowledge",
+      });
+    }
+  };
+
+  const toggleTool = (tool: ChatToolId) => {
+    setToolActive(tool, !selectedTools.includes(tool), tool === "webSearch");
   };
 
   const toggleVoiceInput = () => {
@@ -468,7 +515,8 @@ export function ChatInterface() {
         },
         mediaAttachments.length > 0 ? mediaAttachments : undefined,
         webSearchEnabled,
-        (status) => setSearchStatus(status)
+        (status) => setSearchStatus(status),
+        selectedTools,
       );
     } catch (error) {
       toast({
@@ -757,6 +805,24 @@ export function ChatInterface() {
         multiple
         accept="image/*,video/*,audio/*,.pdf,.doc,.docx,.txt,.csv,.xlsx,.xls"
         data-testid="input-file"
+      />
+      <input
+        type="file"
+        ref={cameraInputRef}
+        onChange={handleFileSelect}
+        className="hidden"
+        accept="image/*"
+        capture="environment"
+        data-testid="input-camera"
+      />
+      <input
+        type="file"
+        ref={photoInputRef}
+        onChange={handleFileSelect}
+        className="hidden"
+        multiple
+        accept="image/*"
+        data-testid="input-image"
       />
       
       {/* Header */}
@@ -1091,6 +1157,44 @@ export function ChatInterface() {
                 )}
               </AnimatePresence>
 
+              <AnimatePresence>
+                {selectedTools.length > 0 && (
+                  <motion.div
+                    aria-label="Active tools"
+                    className="mb-3 flex flex-wrap gap-2 px-2"
+                    initial={{ opacity: 0, y: 6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 6 }}
+                  >
+                    {CHAT_TOOL_OPTIONS
+                      .filter((tool) => selectedTools.includes(tool.id))
+                      .map(({ id, label, icon: Icon }) => (
+                        <motion.div
+                          key={id}
+                          role="listitem"
+                          className="inline-flex h-7 items-center gap-1.5 rounded-full border border-blue-200 bg-blue-50 px-2.5 text-[11px] font-medium text-blue-700 dark:border-blue-800 dark:bg-blue-950/60 dark:text-blue-300"
+                          initial={{ scale: 0.9, opacity: 0 }}
+                          animate={{ scale: 1, opacity: 1 }}
+                          exit={{ scale: 0.9, opacity: 0 }}
+                        >
+                          <Icon className="h-3.5 w-3.5" aria-hidden="true" />
+                          <span>{label}</span>
+                          <button
+                            type="button"
+                            onClick={() => setToolActive(id, false)}
+                            aria-label={`Remove ${label}`}
+                            title={`Remove ${label}`}
+                            className="ml-0.5 rounded-full p-0.5 text-current/70 transition-colors hover:bg-blue-200/70 hover:text-current focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:hover:bg-blue-800/70"
+                          >
+                            <X className="h-3 w-3" />
+                          </button>
+                        </motion.div>
+                      ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              <div className="relative">
               {/* Status Indicators */}
               <div className="absolute -top-10 left-4 flex items-center gap-3 z-10">
                 <AnimatePresence>
@@ -1143,28 +1247,52 @@ export function ChatInterface() {
                   </PopoverTrigger>
                   <PopoverContent side="top" align="start" sideOffset={12} className="w-64 p-2 rounded-3xl shadow-2xl backdrop-blur-2xl bg-white/95 dark:bg-slate-900/95 border border-slate-200 dark:border-slate-800 z-[100] animate-in slide-in-from-bottom-2 duration-300">
                     <div className="grid gap-1.5">
-                      <Button variant="ghost" className="justify-start gap-3 rounded-2xl h-12 hover:bg-blue-50 dark:hover:bg-blue-900/20" onClick={handleFilesClick}>
+                      <Button variant="ghost" className="h-11 justify-start gap-3 rounded-2xl hover:bg-blue-50 dark:hover:bg-blue-900/20" onClick={handleFilesClick}>
                         <div className="h-8 w-8 rounded-xl bg-blue-100 dark:bg-blue-900/40 flex items-center justify-center text-blue-600 dark:text-blue-400">
                           <Paperclip className="h-4 w-4" />
                         </div>
-                        <span className="text-sm font-semibold">Upload Files</span>
+                        <span className="text-sm font-semibold">Upload File</span>
                       </Button>
-                      <Button variant="ghost" className="justify-start gap-3 rounded-2xl h-12 hover:bg-purple-50 dark:hover:bg-purple-900/20" onClick={handleCameraClick}>
+                      <Button variant="ghost" className="h-11 justify-start gap-3 rounded-2xl hover:bg-purple-50 dark:hover:bg-purple-900/20" onClick={handleCameraClick}>
                         <div className="h-8 w-8 rounded-xl bg-purple-100 dark:bg-purple-900/40 flex items-center justify-center text-purple-600 dark:text-purple-400">
                           <Camera className="h-4 w-4" />
                         </div>
                         <span className="text-sm font-semibold">Take Photo</span>
                       </Button>
-                      <Button variant="ghost" className={cn("justify-start gap-3 rounded-2xl h-12", webSearchEnabled ? "bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600" : "hover:bg-emerald-50 dark:hover:bg-emerald-900/20")} onClick={toggleWebSearch}>
-                        <div className={cn("h-8 w-8 rounded-xl flex items-center justify-center transition-colors", webSearchEnabled ? "bg-emerald-500 text-white" : "bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400")}>
-                          <Globe className="h-4 w-4" />
+                      <Button variant="ghost" className="h-11 justify-start gap-3 rounded-2xl hover:bg-amber-50 dark:hover:bg-amber-900/20" onClick={handlePhotoClick}>
+                        <div className="h-8 w-8 rounded-xl bg-amber-100 dark:bg-amber-900/40 flex items-center justify-center text-amber-600 dark:text-amber-400">
+                          <Image className="h-4 w-4" />
                         </div>
-                        <div className="flex flex-col items-start leading-tight">
-                          <span className="text-sm font-semibold">Web Search</span>
-                          <span className="text-[10px] text-slate-500 dark:text-slate-400 font-medium">Search the internet</span>
-                        </div>
-                        {webSearchEnabled && <div className="ml-auto h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />}
+                        <span className="text-sm font-semibold">Upload Image</span>
                       </Button>
+                      {CHAT_TOOL_OPTIONS.map(({ id, label, description, icon: Icon, activeClass, hoverClass, activeIconClass, iconClass }) => {
+                        const active = selectedTools.includes(id);
+                        return (
+                          <Button
+                            key={id}
+                            type="button"
+                            variant="ghost"
+                            aria-pressed={active}
+                            className={cn(
+                              "h-11 justify-start gap-3 rounded-2xl transition-colors",
+                              active ? activeClass : hoverClass,
+                            )}
+                            onClick={() => toggleTool(id)}
+                          >
+                            <div className={cn(
+                              "flex h-8 w-8 items-center justify-center rounded-xl transition-colors",
+                              active ? activeIconClass : iconClass,
+                            )}>
+                              <Icon className="h-4 w-4" />
+                            </div>
+                            <div className="flex min-w-0 flex-col items-start leading-tight">
+                              <span className="text-sm font-semibold">{label}</span>
+                              <span className="text-[10px] font-medium opacity-70">{description}</span>
+                            </div>
+                            {active && <span className="ml-auto h-2 w-2 shrink-0 rounded-full bg-current" aria-hidden="true" />}
+                          </Button>
+                        );
+                      })}
                     </div>
                   </PopoverContent>
                 </Popover>
@@ -1213,6 +1341,7 @@ export function ChatInterface() {
                   </Button>
                 </div>
               </motion.div>
+              </div>
 
               <div className="mt-4 flex flex-col items-center gap-1 pb-2">
                 <p className="text-[11px] font-semibold text-slate-400 dark:text-slate-600 tracking-tight">
